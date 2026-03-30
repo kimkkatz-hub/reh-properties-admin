@@ -176,7 +176,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);fon
 .reminder-banner.overdue{background:var(--red-light);border-color:#f0a0a0;color:#8b1c1c}
 .reminder-banner.ok{background:var(--green-light);border-color:#a8d8be;color:#155d36}
 
-/* OTP SPECIFIC - Mandated style */
+/* OTP SPECIFIC */
 .otp-header-block{background:var(--navy);color:#fff;border-radius:10px;padding:18px 22px;margin-bottom:18px;display:flex;align-items:center;justify-content:space-between}
 .otp-brand{display:flex;align-items:center;gap:12px}
 .otp-brand-m{width:40px;height:40px;background:var(--gold);border-radius:8px;display:flex;align-items:center;justify-content:center;font-family:'DM Serif Display',serif;font-size:20px;color:var(--navy);font-weight:900}
@@ -375,7 +375,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);fon
           <select id="s1-marital-changed"><option>No</option><option>Yes</option></select>
         </div>
       </div>
-      <div class="form-section" style="margin-top:20px">Seller 2 / Spouse (if applicable — delete if not)</div>
+      <div class="form-section" style="margin-top:20px">Seller 2 / Spouse (if applicable)</div>
       <div class="form-row col4">
         <div class="form-group"><label class="form-label">Title</label><select id="s2-title"><option></option><option>Mr</option><option>Mrs</option><option>Ms</option><option>Miss</option><option>Dr</option></select></div>
         <div class="form-group" style="grid-column:span 2"><label class="form-label">Surname</label><input id="s2-surname" placeholder="Leave blank if N/A"/></div>
@@ -547,7 +547,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);fon
       <div class="form-section">Agent Details (Annexure B)</div>
       <div class="form-row col3">
         <div class="form-group"><label class="form-label">Agent Full Names</label><input id="tx-agent" placeholder="Abraham/Cindy &amp; Mary"/></div>
-        <div class="form-group"><label class="form-label">Agent ID Numbers</label><input id="tx-agentid" placeholder="1763738 &amp; 3700000 &amp; 1272480"/></div>
+        <div class="form-group"><label class="form-label">Agent FFC Numbers</label><input id="tx-agentid" placeholder="FFC-XXXX &amp; FFC-YYYY"/></div>
         <div class="form-group"><label class="form-label">Listing Agency</label><input id="tx-listing-agency" placeholder="Mary Mathenjwa (REH PROPERTIES MANDATED)"/></div>
       </div>
       <div class="form-row col1"><div class="form-group"><label class="form-label">Contract Agency (joint marketing — if applicable)</label><input id="tx-contract-agency" placeholder="Abraham Mathenjwa &amp; Cindy Mathenjwa (REH PROPERTIES MANDATED)"/></div></div>
@@ -558,7 +558,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);fon
   <!-- STEP 5: CONDITIONS -->
   <div class="step-page" id="otp-step-4">
     <div class="card">
-      <div class="form-section">Alien &amp; Invasive Species — Clause 19 (delete what is not applicable)</div>
+      <div class="form-section">Alien &amp; Invasive Species — Clause 19</div>
       <div class="form-row col1">
         <div class="form-group"><label class="form-label">Declaration</label>
           <select id="cond-invasive">
@@ -570,7 +570,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);fon
       <div class="form-row col1"><div class="form-group"><label class="form-label">If 19.2 applies — specify invasive species:</label><textarea id="cond-invasive-detail" rows="2" placeholder="List invasive species if applicable"></textarea></div></div>
       <div class="form-section" style="margin-top:16px">Special Conditions — Clause 20</div>
       <div class="form-row col1"><div class="form-group"><label class="form-label">Special Conditions</label><textarea id="cond-special" rows="7" placeholder="e.g. The sale is subject to the Purchaser obtaining a mortgage bond of R600 000 within 30 days of acceptance.&#10;Property sold voetstoots.&#10;No deposit required.&#10;Guarantee date: 15 fifteen days after contract date where no deposit is due."></textarea></div></div>
-      <div class="form-section">Second Property (Clause 1.13 / 8 — delete if not applicable)</div>
+      <div class="form-section">Second Property (Clause 1.13 / 8)</div>
       <div class="form-row col1"><div class="form-group"><label class="form-label">Purchaser's 2nd Property Address (if sale subject to)</label><input id="cond-2ndprop" placeholder="Leave blank if not applicable"/></div></div>
     </div>
     <div style="display:flex;justify-content:space-between"><button class="btn" onclick="goStep(3)">← Back</button><button class="btn btn-primary" onclick="goStep(5)">Next: Fixtures →</button></div>
@@ -650,7 +650,6 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);fon
           <div class="sig-label">Witness 2 — sign above</div></div>
         </div>
       </div>
-      <!-- Annexure B sigs -->
       <div class="form-section">Annexure B — Professional Fee Signatures</div>
       <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px">
         <div>
@@ -952,7 +951,6 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);fon
     <div class="stat"><div class="stat-label">Commission Forecast</div><div class="stat-value amber" id="pipe-comm">R 0</div></div>
     <div class="stat"><div class="stat-label">Avg Deal Value</div><div class="stat-value" id="pipe-avg">—</div></div>
   </div>
-  <!-- SA Timeline Reference -->
   <div class="card" style="background:var(--navy);color:#fff;border-color:var(--navy);margin-bottom:16px">
     <div class="card-title" style="color:var(--gold)">📅 SA Property Deal — Typical Timeline</div>
     <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:10px;font-size:11px">
@@ -1135,7 +1133,6 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);fon
       </div>
     </div>
   </div>
-  <!-- LIVE PREVIEW -->
   <div class="prop-card-preview">
     <div class="prop-card-top">
       <div style="flex:1">
@@ -1185,17 +1182,6 @@ function g(id){return (document.getElementById(id)||{}).value||'';}
 let currentStep=0;
 
 const FIXTURES=['Fitted light fittings','Oven - built-in','Hob – built-in','Stove – upright','Extractor fan','Fitted carpets','Skirtings','Electric fencing','Burglar alarm','Panic remote/button','Remote Control/s','Fitted Awnings','Pelmets','Curtain rails, rods, rings','Built-in Cupboards','Fitted mirrors','Fitted heaters','Fireplace grates','Garden water feature','Water pump','Security Camera/s','Security Gate/s','TV and M-net aerials','DSTV Satellite dish','Internet Satellite dish','Swimming pool equipment','Pool cover / net','Pool filter and pump','Irrigation system','Electric gate motor','Automatic garage motor','Intercom system','Municipal Trolley Bin'];
-
-// SA Deal stages with expected days from OTP signing
-const SA_STAGES={
-  'OTP Signed':{days:0,label:'OTP Signed',prob:0.5,next:'Bond application submitted — chase bond originator'},
-  'Bond Pending':{days:14,label:'Bond Pending (~14 days)',prob:0.55,next:'Bond approval expected — follow up with bank/originator'},
-  'Bond Approved':{days:21,label:'Bond Approved',prob:0.85,next:'Transfer documents being prepared by conveyancers'},
-  'Transfer Prep':{days:42,label:'Transfer Prep (~4-6 weeks)',prob:0.9,next:'Documents at Deeds Office expected soon'},
-  'At Deeds Office':{days:70,label:'At Deeds Office (~10 weeks)',prob:0.95,next:'Registration expected within 1-2 weeks'},
-  'Registered':{days:84,label:'Registered! 🎉',prob:1,next:'Commission payable — congratulate client!'},
-  'Fallen Through':{days:0,label:'Fallen Through',prob:0,next:''}
-};
 
 // ========== INIT ==========
 window.onload=function(){
@@ -1290,7 +1276,6 @@ function initSignatures(){
   canvases.forEach(id=>{
     const canvas=document.getElementById(id);
     if(!canvas)return;
-    // Set actual canvas size
     canvas.width=canvas.offsetWidth||320;
     canvas.height=parseInt(canvas.getAttribute('height'))||110;
     const ctx=canvas.getContext('2d');
@@ -1309,7 +1294,7 @@ function initSignatures(){
 
 function clearSig(id){const c=document.getElementById(id);if(c)c.getContext('2d').clearRect(0,0,c.width,c.height);}
 
-// ========== OTP PDF ========== 
+// ========== OTP PDF ==========
 function exportOTPPDF(){
   const {jsPDF}=window.jspdf;
   const doc=new jsPDF('p','mm','a4');
@@ -1319,7 +1304,6 @@ function exportOTPPDF(){
   const hdr=(txt)=>{checkY(10);doc.setFillColor(26,37,64);doc.rect(ml,y,tw,8,'F');doc.setFont('helvetica','bold');doc.setFontSize(10);doc.setTextColor(255,255,255);doc.text(txt,ml+3,y+5.5);y+=12;};
   const row=(l,v,l2,v2)=>{checkY(7);doc.setFont('helvetica','bold');doc.setFontSize(8.5);doc.setTextColor(100);doc.text(l||'',ml,y);doc.setFont('helvetica','normal');doc.setTextColor(26,37,64);doc.text(String(v||''),ml+38,y);if(l2){doc.setFont('helvetica','bold');doc.setTextColor(100);doc.text(l2||'',ml+tw/2,y);doc.setFont('helvetica','normal');doc.setTextColor(26,37,64);doc.text(String(v2||''),ml+tw/2+38,y);}y+=6;};
 
-  // MANDATED HEADER
   doc.setFillColor(26,37,64);doc.rect(0,0,210,26,'F');
   doc.setFillColor(232,160,32);doc.rect(0,0,6,26,'F');
   doc.setFont('helvetica','bold');doc.setFontSize(16);doc.setTextColor(232,160,32);
@@ -1383,7 +1367,7 @@ function exportOTPPDF(){
   row('a) Purchase Price:','R '+price.toLocaleString('en-ZA'),'Rate:',rate+'%');
   row('b) Net Professional Fee (excl VAT):','R '+Math.round(net).toLocaleString('en-ZA'),'c) VAT 15%:','R '+Math.round(vat).toLocaleString('en-ZA'));
   row('d) Gross Professional Fee (incl VAT):','R '+Math.round(gross).toLocaleString('en-ZA'),'e) Balance to Seller (a-d):','R '+Math.round(price-gross).toLocaleString('en-ZA'));
-  row('Agent Names:',g('tx-agent'),'Agent ID Numbers:',g('tx-agentid'));
+  row('Agent Names:',g('tx-agent'),'Agent FFC Numbers:',g('tx-agentid'));
   row('Listing Agency:',g('tx-listing-agency'),'Contract Agency:',g('tx-contract-agency'));
   y+=3;
 
@@ -1394,7 +1378,6 @@ function exportOTPPDF(){
     lines.forEach(l=>{checkY(6);doc.text(l,ml,y);y+=5;});y+=3;
   }
 
-  // Fixtures
   const checked=Array.from(document.querySelectorAll('#fixtures-grid .check-item.checked')).map(el=>el.querySelector('input').value);
   if(checked.length){
     hdr('18. FIXTURES & FITTINGS INCLUDED');
@@ -1408,7 +1391,6 @@ function exportOTPPDF(){
     y+=3;
   }
 
-  // SIGNATURES PAGE
   doc.addPage();y=15;
   hdr('24. SIGNATURES');
   row('Signed at:',g('sig-city'),'Date:',g('sig-date'));
@@ -1434,16 +1416,14 @@ function exportOTPPDF(){
     doc.setFont('helvetica','normal');doc.setFontSize(8);doc.setTextColor(80);doc.text(s.label,ml+xOff,y+sh+7);
   });
   y+=sh+18;
-  // Agent line
   checkY(20);
   doc.setFont('helvetica','normal');doc.setFontSize(9);doc.setTextColor(26,37,64);
   doc.text('This Agreement has been negotiated by: '+g('tx-agent'),ml,y);y+=8;
-  doc.text("Agent's I.D. Number: "+g('tx-agentid'),ml,y);y+=10;
+  doc.text("Agent's FFC Number: "+g('tx-agentid'),ml,y);y+=10;
   doc.text('For and on behalf of Mandated Property Group',ml,y);y+=8;
   doc.setDrawColor(150);doc.setLineWidth(0.3);doc.line(ml,y,ml+80,y);y+=5;
   doc.setFontSize(8);doc.setTextColor(100);doc.text('Mentor Agent / Principal Agent',ml,y);
 
-  // ANNEXURE B SIGS
   doc.addPage();y=15;
   hdr('ANNEXURE B — PROFESSIONAL FEE — SIGNATURES');
   y+=5;
@@ -1455,7 +1435,6 @@ function exportOTPPDF(){
     doc.setFont('helvetica','normal');doc.setFontSize(8);doc.setTextColor(80);doc.text(lbl,ml+xOff,y+29);
   });
 
-  // Footer on all pages
   const pc=doc.getNumberOfPages();
   for(let i=1;i<=pc;i++){
     doc.setPage(i);
@@ -1534,7 +1513,7 @@ function renderClients(){
 }
 function removeClient(i){clientList.splice(i,1);renderClients();updateDash();}
 
-// ========== SCHEDULE & REMINDERS ==========
+// ========== SCHEDULE ==========
 function addEvent(){
   const title=g('ev-title');if(!title)return;
   eventList.push({title,dt:g('ev-dt'),type:g('ev-type'),client:g('ev-client'),notes:g('ev-notes')});
@@ -1573,8 +1552,6 @@ function checkReminders(){
   const tomorrow=new Date(today);tomorrow.setDate(tomorrow.getDate()+1);
   const due=eventList.filter(e=>{if(!e.dt)return false;const d=new Date(e.dt);d.setHours(0,0,0,0);return d<=tomorrow&&d>=today;});
   const overdue=eventList.filter(e=>{if(!e.dt)return false;const d=new Date(e.dt);return d<today;});
-
-  // Dashboard banners
   const dashR=document.getElementById('dash-reminders');
   if(dashR){
     let html='';
@@ -1582,19 +1559,16 @@ function checkReminders(){
     due.forEach(e=>{html+=`<div class="reminder-banner">🔔 TODAY/TOMORROW: <strong>${e.title}</strong>${e.dt?' — '+new Date(e.dt).toLocaleString('en-ZA',{weekday:'short',day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'}):''}</div>`;});
     dashR.innerHTML=html;
   }
-  // Schedule banners
   const schedR=document.getElementById('sched-reminders-banner');
   if(schedR){
     let html='';
     if(overdue.length)html+=`<div class="reminder-banner overdue" style="margin-bottom:8px">⚠️ You have ${overdue.length} overdue event${overdue.length>1?'s':''}.</div>`;
-    if(due.length)html+=`<div class="reminder-banner" style="margin-bottom:8px">🔔 ${due.length} event${due.length>1?'s':''} due today or tomorrow — check below.</div>`;
+    if(due.length)html+=`<div class="reminder-banner" style="margin-bottom:8px">🔔 ${due.length} event${due.length>1?'s':''} due today or tomorrow.</div>`;
     schedR.innerHTML=html;
   }
-  // Pipeline reminders
-  checkDealReminders();
 }
 
-// ========== PIPELINE WITH SA REMINDERS ==========
+// ========== PIPELINE ==========
 const STAGE_PROB={'OTP Signed':0.5,'Bond Pending':0.55,'Bond Approved':0.85,'Transfer Prep':0.9,'At Deeds Office':0.95,'Registered':1,'Fallen Through':0};
 
 function addDeal(){
@@ -1612,26 +1586,16 @@ function getDealReminder(deal){
   const otpD=new Date(deal.otpDate);
   const today=new Date();today.setHours(0,0,0,0);
   const daysSinceOTP=Math.floor((today-otpD)/86400000);
-  const stage=deal.stage;
-  // Expected milestones in days from OTP
-  const milestones={
-    'Bond Pending':14,'Bond Approved':21,'Transfer Prep':42,'At Deeds Office':70,'Registered':84
-  };
   const stageOrder=['OTP Signed','Bond Pending','Bond Approved','Transfer Prep','At Deeds Office','Registered'];
-  const currentIdx=stageOrder.indexOf(stage);
+  const milestones={'Bond Pending':14,'Bond Approved':21,'Transfer Prep':42,'At Deeds Office':70,'Registered':84};
+  const currentIdx=stageOrder.indexOf(deal.stage);
   if(currentIdx<0)return null;
   const nextStage=stageOrder[currentIdx+1];
   if(!nextStage||!milestones[nextStage])return null;
-  const expectedDays=milestones[nextStage];
-  const daysLeft=expectedDays-daysSinceOTP;
-  if(daysLeft<=0){return{type:'overdue',msg:`⚠️ ${deal.prop} — ${nextStage} expected ${Math.abs(daysLeft)} days ago (Day ${daysSinceOTP} since OTP)`};}
-  if(daysLeft<=3){return{type:'due',msg:`🔔 ${deal.prop} — ${nextStage} expected in ${daysLeft} day${daysLeft===1?'':'s'} (Day ${daysSinceOTP} since OTP)`};}
+  const daysLeft=milestones[nextStage]-daysSinceOTP;
+  if(daysLeft<=0)return{type:'overdue',msg:`⚠️ ${deal.prop} — ${nextStage} expected ${Math.abs(daysLeft)} days ago`};
+  if(daysLeft<=3)return{type:'due',msg:`🔔 ${deal.prop} — ${nextStage} expected in ${daysLeft} day${daysLeft===1?'':'s'}`};
   return null;
-}
-
-function checkDealReminders(){
-  const pipe=document.getElementById('pipeline-list');
-  // reminders shown inside renderPipeline
 }
 
 function removeDeal(i){if(confirm('Remove this deal?')){dealList.splice(i,1);renderPipeline();}}
@@ -1647,13 +1611,11 @@ function renderPipeline(){
   document.getElementById('pipe-comm').textContent=fmtR(commForecast);
   document.getElementById('pipe-avg').textContent=dealList.length?fmtR(totalVal/dealList.length):'—';
   if(!dealList.length){list.innerHTML='<div class="card" style="color:#aaa;font-size:13px">No deals yet.</div>';return;}
-
+  const stageColors={'OTP Signed':'badge-gray','Bond Pending':'badge-amber','Bond Approved':'badge-green','Transfer Prep':'badge-blue','At Deeds Office':'badge-blue','Registered':'badge-green','Fallen Through':'badge-red'};
   list.innerHTML=dealList.map((d,i)=>{
     const reminder=getDealReminder(d);
     const otpD=d.otpDate?new Date(d.otpDate):null;
     const daysSince=otpD?Math.floor((new Date()-otpD)/86400000):null;
-    const nextExpected=getSANextMilestone(d);
-    const stageColors={'OTP Signed':'badge-gray','Bond Pending':'badge-amber','Bond Approved':'badge-green','Transfer Prep':'badge-blue','At Deeds Office':'badge-blue','Registered':'badge-green','Fallen Through':'badge-red'};
     const progress=STAGE_PROB[d.stage]||0;
     return`<div class="card" style="margin-bottom:12px;border-left:4px solid ${d.stage==='Fallen Through'?'var(--red)':d.stage==='Registered'?'var(--green)':'var(--gold)'}">
       ${reminder?`<div class="reminder-banner ${reminder.type}" style="margin-bottom:10px">${reminder.msg}</div>`:''}
@@ -1661,8 +1623,7 @@ function renderPipeline(){
         <div style="flex:1">
           <div class="li-main" style="font-size:15px">${d.prop}</div>
           <div class="li-sub">Buyer: ${d.buyer||'—'} · ${fmtR(d.price)} · Agent: ${d.agent||'—'}</div>
-          ${daysSince!==null?`<div class="li-sub" style="margin-top:2px">📅 Day <strong>${daysSince}</strong> since OTP (${new Date(d.otpDate).toLocaleDateString('en-ZA')})</div>`:''}
-          ${nextExpected?`<div class="li-sub" style="margin-top:2px;color:var(--green)">⏭ Next: ${nextExpected}</div>`:''}
+          ${daysSince!==null?`<div class="li-sub" style="margin-top:2px">📅 Day <strong>${daysSince}</strong> since OTP</div>`:''}
           ${d.notes?`<div class="li-sub" style="margin-top:2px">📝 ${d.notes}</div>`:''}
         </div>
         <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
@@ -1677,13 +1638,6 @@ function renderPipeline(){
       <div class="progress-bar"><div class="progress-fill" style="width:${progress*100}%"></div></div>
     </div>`;
   }).join('');
-}
-
-function getSANextMilestone(deal){
-  if(!deal.otpDate)return null;
-  const daysSince=Math.floor((new Date()-new Date(deal.otpDate))/86400000);
-  const map={'OTP Signed':'Bond approval expected by Day 14','Bond Pending':'Bond approval expected by Day 14','Bond Approved':'Transfer prep — expect 4-6 weeks from Day 21','Transfer Prep':'Documents at Deeds Office expected by Week 10','At Deeds Office':'Registration expected within 1-2 weeks'};
-  return map[deal.stage]||null;
 }
 
 // ========== RUNNERS ==========
@@ -1727,7 +1681,7 @@ function updateDash(){
   checkReminders();
 }
 
-// ========== AI ASSISTANT — FIXED ==========
+// ========== AI ASSISTANT ==========
 async function sendAI(){
   const input=document.getElementById('ai-input');
   const msg=input.value.trim();
@@ -1746,7 +1700,7 @@ async function askAI(msg){
       method:'POST',
       headers:{
         'Content-Type':'application/json',
-        'x-api-key':'',
+        'x-api-key':'ANTHROPIC_API_KEY',
         'anthropic-version':'2023-06-01',
         'anthropic-dangerous-direct-browser-calls':'true'
       },
@@ -1763,7 +1717,7 @@ async function askAI(msg){
     bDiv.textContent=data.content?.map(b=>b.text||'').join('')||'Sorry, no response received.';
   }catch(e){
     bDiv.className='ai-msg bot';
-    bDiv.textContent='⚠️ Connection issue: '+e.message+'\n\nNote: The AI assistant requires an Anthropic API key to be configured in the app settings. Please contact your administrator or check your network connection.';
+    bDiv.textContent='⚠️ Error: '+e.message;
   }
   chat.scrollTop=chat.scrollHeight;
 }
@@ -1813,7 +1767,7 @@ function calcTransfer(){
   document.getElementById('td-conv').textContent=fmtR(conv);
   document.getElementById('td-bondreg').textContent=b>0?fmtR(bondreg):'N/A';
   document.getElementById('td-total').textContent=fmtR(total);
-  document.getElementById('td-breakdown').innerHTML=`<strong>Breakdown:</strong><br>Transfer duty: ${fmtR(duty)}<br>Conveyancing fees (est.): ${fmtR(conv)}<br>${b>0?`Bond registration fees (est.): ${fmtR(bondreg)}<br>`:''}<strong>Total: ${fmtR(total)}</strong><br><span style="color:var(--sub)">Conveyancing &amp; bond fees are estimates — actual varies by attorney.</span>`;
+  document.getElementById('td-breakdown').innerHTML=`<strong>Breakdown:</strong><br>Transfer duty: ${fmtR(duty)}<br>Conveyancing fees (est.): ${fmtR(conv)}<br>${b>0?`Bond registration fees (est.): ${fmtR(bondreg)}<br>`:''}<strong>Total: ${fmtR(total)}</strong><br><span style="color:var(--sub)">Conveyancing &amp; bond fees are estimates.</span>`;
 }
 
 function calcLevy(){
@@ -1834,8 +1788,8 @@ const WA_TEMPLATES=[
   {label:'Viewing Reminder',icon:'📅',fn:(c,p,d,t,a)=>`Hi ${c||'[client]'} 👋\n\nThis is a friendly reminder of your property viewing at *${p||'[address]'}* on *${d||'[date]'}* at *${t||'[time]'}*.\n\nPlease let me know if anything changes. Looking forward to seeing you!\n\n${a||'[Agent]'} — REH Properties\n📞 063 120 8233`},
   {label:'OTP Follow-up',icon:'📋',fn:(c,p,d,t,a)=>`Hi ${c||'[client]'} 👋\n\nFollowing up on the Offer to Purchase for *${p||'[address]'}*. We are still awaiting your signature/confirmation to proceed.\n\nPlease don't hesitate to reach out if you have any questions!\n\nKind regards,\n${a||'[Agent]'} — REH Properties`},
   {label:'Bond Update',icon:'🏦',fn:(c,p,d,t,a)=>`Hi ${c||'[client]'} 👋\n\nUpdate on the bond application for *${p||'[address]'}*. We have submitted your application and are awaiting feedback from the bank. We'll keep you posted!\n\nKind regards,\n${a||'[Agent]'} — REH Properties`},
-  {label:'Bond Approved 🎉',icon:'✅',fn:(c,p,d,t,a)=>`Hi ${c||'[client]'} 👋 🎉\n\nGreat news! Your bond for *${p||'[address]'}* has been *APPROVED*! \n\nThe conveyancers will now start preparing the transfer documents. We will keep you updated every step of the way!\n\n${a||'[Agent]'} — REH Properties`},
-  {label:'Transfer Update',icon:'🔑',fn:(c,p,d,t,a)=>`Hi ${c||'[client]'} 👋\n\nUpdate on the transfer of *${p||'[address]'}*. The conveyancers have lodged the documents at the Deeds Office. We expect registration ${d?'around *'+d+'*':'shortly'}.\n\nWe will contact you as soon as it registers in your name! 🏠\n\n${a||'[Agent]'} — REH Properties`},
+  {label:'Bond Approved 🎉',icon:'✅',fn:(c,p,d,t,a)=>`Hi ${c||'[client]'} 👋 🎉\n\nGreat news! Your bond for *${p||'[address]'}* has been *APPROVED*!\n\nThe conveyancers will now start preparing the transfer documents. We will keep you updated every step of the way!\n\n${a||'[Agent]'} — REH Properties`},
+  {label:'Transfer Update',icon:'🔑',fn:(c,p,d,t,a)=>`Hi ${c||'[client]'} 👋\n\nUpdate on the transfer of *${p||'[address]'}*. The conveyancers have lodged the documents at the Deeds Office. We expect registration ${d?'around *'+d+'*':'shortly'}.\n\nWe will contact you as soon as it registers! 🏠\n\n${a||'[Agent]'} — REH Properties`},
   {label:'New Listing',icon:'🏠',fn:(c,p,d,t,a)=>`Hi ${c||'[client]'} 👋\n\nI have a property I think you'll love! 🏠\n\n📍 *${p||'[address]'}*\n\nCan I arrange a viewing for you? I'm available ${d?'on *'+d+'*':'this week'} ${t?'at *'+t+'*':'at a time that suits you'}.\n\n${a||'[Agent]'} — REH Properties\n📞 063 120 8233`},
   {label:'FICA Reminder',icon:'📄',fn:(c,p,d,t,a)=>`Hi ${c||'[client]'} 👋\n\nWe still need the following FICA documents from you:\n✅ ID document (certified copy)\n✅ Proof of residence (not older than 3 months)\n✅ Income Tax number\n\nPlease WhatsApp these through at your earliest convenience to avoid any delays.\n\nThank you!\n${a||'[Agent]'} — REH Properties`},
   {label:'Congratulations! 🎉',icon:'🎊',fn:(c,p,d,t,a)=>`Congratulations ${c||'[client]'} 🎉🏡\n\nThe transfer of *${p||'[address]'}* has been *successfully registered*! The property is now officially in your name!\n\nIt was a pleasure working with you. Wishing you many wonderful years in your new home! 🙏\n\n${a||'[Agent]'} — REH Properties\n📞 063 120 8233`}
@@ -1876,7 +1830,7 @@ function exportMandatePDF(){
   row('Full Name:',g('man-seller'),'ID:',g('man-sellerid'));
   row('Contact:',g('man-sellertel'),'','');
   y+=4;hdr('3. AGENT');
-  row('Agent:',g('man-agent'),'FFC:',g('man-ffc'));
+  row('Agent:',g('man-agent'),'FFC Number:',g('man-ffc'));
   row('Agency:',g('man-agency'),'','');
   if(g('man-cond')){y+=4;hdr('4. SPECIAL CONDITIONS');doc.setFont('helvetica','normal');doc.setFontSize(9);doc.setTextColor(26,37,64);const lines=doc.splitTextToSize(g('man-cond'),tw);lines.forEach(l=>{checkY(6);doc.text(l,ml,y);y+=5;});y+=4;}
   hdr('5. SIGNATURES');y+=4;
