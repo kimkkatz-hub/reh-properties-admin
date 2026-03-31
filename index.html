@@ -1,1 +1,2104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>REH Properties — Admin App</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=DM+Serif+Display&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --navy:#1a2540;--gold:#e8a020;--green:#1a7a4a;--blue:#1a5fa8;--red:#b52a2a;
+  --bg:#f2f4f8;--card:#fff;--border:#e5e7eb;--text:#1a1a2e;--sub:#64748b;
+  --gold-light:#fef3e0;--green-light:#e6f5ed;--blue-light:#e5f0fa;--red-light:#fde8e8;
+}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);font-size:14px}
+.app{display:flex;min-height:100vh}
+/* SIDEBAR */
+.sidebar{width:230px;background:var(--navy);display:flex;flex-direction:column;position:fixed;top:0;left:0;height:100vh;overflow-y:auto;z-index:100}
+.brand{padding:20px 16px 16px;border-bottom:1px solid rgba(255,255,255,0.08);display:flex;align-items:center;gap:10px}
+.brand-icon{width:38px;height:38px;background:var(--gold);border-radius:9px;display:flex;align-items:center;justify-content:center;font-family:'DM Serif Display',serif;font-size:18px;font-weight:700;color:var(--navy);flex-shrink:0}
+.brand-name{color:#fff;font-size:15px;font-weight:600;line-height:1.2}
+.brand-sub{color:rgba(255,255,255,0.4);font-size:10px;margin-top:2px}
+.nav-section{font-size:10px;font-weight:600;color:rgba(255,255,255,0.3);padding:14px 16px 4px;letter-spacing:0.1em;text-transform:uppercase}
+.nav-item{display:flex;align-items:center;gap:10px;padding:10px 16px;cursor:pointer;font-size:13px;color:rgba(255,255,255,0.55);transition:all 0.15s;border-left:3px solid transparent;user-select:none}
+.nav-item:hover{background:rgba(255,255,255,0.06);color:#fff}
+.nav-item.active{background:rgba(232,160,32,0.13);color:var(--gold);border-left-color:var(--gold)}
+.nav-item svg{width:15px;height:15px;flex-shrink:0;opacity:0.8}
+.sidebar-footer{margin-top:auto;padding:14px 16px;border-top:1px solid rgba(255,255,255,0.07);font-size:10px;color:rgba(255,255,255,0.28);text-align:center;line-height:1.8}
+.sidebar-footer strong{color:rgba(255,255,255,0.5)}
+.sidebar-footer .gold{color:var(--gold)}
+/* MAIN */
+.main{margin-left:230px;flex:1;padding:24px;min-height:100vh}
+.page{display:none}
+.page.active{display:block}
+/* PAGE HEADER */
+.page-header{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:22px;flex-wrap:wrap;gap:12px}
+.page-title{font-family:'DM Serif Display',serif;font-size:22px;color:var(--navy)}
+.page-sub{font-size:12px;color:var(--sub);margin-top:3px}
+/* STATS */
+.stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:22px}
+.stat{background:var(--card);border-radius:12px;padding:16px 18px;border:1px solid var(--border)}
+.stat-label{font-size:11px;color:var(--sub);margin-bottom:6px;text-transform:uppercase;letter-spacing:0.05em}
+.stat-value{font-size:26px;font-weight:700}
+.stat-value.green{color:var(--green)}
+.stat-value.blue{color:var(--blue)}
+.stat-value.amber{color:#c17d10}
+.stat-value.red{color:var(--red)}
+/* CARDS */
+.card{background:var(--card);border-radius:12px;border:1px solid var(--border);padding:20px;margin-bottom:16px}
+.card-title{font-size:14px;font-weight:600;margin-bottom:14px;color:var(--navy);display:flex;align-items:center;gap:8px}
+.cards-row{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px}
+/* BADGES */
+.badge{font-size:11px;padding:3px 9px;border-radius:20px;font-weight:500;white-space:nowrap}
+.badge-green{background:var(--green-light);color:#155d36}
+.badge-amber{background:var(--gold-light);color:#8a5c00}
+.badge-blue{background:var(--blue-light);color:#1a5fa8}
+.badge-red{background:var(--red-light);color:#8b1c1c}
+.badge-gray{background:#f0f0f0;color:#555}
+.badge-purple{background:#f0e8ff;color:#5b21b6}
+/* LIST ITEMS */
+.list-item{display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid #f3f4f6;gap:8px}
+.list-item:last-child{border-bottom:none}
+.li-main{font-weight:600;font-size:13px}
+.li-sub{font-size:12px;color:var(--sub);margin-top:2px}
+/* BUTTONS */
+.btn{display:inline-flex;align-items:center;gap:6px;padding:9px 16px;border-radius:8px;font-size:13px;cursor:pointer;border:1.5px solid var(--border);background:var(--card);color:#333;font-family:inherit;font-weight:500;transition:all 0.15s;text-decoration:none}
+.btn:hover{background:#f5f5f5}
+.btn-primary{background:var(--green);color:#fff;border-color:var(--green)}
+.btn-primary:hover{background:#145e39}
+.btn-amber{background:var(--gold);color:#fff;border-color:var(--gold)}
+.btn-amber:hover{background:#c98a18}
+.btn-blue{background:var(--blue);color:#fff;border-color:var(--blue)}
+.btn-blue:hover{background:#154d8a}
+.btn-danger{background:var(--red);color:#fff;border-color:var(--red)}
+.btn-sm{padding:5px 10px;font-size:12px}
+/* FORMS */
+.form-section{font-size:11px;font-weight:700;color:var(--navy);text-transform:uppercase;letter-spacing:0.07em;border-bottom:2px solid var(--gold);padding-bottom:5px;margin:18px 0 12px}
+.form-row{display:grid;gap:12px;margin-bottom:12px}
+.form-row.col2{grid-template-columns:1fr 1fr}
+.form-row.col3{grid-template-columns:1fr 1fr 1fr}
+.form-row.col4{grid-template-columns:1fr 1fr 1fr 1fr}
+.form-row.col1{grid-template-columns:1fr}
+.form-group{display:flex;flex-direction:column;gap:4px}
+.form-label{font-size:11px;color:var(--sub);font-weight:500}
+.form-group input,.form-group select,.form-group textarea{font-size:13px;padding:9px 11px;border-radius:8px;border:1.5px solid var(--border);background:#fafbfc;color:var(--text);font-family:inherit;outline:none;transition:border-color 0.15s}
+.form-group input:focus,.form-group select:focus,.form-group textarea:focus{border-color:var(--green);background:#fff}
+.form-group input[readonly]{background:#f0f0f0;color:#666}
+.form-group textarea{resize:vertical;min-height:80px;line-height:1.5}
+/* STEPS */
+.steps{display:flex;gap:0;margin-bottom:22px;border-radius:10px;overflow:hidden;border:1.5px solid var(--border)}
+.step{flex:1;padding:10px 6px;text-align:center;font-size:11px;font-weight:600;cursor:pointer;background:#fff;color:#888;border-right:1.5px solid var(--border);transition:all 0.15s}
+.step:last-child{border-right:none}
+.step.active{background:var(--navy);color:#fff}
+.step.done{background:var(--green-light);color:var(--green)}
+.step-page{display:none}
+.step-page.active{display:block}
+/* SIGNATURES */
+.sig-container{border:2px dashed var(--border);border-radius:10px;background:#fafbfc;overflow:hidden}
+.sig-container canvas{display:block;cursor:crosshair;touch-action:none;width:100%;height:110px}
+.sig-label{font-size:11px;color:var(--sub);text-align:center;padding:5px 0 6px;border-top:1px solid var(--border)}
+.sig-btns{display:flex;gap:6px;padding:6px 10px;border-top:1px solid var(--border)}
+.sig-btn{font-size:11px;padding:4px 10px;border-radius:6px;cursor:pointer;border:1px solid var(--border);background:#fff;font-family:inherit}
+.sig-btn.clear{color:var(--red);border-color:#f0c0c0}
+/* CHECKBOXES */
+.check-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:5px}
+.check-item{display:flex;align-items:center;gap:6px;font-size:12px;padding:5px 8px;border:1px solid var(--border);border-radius:6px;cursor:pointer;user-select:none;transition:all 0.15s}
+.check-item:hover{background:#f5f5f5}
+.check-item input{accent-color:var(--green);width:14px;height:14px}
+.check-item.checked{background:var(--green-light);border-color:#a8d8be}
+/* TABS */
+.tab-nav{display:flex;gap:4px;margin-bottom:18px;border-bottom:2px solid var(--border);padding-bottom:0}
+.tab-btn{padding:9px 16px;font-size:13px;font-weight:600;cursor:pointer;border:none;background:none;color:#888;border-bottom:2px solid transparent;margin-bottom:-2px;font-family:inherit;transition:all 0.15s}
+.tab-btn.active{color:var(--navy);border-bottom-color:var(--gold)}
+.tab-content{display:none}
+.tab-content.active{display:block}
+/* PROGRESS */
+.progress-bar{height:5px;background:#eee;border-radius:3px;overflow:hidden;margin:8px 0}
+.progress-fill{height:100%;background:var(--green);border-radius:3px;transition:width 0.4s ease}
+/* INVOICE */
+.invoice-preview{background:#fff;border:1px solid var(--border);border-radius:12px;padding:28px;max-width:680px;margin-top:16px}
+.inv-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:20px;padding-bottom:14px;border-bottom:3px solid var(--navy)}
+.inv-company{font-size:17px;font-weight:700;color:var(--navy)}
+.inv-address{font-size:12px;color:#666;margin-top:4px;line-height:1.6}
+.inv-title{font-size:22px;font-weight:800;color:var(--gold);letter-spacing:1px}
+.inv-meta-row{font-size:12px;color:#555;margin-top:4px;text-align:right}
+.inv-table{width:100%;border-collapse:collapse;margin:14px 0}
+.inv-table th{background:var(--navy);color:#fff;padding:9px 12px;text-align:left;font-size:12px}
+.inv-table td{padding:10px 12px;border-bottom:1px solid #f0f0f0;font-size:13px}
+.inv-total-row td{border-top:2px solid var(--navy)!important;font-weight:700;font-size:14px;background:#f8f8f8}
+.inv-bank{background:#f8f9fb;border-radius:8px;padding:14px;margin-top:14px;font-size:12px;line-height:1.9;border-left:4px solid var(--gold)}
+.inv-footer{text-align:center;font-size:12px;color:#888;margin-top:18px;padding-top:14px;border-top:1px solid var(--border)}
+/* AI CHAT */
+.ai-chat{display:flex;flex-direction:column;gap:10px;max-height:360px;overflow-y:auto;padding:4px 0;margin-bottom:14px;scroll-behavior:smooth}
+.ai-msg{padding:11px 14px;border-radius:12px;font-size:13px;line-height:1.65;max-width:88%}
+.ai-msg.bot{background:#f0f4ff;border:1px solid #d8e2fa;align-self:flex-start}
+.ai-msg.user{background:var(--navy);color:#fff;align-self:flex-end}
+.ai-msg.thinking{background:#f5f5f5;color:#888;font-style:italic;animation:pulse 1.4s ease-in-out infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.5}}
+.ai-input-row{display:flex;gap:8px}
+.ai-input-row input{flex:1;font-size:13px;padding:10px 13px;border-radius:8px;border:1.5px solid var(--border);background:#fff;font-family:inherit;outline:none}
+.ai-input-row input:focus{border-color:var(--navy)}
+.ai-send{background:var(--navy);color:#fff;border:none;border-radius:8px;padding:10px 18px;cursor:pointer;font-size:13px;font-family:inherit;font-weight:600}
+.quick-btns{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:12px}
+.quick-btn{font-size:12px;padding:5px 12px;border-radius:16px;border:1.5px solid var(--border);background:#fff;color:var(--sub);cursor:pointer;font-family:inherit;transition:all 0.15s}
+.quick-btn:hover{background:var(--navy);color:#fff;border-color:var(--navy)}
+/* REMINDER / TIMELINE */
+.timeline{position:relative;padding-left:20px}
+.timeline::before{content:'';position:absolute;left:6px;top:0;bottom:0;width:2px;background:var(--border)}
+.tl-item{position:relative;margin-bottom:14px;padding-left:18px}
+.tl-item::before{content:'';position:absolute;left:-14px;top:4px;width:10px;height:10px;border-radius:50%;background:var(--border);border:2px solid #fff}
+.tl-item.done::before{background:var(--green)}
+.tl-item.due::before{background:var(--gold);animation:pulse 1.2s infinite}
+.tl-item.overdue::before{background:var(--red)}
+.tl-item .tl-label{font-size:12px;font-weight:600;color:var(--navy)}
+.tl-item .tl-date{font-size:11px;color:var(--sub)}
+.tl-item .tl-status{font-size:10px;margin-top:2px}
+.reminder-banner{background:var(--gold-light);border:1px solid #f0c060;border-radius:8px;padding:10px 14px;font-size:12px;color:#8a5c00;margin-bottom:10px;display:flex;align-items:center;gap:8px}
+.reminder-banner.overdue{background:var(--red-light);border-color:#f0a0a0;color:#8b1c1c}
+.reminder-banner.ok{background:var(--green-light);border-color:#a8d8be;color:#155d36}
+/* OTP SPECIFIC */
+.otp-header-block{background:var(--navy);color:#fff;border-radius:10px;padding:18px 22px;margin-bottom:18px;display:flex;align-items:center;justify-content:space-between}
+.otp-brand{display:flex;align-items:center;gap:12px}
+.otp-brand-m{width:40px;height:40px;background:var(--gold);border-radius:8px;display:flex;align-items:center;justify-content:center;font-family:'DM Serif Display',serif;font-size:20px;color:var(--navy);font-weight:900}
+.otp-title{font-family:'DM Serif Display',serif;font-size:20px;color:var(--gold)}
+.otp-subtitle{font-size:11px;color:rgba(255,255,255,0.5);margin-top:2px}
+/* PROPERTY REPORT */
+.prop-card-preview{background:#fff;border-radius:14px;border:1px solid var(--border);overflow:hidden;max-width:720px;margin-top:18px}
+.prop-card-top{background:var(--navy);padding:22px 26px;display:flex;justify-content:space-between;align-items:flex-start}
+.prop-card-body{padding:22px 26px}
+.agent-photo-area{width:80px;height:80px;border-radius:50%;overflow:hidden;border:3px solid var(--gold);flex-shrink:0;background:#f0f0f0;display:flex;align-items:center;justify-content:center;cursor:pointer;position:relative}
+.agent-photo-area img{width:100%;height:100%;object-fit:cover}
+.agency-logo-area{width:100px;height:50px;border-radius:8px;overflow:hidden;background:#f0f0f0;display:flex;align-items:center;justify-content:center;cursor:pointer;border:2px dashed var(--border)}
+.agency-logo-area img{width:100%;height:100%;object-fit:contain}
+.photo-hint{font-size:10px;color:var(--sub);text-align:center;margin-top:3px}
+.feat-tag{display:inline-block;background:var(--blue-light);color:var(--blue);font-size:12px;padding:4px 10px;border-radius:20px;margin:2px}
+/* SCHEDULE REMINDERS */
+.event-card{background:#fff;border:1px solid var(--border);border-radius:10px;padding:12px 16px;margin-bottom:8px;display:flex;align-items:center;justify-content:space-between;gap:12px}
+.event-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+.event-dot.viewing{background:var(--blue)}
+.event-dot.otp{background:var(--gold)}
+.event-dot.meeting{background:var(--green)}
+.event-dot.deadline{background:var(--red)}
+.event-dot.other{background:#888}
+.event-due{font-size:11px;font-weight:600;padding:3px 8px;border-radius:6px}
+.event-due.today{background:var(--red-light);color:var(--red)}
+.event-due.tomorrow{background:var(--gold-light);color:#8a5c00}
+.event-due.upcoming{background:var(--green-light);color:var(--green)}
+.event-due.past{background:#f0f0f0;color:#888}
+/* WA Templates */
+.wa-card{background:#fff;border:1px solid var(--border);border-radius:10px;padding:16px;margin-bottom:12px}
+/* PRINT */
+@media print{
+  .sidebar,.btn,.no-print,#add-client-form,#add-event-form,#add-deal-form,#add-runner-form{display:none!important}
+  .main{margin-left:0}
+  .invoice-preview{border:none;padding:0}
+}
+</style>
+</head>
+<body>
+<div class="app">
+<!-- SIDEBAR -->
+<div class="sidebar">
+  <div class="brand">
+    <div class="brand-icon">R</div>
+    <div><div class="brand-name">REH Properties</div><div class="brand-sub">Admin Portal</div></div>
+  </div>
+  <div class="nav-section">Main</div>
+  <div class="nav-item active" onclick="showPage('dashboard',this)">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>Dashboard
+  </div>
+  <div class="nav-item" onclick="showPage('otp',this)">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="9" y1="13" x2="15" y2="13"/><line x1="9" y1="17" x2="15" y2="17"/></svg>Offer to Purchase
+  </div>
+  <div class="nav-item" onclick="showPage('invoice',this)">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>Invoices
+  </div>
+  <div class="nav-item" onclick="showPage('clients',this)">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>Clients
+  </div>
+  <div class="nav-section">Finance</div>
+  <div class="nav-item" onclick="showPage('commission',this)">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>Commission Calc
+  </div>
+  <div class="nav-item" onclick="showPage('calcs',this)">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="2" width="16" height="20" rx="2"/><line x1="8" y1="6" x2="16" y2="6"/><line x1="8" y1="10" x2="16" y2="10"/><line x1="8" y1="14" x2="12" y2="14"/></svg>SA Calculators
+  </div>
+  <div class="nav-item" onclick="showPage('pipeline',this)">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>Pipeline
+  </div>
+  <div class="nav-section">Team</div>
+  <div class="nav-item" onclick="showPage('runners',this)">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M6 20v-2a6 6 0 0112 0v2"/></svg>Runners / Agents
+  </div>
+  <div class="nav-section">Tools</div>
+  <div class="nav-item" onclick="showPage('ai',this)">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg>AI Assistant
+  </div>
+  <div class="nav-item" onclick="showPage('schedule',this)">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>Schedule
+  </div>
+  <div class="nav-item" onclick="showPage('whatsapp',this)">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>WhatsApp Templates
+  </div>
+  <div class="nav-item" onclick="showPage('mandate',this)">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>Mandate Generator
+  </div>
+  <div class="nav-item" onclick="showPage('propcard',this)">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 3v18M3 9h6M3 15h6"/></svg>Property Report
+  </div>
+  <div class="nav-item" onclick="showPage('fica',this)">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>FICA Checklist
+  </div>
+  <div class="sidebar-footer">
+    Created by<br><strong>Mary Mathenjwa</strong><br><span class="gold">Kimkkatz Kin</span>
+  </div>
+</div>
 
+<!-- MAIN -->
+<div class="main">
+
+<!-- ===== DASHBOARD ===== -->
+<div class="page active" id="page-dashboard">
+  <div class="page-header">
+    <div><div class="page-title">Good day 👋</div><div class="page-sub" id="dash-date"></div></div>
+    <button class="btn btn-primary" onclick="showPage('otp',null)">+ New OTP</button>
+  </div>
+  <div class="stats-grid">
+    <div class="stat"><div class="stat-label">Active Listings</div><div class="stat-value blue" id="stat-listings">0</div></div>
+    <div class="stat"><div class="stat-label">Pending OTPs</div><div class="stat-value amber" id="stat-otps">0</div></div>
+    <div class="stat"><div class="stat-label">Clients</div><div class="stat-value green" id="stat-clients">0</div></div>
+    <div class="stat"><div class="stat-label">Invoices Issued</div><div class="stat-value" id="stat-invoices">0</div></div>
+  </div>
+  <div id="dash-reminders"></div>
+  <div class="cards-row">
+    <div class="card"><div class="card-title">Recent OTPs</div><div id="dash-otps"><div style="color:#aaa;font-size:13px">No OTPs yet</div></div></div>
+    <div class="card"><div class="card-title">Recent Clients</div><div id="dash-clients"><div style="color:#aaa;font-size:13px">No clients yet</div></div></div>
+  </div>
+  <div class="card"><div class="card-title">Quick Actions</div>
+    <div style="display:flex;flex-wrap:wrap;gap:8px">
+      <button class="btn btn-primary" onclick="showPage('otp',null)">New OTP</button>
+      <button class="btn btn-amber" onclick="showPage('invoice',null)">New Invoice</button>
+      <button class="btn btn-blue" onclick="showPage('clients',null)">Add Client</button>
+      <button class="btn" onclick="showPage('commission',null)">Commission Calc</button>
+      <button class="btn" onclick="showPage('ai',null)">Ask AI Assistant</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== OTP PAGE ===== -->
+<div class="page" id="page-otp">
+  <div class="page-header">
+    <div>
+      <div class="page-title">Offer to Purchase</div>
+      <div class="page-sub">Mandated Property Group — REH Properties — complete all sections and sign</div>
+    </div>
+    <div style="display:flex;gap:8px">
+      <button class="btn" onclick="clearOTP()">Clear</button>
+      <button class="btn btn-amber" onclick="exportOTPPDF()">⬇ Download PDF</button>
+    </div>
+  </div>
+  <div class="otp-header-block">
+    <div class="otp-brand">
+      <div class="otp-brand-m">M</div>
+      <div>
+        <div class="otp-title">OFFER TO PURCHASE</div>
+        <div class="otp-subtitle">Mandated Property Group (Pty) Ltd · Trading as Mandated</div>
+      </div>
+    </div>
+    <div style="text-align:right;color:rgba(255,255,255,0.6);font-size:11px;line-height:1.8">
+      This document constitutes a binding<br>Agreement (deed of sale) once signed<br>by both parties.
+    </div>
+  </div>
+  <div class="steps" id="otp-steps">
+    <div class="step active" onclick="goStep(0)">1. Seller/s</div>
+    <div class="step" onclick="goStep(1)">2. Purchaser/s</div>
+    <div class="step" onclick="goStep(2)">3. Property</div>
+    <div class="step" onclick="goStep(3)">4. Transaction</div>
+    <div class="step" onclick="goStep(4)">5. Conditions</div>
+    <div class="step" onclick="goStep(5)">6. Fixtures</div>
+    <div class="step" onclick="goStep(6)">7. Signature</div>
+  </div>
+
+  <!-- STEP 1: SELLERS -->
+  <div class="step-page active" id="otp-step-0">
+    <div class="card">
+      <div class="form-section">Seller 1 — Individual / Legal Entity</div>
+      <div class="form-row col4">
+        <div class="form-group"><label class="form-label">Title</label><select id="s1-title"><option></option><option>Mr</option><option>Mrs</option><option>Ms</option><option>Miss</option><option>Dr</option><option>Prof</option></select></div>
+        <div class="form-group" style="grid-column:span 2"><label class="form-label">Surname</label><input id="s1-surname" placeholder="Mokoena"/></div>
+        <div class="form-group"><label class="form-label">ID Number</label><input id="s1-id" placeholder="9503260456086"/></div>
+      </div>
+      <div class="form-row col1"><div class="form-group"><label class="form-label">Full Names</label><input id="s1-names" placeholder="Jesca Madalena"/></div></div>
+      <div class="form-row col2">
+        <div class="form-group"><label class="form-label">Cellphone Number</label><input id="s1-cell" placeholder="061 707 2643"/></div>
+        <div class="form-group"><label class="form-label">Income Tax Number</label><input id="s1-taxno" placeholder="1752834174"/></div>
+      </div>
+      <div class="form-row col2">
+        <div class="form-group"><label class="form-label">Email Address</label><input id="s1-email" placeholder="mokoenajessy26@gmail.com"/></div>
+        <div class="form-group"><label class="form-label">Residential Address</label><input id="s1-addr" placeholder="3134 Clownfish Street, Ext 17, Watervalspruit"/></div>
+      </div>
+      <div class="form-row col2">
+        <div class="form-group"><label class="form-label">Existing Bond Bank</label><input id="s1-bank" placeholder="FNB"/></div>
+        <div class="form-group"><label class="form-label">Bond Account Number</label><input id="s1-bondacc" placeholder="3-000-018-203-161"/></div>
+      </div>
+      <div class="form-row col2">
+        <div class="form-group"><label class="form-label">Marital Status</label>
+          <select id="s1-marital"><option>Unmarried</option><option>Divorced</option><option>Married in Community of Property</option><option>Married with Antenuptial Contract</option><option>Customary/Traditional Marriage</option><option>Married in Other Country</option></select>
+        </div>
+        <div class="form-group"><label class="form-label">Marital Status Changed?</label>
+          <select id="s1-marital-changed"><option>No</option><option>Yes</option></select>
+        </div>
+      </div>
+      <div class="form-section" style="margin-top:20px">Seller 2 / Spouse (if applicable)</div>
+      <div class="form-row col4">
+        <div class="form-group"><label class="form-label">Title</label><select id="s2-title"><option></option><option>Mr</option><option>Mrs</option><option>Ms</option><option>Miss</option><option>Dr</option></select></div>
+        <div class="form-group" style="grid-column:span 2"><label class="form-label">Surname</label><input id="s2-surname" placeholder="Leave blank if N/A"/></div>
+        <div class="form-group"><label class="form-label">ID Number</label><input id="s2-id" placeholder=""/></div>
+      </div>
+      <div class="form-row col1"><div class="form-group"><label class="form-label">Full Names</label><input id="s2-names" placeholder=""/></div></div>
+      <div class="form-section" style="margin-top:20px">Legal Entity Seller (if applicable)</div>
+      <div class="form-row col2">
+        <div class="form-group"><label class="form-label">Name of Legal Entity</label><input id="s-entity-name" placeholder="Leave blank if N/A"/></div>
+        <div class="form-group"><label class="form-label">Registration Number</label><input id="s-entity-reg" placeholder=""/></div>
+      </div>
+    </div>
+    <div style="display:flex;justify-content:flex-end"><button class="btn btn-primary" onclick="goStep(1)">Next: Purchaser/s →</button></div>
+  </div>
+
+  <!-- STEP 2: PURCHASERS -->
+  <div class="step-page" id="otp-step-1">
+    <div class="card">
+      <div class="form-section">Purchaser 1 — Individual / Legal Entity</div>
+      <div class="form-row col4">
+        <div class="form-group"><label class="form-label">Title</label><select id="p1-title"><option></option><option>Mr</option><option>Mrs</option><option>Ms</option><option>Miss</option><option>Dr</option><option>Prof</option></select></div>
+        <div class="form-group" style="grid-column:span 2"><label class="form-label">Surname</label><input id="p1-surname" placeholder="Chakala"/></div>
+        <div class="form-group"><label class="form-label">ID Number</label><input id="p1-id" placeholder="9510235805081"/></div>
+      </div>
+      <div class="form-row col1"><div class="form-group"><label class="form-label">Full Names</label><input id="p1-names" placeholder="Mpho"/></div></div>
+      <div class="form-row col3">
+        <div class="form-group"><label class="form-label">Cellphone</label><input id="p1-cell" placeholder="082-582-9125"/></div>
+        <div class="form-group"><label class="form-label">Income Tax No</label><input id="p1-taxno" placeholder=""/></div>
+        <div class="form-group"><label class="form-label">Home Language</label><input id="p1-lang" placeholder="S. Sotho"/></div>
+      </div>
+      <div class="form-row col2">
+        <div class="form-group"><label class="form-label">City of Birth</label><input id="p1-city" placeholder="Alberton / Johannesburg"/></div>
+        <div class="form-group"><label class="form-label">Email</label><input id="p1-email" placeholder="Mpho.chakala@gmail.com"/></div>
+      </div>
+      <div class="form-row col2">
+        <div class="form-group"><label class="form-label">Residential Address</label><input id="p1-addr" placeholder="6629 Tenyane Street"/></div>
+        <div class="form-group"><label class="form-label">Marital Status</label>
+          <select id="p1-marital"><option>Unmarried</option><option>Divorced</option><option>Married in Community of Property</option><option>Married with Antenuptial Contract</option><option>Customary/Traditional Marriage</option><option>Married in Other Country</option></select>
+        </div>
+      </div>
+      <div class="form-section" style="margin-top:20px">Purchaser 2 / Spouse (if applicable)</div>
+      <div class="form-row col4">
+        <div class="form-group"><label class="form-label">Title</label><select id="p2-title"><option></option><option>Mr</option><option>Mrs</option><option>Ms</option><option>Miss</option><option>Dr</option></select></div>
+        <div class="form-group" style="grid-column:span 2"><label class="form-label">Surname</label><input id="p2-surname" placeholder="Moloi"/></div>
+        <div class="form-group"><label class="form-label">ID Number</label><input id="p2-id" placeholder="960119 0525085"/></div>
+      </div>
+      <div class="form-row col1"><div class="form-group"><label class="form-label">Full Names</label><input id="p2-names" placeholder="Nthubiseng Rebone"/></div></div>
+      <div class="form-row col3">
+        <div class="form-group"><label class="form-label">Cellphone</label><input id="p2-cell" placeholder=""/></div>
+        <div class="form-group"><label class="form-label">Home Language</label><input id="p2-lang" placeholder="S. Sotho"/></div>
+        <div class="form-group"><label class="form-label">City of Birth</label><input id="p2-city" placeholder="Alberton"/></div>
+      </div>
+      <div class="form-row col2">
+        <div class="form-group"><label class="form-label">Email</label><input id="p2-email" placeholder="ntrubichrostan@gmail.com"/></div>
+        <div class="form-group"><label class="form-label">Residential Address</label><input id="p2-addr" placeholder="6219 Matela Street"/></div>
+      </div>
+      <div class="form-section" style="margin-top:20px">Transaction financing</div>
+      <div class="form-row col3">
+        <div class="form-group"><label class="form-label">Financed by</label>
+          <select id="p-finance"><option>Bond</option><option>Cash</option><option>Bond and Cash</option><option>Proceeds of 2nd property</option></select>
+        </div>
+        <div class="form-group"><label class="form-label">Cash payment > R25 000?</label><select id="p-cash25k"><option>No</option><option>Yes</option></select></div>
+        <div class="form-group"><label class="form-label">Source of wealth</label><input id="p-wealth" placeholder="Work"/></div>
+      </div>
+    </div>
+    <div style="display:flex;justify-content:space-between"><button class="btn" onclick="goStep(0)">← Back</button><button class="btn btn-primary" onclick="goStep(2)">Next: Property →</button></div>
+  </div>
+
+  <!-- STEP 3: PROPERTY -->
+  <div class="step-page" id="otp-step-2">
+    <div class="card">
+      <div class="form-section">Property Type</div>
+      <div class="form-row col2">
+        <div class="form-group"><label class="form-label">Title Type</label><select id="prop-type"><option value="full">Full Title</option><option value="sectional">Sectional Title</option></select></div>
+        <div class="form-group"><label class="form-label">Municipality</label><input id="prop-muni" placeholder="City of Tshwane / Johannesburg"/></div>
+      </div>
+      <div class="form-section">Full Title Details</div>
+      <div class="form-row col3">
+        <div class="form-group"><label class="form-label">ERF Number</label><input id="prop-erf" placeholder="3134"/></div>
+        <div class="form-group"><label class="form-label">Portion</label><input id="prop-portion" placeholder="0"/></div>
+        <div class="form-group"><label class="form-label">Street Number</label><input id="prop-streetno" placeholder="3134"/></div>
+      </div>
+      <div class="form-row col2">
+        <div class="form-group"><label class="form-label">Street Name</label><input id="prop-street" placeholder="Sky City"/></div>
+        <div class="form-group"><label class="form-label">Suburb</label><input id="prop-suburb" placeholder="Watervalspruit"/></div>
+      </div>
+      <div class="form-row col3">
+        <div class="form-group"><label class="form-label">Postal Code</label><input id="prop-postal" placeholder=""/></div>
+        <div class="form-group"><label class="form-label">Size (m²)</label><input id="prop-size" placeholder="151"/></div>
+        <div class="form-group"><label class="form-label">Province</label><select id="prop-prov"><option>Gauteng</option><option>Western Cape</option><option>KwaZulu-Natal</option><option>Eastern Cape</option><option>Limpopo</option><option>Mpumalanga</option><option>North West</option><option>Free State</option><option>Northern Cape</option></select></div>
+      </div>
+      <div style="display:flex;gap:16px;margin-top:8px">
+        <label style="display:flex;align-items:center;gap:6px;font-size:12px"><input type="checkbox" id="prop-dwellings" accent-color="var(--green)"> Together with dwellings</label>
+        <label style="display:flex;align-items:center;gap:6px;font-size:12px"><input type="checkbox" id="prop-vacant" accent-color="var(--green)"> Being a vacant stand</label>
+      </div>
+      <div class="form-section" style="margin-top:18px">Sectional Title Details (if applicable)</div>
+      <div class="form-row col3">
+        <div class="form-group"><label class="form-label">Section Number</label><input id="prop-secno" placeholder=""/></div>
+        <div class="form-group"><label class="form-label">Door Number</label><input id="prop-doorno" placeholder=""/></div>
+        <div class="form-group"><label class="form-label">Complex Name</label><input id="prop-complex" placeholder=""/></div>
+      </div>
+      <div class="form-row col3">
+        <div class="form-group"><label class="form-label">Garage No.</label><input id="prop-garage" placeholder=""/></div>
+        <div class="form-group"><label class="form-label">Parking No.</label><input id="prop-parking" placeholder=""/></div>
+        <div class="form-group"><label class="form-label">Storage No.</label><input id="prop-storage" placeholder=""/></div>
+      </div>
+    </div>
+    <div style="display:flex;justify-content:space-between"><button class="btn" onclick="goStep(1)">← Back</button><button class="btn btn-primary" onclick="goStep(3)">Next: Transaction →</button></div>
+  </div>
+
+  <!-- STEP 4: TRANSACTION -->
+  <div class="step-page" id="otp-step-3">
+    <div class="card">
+      <div class="form-section">Purchase Price (Clause 1.1)</div>
+      <div class="form-row col3">
+        <div class="form-group"><label class="form-label">Purchase Price (R)</label><input id="tx-price" type="number" placeholder="600000" oninput="calcBalance();calcProfFee()"/></div>
+        <div class="form-group"><label class="form-label">VAT</label><select id="tx-vat"><option value="excl">Exclusive of VAT</option><option value="incl">Inclusive of VAT</option></select></div>
+        <div class="form-group"><label class="form-label">Purchase Price in Words</label><input id="tx-price-words" placeholder="Six hundred thousand rand"/></div>
+      </div>
+      <div class="form-section">Deposit (Clause 1.2)</div>
+      <div class="form-row col3">
+        <div class="form-group"><label class="form-label">Deposit (R)</label><input id="tx-deposit" type="number" placeholder="0" oninput="calcBalance()"/></div>
+        <div class="form-group"><label class="form-label">Deposit Due (days)</label><input id="tx-depdays" type="number" placeholder="7"/></div>
+        <div class="form-group"><label class="form-label">Deposit in Words</label><input id="tx-dep-words" placeholder="(if applicable)"/></div>
+      </div>
+      <div class="form-section">Balance (Clauses 1.4.1 — 1.4.3)</div>
+      <div class="form-row col3">
+        <div class="form-group"><label class="form-label">Balance — Mortgage Bond (R)</label><input id="tx-bond" type="number" placeholder="600000" oninput="calcBalance()"/></div>
+        <div class="form-group"><label class="form-label">Bond in Words</label><input id="tx-bond-words" placeholder="Six hundred thousand rands"/></div>
+        <div class="form-group"><label class="form-label">Balance — Cash (R)</label><input id="tx-cash" readonly placeholder="Auto-calculated"/></div>
+      </div>
+      <div class="form-section">Key Dates</div>
+      <div class="form-row col3">
+        <div class="form-group"><label class="form-label">Bond Approval Date (1.5)</label><input id="tx-bonddate" type="date" oninput="buildDealTimeline()"/></div>
+        <div class="form-group"><label class="form-label">Guarantee Date — days after fulfillment</label><input id="tx-guardays" type="number" placeholder="15" value="15"/></div>
+        <div class="form-group"><label class="form-label">Occupation Date (1.9)</label><input id="tx-occdate" type="date"/></div>
+      </div>
+      <div class="form-row col2">
+        <div class="form-group"><label class="form-label">Occupation Type (1.11)</label><select id="tx-occtype"><option>Vacant occupation</option><option>Subject to existing tenancy</option></select></div>
+        <div class="form-group"><label class="form-label">Occupational Rental/month (R)</label><input id="tx-occrent" type="number" placeholder="0"/></div>
+      </div>
+      <div class="form-row col2">
+        <div class="form-group"><label class="form-label">Expiry Date &amp; Time (1.18)</label><input id="tx-expiry" type="datetime-local"/></div>
+        <div class="form-group"><label class="form-label">Conditional Sale Date (1.14)</label><input id="tx-conddate" type="date"/></div>
+      </div>
+      <div class="form-section">Conveyancer &amp; Bond (1.8)</div>
+      <div class="form-row col2">
+        <div class="form-group"><label class="form-label">Conveyancing Firm</label><input id="tx-conv" placeholder="Hammond Pole"/></div>
+        <div class="form-group"><label class="form-label">Conveyancer Contact</label><input id="tx-conv-contact" placeholder="Adel du Plessis — 082 871 7347"/></div>
+      </div>
+      <div class="form-row col2">
+        <div class="form-group"><label class="form-label">Bond Originator</label><input id="tx-bond-orig" placeholder="ooba / BetterBond"/></div>
+        <div class="form-group"><label class="form-label">Bond Originator Contact</label><input id="tx-bond-contact" placeholder="Name / number"/></div>
+      </div>
+      <div class="form-section">HOA / Body Corporate (1.15 — 1.16)</div>
+      <div class="form-row col3">
+        <div class="form-group"><label class="form-label">HOA / Body Corporate Name</label><input id="cond-hoa" placeholder="(if applicable)"/></div>
+        <div class="form-group"><label class="form-label">Managing Agent</label><input id="cond-mgmt" placeholder=""/></div>
+        <div class="form-group"><label class="form-label">Monthly Levy (R) (1.16)</label><input id="cond-levy" type="number" placeholder="600"/></div>
+      </div>
+      <div class="form-section">Annexure B — Professional Fee</div>
+      <div class="form-row col4">
+        <div class="form-group"><label class="form-label">Commission Rate (%)</label><input id="tx-commrate" type="number" placeholder="5.5" value="5.5" oninput="calcProfFee()"/></div>
+        <div class="form-group"><label class="form-label">Net Fee (excl VAT)</label><input id="tx-netfee" readonly placeholder="Auto"/></div>
+        <div class="form-group"><label class="form-label">VAT (15%)</label><input id="tx-vatamt" readonly placeholder="Auto"/></div>
+        <div class="form-group"><label class="form-label">Gross Fee (incl VAT)</label><input id="tx-grossfee" readonly placeholder="Auto"/></div>
+      </div>
+      <div class="form-row col1"><div class="form-group"><label class="form-label">Balance of Purchase Price to Seller (a-d)</label><input id="tx-seller-balance" readonly placeholder="Auto"/></div></div>
+      <div class="form-section">Agent Details (Annexure B)</div>
+      <div class="form-row col3">
+        <div class="form-group"><label class="form-label">Agent Full Names</label><input id="tx-agent" placeholder="Abraham/Cindy &amp; Mary"/></div>
+        <div class="form-group"><label class="form-label">Agent FFC Numbers</label><input id="tx-agentid" placeholder="FFC-XXXX &amp; FFC-YYYY"/></div>
+        <div class="form-group"><label class="form-label">Listing Agency</label><input id="tx-listing-agency" placeholder="Mary Mathenjwa (REH PROPERTIES MANDATED)"/></div>
+      </div>
+      <div class="form-row col1"><div class="form-group"><label class="form-label">Contract Agency (joint marketing — if applicable)</label><input id="tx-contract-agency" placeholder="Abraham Mathenjwa &amp; Cindy Mathenjwa (REH PROPERTIES MANDATED)"/></div></div>
+    </div>
+    <div style="display:flex;justify-content:space-between"><button class="btn" onclick="goStep(2)">← Back</button><button class="btn btn-primary" onclick="goStep(4)">Next: Conditions →</button></div>
+  </div>
+
+  <!-- STEP 5: CONDITIONS -->
+  <div class="step-page" id="otp-step-4">
+    <div class="card">
+      <div class="form-section">Alien &amp; Invasive Species — Clause 19</div>
+      <div class="form-row col1">
+        <div class="form-group"><label class="form-label">Declaration</label>
+          <select id="cond-invasive">
+            <option value="none">19.1 — No Invasive Alien Species present on the Property</option>
+            <option value="present">19.2 — Listed alien invasive species ARE present on the Property (specify below)</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-row col1"><div class="form-group"><label class="form-label">If 19.2 applies — specify invasive species:</label><textarea id="cond-invasive-detail" rows="2" placeholder="List invasive species if applicable"></textarea></div></div>
+      <div class="form-section" style="margin-top:16px">Special Conditions — Clause 20</div>
+      <div class="form-row col1"><div class="form-group"><label class="form-label">Special Conditions</label><textarea id="cond-special" rows="7" placeholder="e.g. The sale is subject to the Purchaser obtaining a mortgage bond of R600 000 within 30 days of acceptance.&#10;Property sold voetstoots.&#10;No deposit required.&#10;Guarantee date: 15 fifteen days after contract date where no deposit is due."></textarea></div></div>
+      <div class="form-section">Second Property (Clause 1.13 / 8)</div>
+      <div class="form-row col1"><div class="form-group"><label class="form-label">Purchaser's 2nd Property Address (if sale subject to)</label><input id="cond-2ndprop" placeholder="Leave blank if not applicable"/></div></div>
+    </div>
+    <div style="display:flex;justify-content:space-between"><button class="btn" onclick="goStep(3)">← Back</button><button class="btn btn-primary" onclick="goStep(5)">Next: Fixtures →</button></div>
+  </div>
+
+  <!-- STEP 6: FIXTURES -->
+  <div class="step-page" id="otp-step-5">
+    <div class="card">
+      <div class="form-section">Fixtures &amp; Fittings — Clause 18.1 (tick all that apply)</div>
+      <div class="check-grid" id="fixtures-grid"></div>
+      <div style="margin-top:12px">
+        <div class="form-group"><label class="form-label">Additional items (18.1)</label><input id="fix-additional" placeholder="e.g. Solar geyser, borehole pump..."/></div>
+      </div>
+      <div class="form-section" style="margin-top:16px">Specifically Excluding — Clause 18.2</div>
+      <div class="form-row col1"><div class="form-group"><label class="form-label">Items excluded from sale</label><textarea id="fix-excluded" rows="2" placeholder="e.g. Lounge curtains, garden pot plants..."></textarea></div></div>
+    </div>
+    <div style="display:flex;justify-content:space-between"><button class="btn" onclick="goStep(4)">← Back</button><button class="btn btn-primary" onclick="goStep(6)">Next: Signatures →</button></div>
+  </div>
+
+  <!-- STEP 7: SIGNATURES -->
+  <div class="step-page" id="otp-step-6">
+    <div class="card">
+      <div class="form-section">Signing Details</div>
+      <div class="form-row col3">
+        <div class="form-group"><label class="form-label">Signed at (City)</label><input id="sig-city" placeholder="Sky City"/></div>
+        <div class="form-group"><label class="form-label">Date Signed</label><input id="sig-date" type="date"/></div>
+        <div class="form-group"><label class="form-label">Day (in words)</label><input id="sig-day-words" placeholder="tenth"/></div>
+      </div>
+      <div class="form-row col2">
+        <div class="form-group"><label class="form-label">Month</label><input id="sig-month" placeholder="March"/></div>
+        <div class="form-group"><label class="form-label">Year (last 2 digits)</label><input id="sig-year" placeholder="26"/></div>
+      </div>
+      <div class="form-row col2">
+        <div class="form-group"><label class="form-label">Witness 1 Full Name &amp; Surname</label><input id="w1-name" placeholder="Witness 1 full name"/></div>
+        <div class="form-group"><label class="form-label">Witness 1 ID Number</label><input id="w1-id" placeholder=""/></div>
+      </div>
+      <div class="form-row col2">
+        <div class="form-group"><label class="form-label">Witness 2 Full Name &amp; Surname</label><input id="w2-name" placeholder="Witness 2 full name"/></div>
+        <div class="form-group"><label class="form-label">Witness 2 ID Number</label><input id="w2-id" placeholder=""/></div>
+      </div>
+      <div class="form-section" style="margin-top:16px">Digital Signatures</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:14px">
+        <div>
+          <div style="font-size:12px;font-weight:600;color:var(--sub);margin-bottom:6px">THE SELLER (1)</div>
+          <div class="sig-container"><canvas id="sig-seller" height="110"></canvas>
+          <div class="sig-btns"><button class="sig-btn clear" onclick="clearSig('sig-seller')">Clear</button></div>
+          <div class="sig-label">Seller 1 — sign above</div></div>
+        </div>
+        <div>
+          <div style="font-size:12px;font-weight:600;color:var(--sub);margin-bottom:6px">THE PURCHASER (1)</div>
+          <div class="sig-container"><canvas id="sig-purchaser" height="110"></canvas>
+          <div class="sig-btns"><button class="sig-btn clear" onclick="clearSig('sig-purchaser')">Clear</button></div>
+          <div class="sig-label">Purchaser 1 — sign above</div></div>
+        </div>
+        <div>
+          <div style="font-size:12px;font-weight:600;color:var(--sub);margin-bottom:6px">THE PURCHASER (2)</div>
+          <div class="sig-container"><canvas id="sig-purchaser2" height="110"></canvas>
+          <div class="sig-btns"><button class="sig-btn clear" onclick="clearSig('sig-purchaser2')">Clear</button></div>
+          <div class="sig-label">Purchaser 2 — sign above</div></div>
+        </div>
+        <div>
+          <div style="font-size:12px;font-weight:600;color:var(--sub);margin-bottom:6px">AGENT (Property Practitioner)</div>
+          <div class="sig-container"><canvas id="sig-agent" height="110"></canvas>
+          <div class="sig-btns"><button class="sig-btn clear" onclick="clearSig('sig-agent')">Clear</button></div>
+          <div class="sig-label">Agent — sign above</div></div>
+        </div>
+        <div>
+          <div style="font-size:12px;font-weight:600;color:var(--sub);margin-bottom:6px">AS WITNESS (1)</div>
+          <div class="sig-container"><canvas id="sig-witness1" height="110"></canvas>
+          <div class="sig-btns"><button class="sig-btn clear" onclick="clearSig('sig-witness1')">Clear</button></div>
+          <div class="sig-label">Witness 1 — sign above</div></div>
+        </div>
+        <div>
+          <div style="font-size:12px;font-weight:600;color:var(--sub);margin-bottom:6px">AS WITNESS (2)</div>
+          <div class="sig-container"><canvas id="sig-witness2" height="110"></canvas>
+          <div class="sig-btns"><button class="sig-btn clear" onclick="clearSig('sig-witness2')">Clear</button></div>
+          <div class="sig-label">Witness 2 — sign above</div></div>
+        </div>
+      </div>
+      <div class="form-section">Annexure B — Professional Fee Signatures</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px">
+        <div>
+          <div style="font-size:12px;font-weight:600;color:var(--sub);margin-bottom:6px">Seller (Annexure B)</div>
+          <div class="sig-container"><canvas id="sig-b-seller" height="80"></canvas>
+          <div class="sig-btns"><button class="sig-btn clear" onclick="clearSig('sig-b-seller')">Clear</button></div>
+          <div class="sig-label">Seller</div></div>
+        </div>
+        <div>
+          <div style="font-size:12px;font-weight:600;color:var(--sub);margin-bottom:6px">Purchaser (Annexure B)</div>
+          <div class="sig-container"><canvas id="sig-b-purchaser" height="80"></canvas>
+          <div class="sig-btns"><button class="sig-btn clear" onclick="clearSig('sig-b-purchaser')">Clear</button></div>
+          <div class="sig-label">Purchaser</div></div>
+        </div>
+        <div>
+          <div style="font-size:12px;font-weight:600;color:var(--sub);margin-bottom:6px">Mentor/Principal</div>
+          <div class="sig-container"><canvas id="sig-mentor" height="80"></canvas>
+          <div class="sig-btns"><button class="sig-btn clear" onclick="clearSig('sig-mentor')">Clear</button></div>
+          <div class="sig-label">Mentor/Principal</div></div>
+        </div>
+      </div>
+    </div>
+    <div style="display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px">
+      <button class="btn" onclick="goStep(5)">← Back</button>
+      <div style="display:flex;gap:8px">
+        <button class="btn btn-amber" onclick="exportOTPPDF()">⬇ Download PDF</button>
+        <button class="btn btn-primary" onclick="saveOTP()">✓ Save OTP</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== INVOICE PAGE ===== -->
+<div class="page" id="page-invoice">
+  <div class="page-header">
+    <div><div class="page-title">Invoice Generator</div><div class="page-sub">REH Reho Properties Investments — rental &amp; commission invoices</div></div>
+    <div style="display:flex;gap:8px">
+      <button class="btn btn-amber" onclick="printInvoice()">Print</button>
+      <button class="btn btn-blue" onclick="exportInvoicePDF()">⬇ Download PDF</button>
+      <button class="btn btn-primary" onclick="generateInvoice()">Generate Invoice</button>
+    </div>
+  </div>
+  <div class="tab-nav">
+    <button class="tab-btn active" onclick="showInvTab('rental')">Rental Invoice</button>
+    <button class="tab-btn" onclick="showInvTab('commission')">Commission Invoice</button>
+  </div>
+  <div class="tab-content active" id="tab-rental">
+    <div class="card">
+      <div class="form-section">Company Details</div>
+      <div class="form-row col2">
+        <div class="form-group"><label class="form-label">Company / Agent Name</label><input id="inv-company" placeholder="REH Reho Properties Investments Pty Ltd"/></div>
+        <div class="form-group"><label class="form-label">Address</label><input id="inv-addr" placeholder="130 Leeuwpoort, Boksburg, 1459"/></div>
+      </div>
+      <div class="form-row col2">
+        <div class="form-group"><label class="form-label">Contact Number</label><input id="inv-tel" placeholder="063 120 8233"/></div>
+        <div class="form-group"><label class="form-label">Invoice Number</label><input id="inv-num" placeholder="INV000012"/></div>
+      </div>
+      <div class="form-section">Tenant &amp; Property</div>
+      <div class="form-row col2">
+        <div class="form-group"><label class="form-label">Tenant Name</label><input id="inv-tenant" placeholder="John Doe"/></div>
+        <div class="form-group"><label class="form-label">Property Name / Description</label><input id="inv-propname" placeholder="Fleurhof"/></div>
+      </div>
+      <div class="form-row col1"><div class="form-group"><label class="form-label">Invoice Date</label><input id="inv-date" type="date"/></div></div>
+      <div class="form-section">Charges</div>
+      <div class="form-row col3">
+        <div class="form-group"><label class="form-label">Monthly Rent (R)</label><input id="inv-rent" type="number" placeholder="5000" oninput="calcInvoice()"/></div>
+        <div class="form-group"><label class="form-label">Deposit (R)</label><input id="inv-dep" type="number" placeholder="5000" oninput="calcInvoice()"/></div>
+        <div class="form-group"><label class="form-label">Admin Fee (auto 10%)</label><input id="inv-admin" readonly placeholder="Auto-calculated"/></div>
+      </div>
+      <div class="form-row col1"><div class="form-group"><label class="form-label">Total Due (R)</label><input id="inv-total" readonly style="font-size:18px;font-weight:700;color:var(--green)"/></div></div>
+    </div>
+  </div>
+  <div class="tab-content" id="tab-commission">
+    <div class="card">
+      <div class="form-section">Company Details</div>
+      <div class="form-row col2">
+        <div class="form-group"><label class="form-label">Company / Agent Name</label><input id="cinv-company" placeholder="REH Reho Properties Investments Pty Ltd"/></div>
+        <div class="form-group"><label class="form-label">VAT Number</label><input id="cinv-vat" placeholder="VAT reg number"/></div>
+      </div>
+      <div class="form-row col2">
+        <div class="form-group"><label class="form-label">Invoice Number</label><input id="cinv-num" placeholder="INV000013"/></div>
+        <div class="form-group"><label class="form-label">Invoice Date</label><input id="cinv-date" type="date"/></div>
+      </div>
+      <div class="form-section">Client &amp; Property</div>
+      <div class="form-row col2">
+        <div class="form-group"><label class="form-label">Client Name</label><input id="cinv-client" placeholder="Mpho Chakala"/></div>
+        <div class="form-group"><label class="form-label">Property Address</label><input id="cinv-prop" placeholder="3134 Sky City, Watervalspruit"/></div>
+      </div>
+      <div class="form-section">Commission</div>
+      <div class="form-row col3">
+        <div class="form-group"><label class="form-label">Sale Price (R)</label><input id="cinv-sale" type="number" placeholder="600000" oninput="calcCommInv()"/></div>
+        <div class="form-group"><label class="form-label">Commission Rate (%)</label><input id="cinv-rate" type="number" placeholder="5.5" value="5.5" oninput="calcCommInv()"/></div>
+        <div class="form-group"><label class="form-label">Commission excl VAT</label><input id="cinv-excl" readonly/></div>
+      </div>
+      <div class="form-row col2">
+        <div class="form-group"><label class="form-label">VAT 15%</label><input id="cinv-vatat" readonly/></div>
+        <div class="form-group"><label class="form-label">Total incl VAT</label><input id="cinv-total" readonly style="font-size:18px;font-weight:700;color:var(--green)"/></div>
+      </div>
+    </div>
+  </div>
+  <div class="invoice-preview" id="invoice-preview" style="display:none">
+    <div class="inv-header">
+      <div><div class="inv-company" id="prev-company"></div><div class="inv-address" id="prev-addr"></div></div>
+      <div><div class="inv-title">INVOICE</div><div class="inv-meta-row">Date: <strong id="prev-date"></strong></div><div class="inv-meta-row">No: <strong id="prev-num"></strong></div></div>
+    </div>
+    <div id="prev-billto" style="margin-bottom:14px;font-size:13px"></div>
+    <table class="inv-table"><thead><tr><th>Description</th><th style="text-align:right">Amount (R)</th></tr></thead><tbody id="prev-tbody"></tbody></table>
+    <div class="inv-bank"><strong>Bank Details:</strong><br>Bank: FNB<br>Account Holder: REH REHO PROPERTIES INVESTMENTS PTY LTD<br>Account Number: 63092941939<br><br><strong>Please send proof of payment when payment is made.</strong></div>
+    <div class="inv-footer">Thank you for your business! Enquiries: 063 120 8233</div>
+  </div>
+</div>
+
+<!-- ===== CLIENTS PAGE ===== -->
+<div class="page" id="page-clients">
+  <div class="page-header">
+    <div><div class="page-title">Clients</div><div class="page-sub">Buyers, sellers &amp; tenants</div></div>
+    <button class="btn btn-primary" onclick="document.getElementById('add-client-form').style.display='block'">+ Add Client</button>
+  </div>
+  <div class="card" id="add-client-form" style="display:none">
+    <div class="card-title">Add New Client</div>
+    <div class="form-row col3">
+      <div class="form-group"><label class="form-label">Full Name</label><input id="cl-name" placeholder="Thabo Mokoena"/></div>
+      <div class="form-group"><label class="form-label">Role</label><select id="cl-role"><option>Buyer</option><option>Seller</option><option>Tenant</option><option>Landlord</option></select></div>
+      <div class="form-group"><label class="form-label">Contact Number</label><input id="cl-tel" placeholder="+27 82 000 0000"/></div>
+    </div>
+    <div class="form-row col3">
+      <div class="form-group"><label class="form-label">Email</label><input id="cl-email" placeholder="email@example.com"/></div>
+      <div class="form-group"><label class="form-label">ID Number</label><input id="cl-id" placeholder=""/></div>
+      <div class="form-group"><label class="form-label">Property / Notes</label><input id="cl-notes" placeholder="Budget R600K · Sky City"/></div>
+    </div>
+    <div style="display:flex;gap:8px">
+      <button class="btn btn-primary" onclick="addClient()">Save Client</button>
+      <button class="btn" onclick="document.getElementById('add-client-form').style.display='none'">Cancel</button>
+    </div>
+  </div>
+  <div class="card"><div id="clients-list"><div style="color:#aaa;font-size:13px;padding:8px 0">No clients yet.</div></div></div>
+</div>
+
+<!-- ===== COMMISSION CALC ===== -->
+<div class="page" id="page-commission">
+  <div class="page-header"><div><div class="page-title">Commission Calculator</div><div class="page-sub">SA agent split with VAT</div></div></div>
+  <div class="card" style="max-width:600px">
+    <div class="form-row col3">
+      <div class="form-group"><label class="form-label">Sale Price (R)</label><input id="cc-price" type="number" placeholder="600000" oninput="calcSplit()"/></div>
+      <div class="form-group"><label class="form-label">Commission Rate (%)</label><input id="cc-rate" type="number" placeholder="5.5" value="5.5" oninput="calcSplit()"/></div>
+      <div class="form-group"><label class="form-label">Agent Split (%)</label><input id="cc-split" type="number" placeholder="60" value="60" oninput="calcSplit()"/></div>
+    </div>
+    <div class="stats-grid" style="margin-top:16px">
+      <div class="stat"><div class="stat-label">Gross Commission</div><div class="stat-value green" id="cc-gross">—</div></div>
+      <div class="stat"><div class="stat-label">VAT (15%)</div><div class="stat-value amber" id="cc-vat">—</div></div>
+      <div class="stat"><div class="stat-label">Agent Earns</div><div class="stat-value green" id="cc-agent">—</div></div>
+      <div class="stat"><div class="stat-label">Agency Earns</div><div class="stat-value blue" id="cc-agency">—</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== AI ASSISTANT ===== -->
+<div class="page" id="page-ai">
+  <div class="page-header"><div><div class="page-title">AI Assistant</div><div class="page-sub">Powered by Claude — SA real estate expert</div></div></div>
+  <div class="card">
+    <div class="quick-btns">
+      <button class="quick-btn" onclick="askAI('Draft a professional follow-up email to a buyer who viewed a property yesterday in Sky City')">Follow-up email</button>
+      <button class="quick-btn" onclick="askAI('What are the legal requirements for a valid OTP in South Africa under the Alienation of Land Act?')">OTP requirements</button>
+      <button class="quick-btn" onclick="askAI('How is transfer duty calculated in South Africa in 2026?')">Transfer duty</button>
+      <button class="quick-btn" onclick="askAI('What FICA documents are required for a property sale in South Africa?')">FICA docs</button>
+      <button class="quick-btn" onclick="askAI('Draft a sole mandate letter for a property in Gauteng')">Mandate letter</button>
+      <button class="quick-btn" onclick="askAI('Explain voetstoots and latent defects in South African property law')">Voetstoots</button>
+      <button class="quick-btn" onclick="askAI('What is the cooling-off period for property sales in South Africa?')">Cooling-off period</button>
+      <button class="quick-btn" onclick="askAI('How long does it take for a property transfer to register in South Africa? Give a realistic week-by-week timeline.')">Transfer timeline</button>
+    </div>
+    <div class="ai-chat" id="ai-chat">
+      <div class="ai-msg bot">Hello! I am your REH Properties AI assistant. I can help with OTPs, SA property law, FICA checklists, transfer duty, bond applications, emails and much more. What do you need today?</div>
+    </div>
+    <div class="ai-input-row">
+      <input id="ai-input" placeholder="Ask anything about SA real estate..." onkeydown="if(event.key==='Enter')sendAI()"/>
+      <button class="ai-send" onclick="sendAI()">Send</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== SCHEDULE ===== -->
+<div class="page" id="page-schedule">
+  <div class="page-header">
+    <div><div class="page-title">Schedule</div><div class="page-sub">Viewings, meetings &amp; deadlines — with reminders</div></div>
+    <button class="btn btn-primary" onclick="document.getElementById('add-event-form').style.display='block'">+ Add Event</button>
+  </div>
+  <div id="sched-reminders-banner"></div>
+  <div class="card" id="add-event-form" style="display:none">
+    <div class="card-title">Add Event</div>
+    <div class="form-row col3">
+      <div class="form-group"><label class="form-label">Event Title</label><input id="ev-title" placeholder="Property viewing at Sky City"/></div>
+      <div class="form-group"><label class="form-label">Date &amp; Time</label><input id="ev-dt" type="datetime-local"/></div>
+      <div class="form-group"><label class="form-label">Type</label><select id="ev-type"><option>Viewing</option><option>OTP Signing</option><option>Client Meeting</option><option>Deadline</option><option>Bond Application</option><option>Transfer Step</option><option>Other</option></select></div>
+    </div>
+    <div class="form-row col2">
+      <div class="form-group"><label class="form-label">Client / Property</label><input id="ev-client" placeholder="Mpho Chakala — Sky City"/></div>
+      <div class="form-group"><label class="form-label">Notes / Reminder</label><input id="ev-notes" placeholder="Call 30 min before to confirm"/></div>
+    </div>
+    <div style="display:flex;gap:8px">
+      <button class="btn btn-primary" onclick="addEvent()">Save</button>
+      <button class="btn" onclick="document.getElementById('add-event-form').style.display='none'">Cancel</button>
+    </div>
+  </div>
+  <div class="card"><div id="events-list"><div style="color:#aaa;font-size:13px;padding:8px 0">No events yet.</div></div></div>
+</div>
+
+<!-- ===== FICA PAGE ===== -->
+<div class="page" id="page-fica">
+  <div class="page-header"><div><div class="page-title">FICA Checklist</div><div class="page-sub">Financial Intelligence Centre Act No 38 of 2001</div></div></div>
+  <div class="cards-row">
+    <div class="card"><div class="card-title">Seller — Individual</div><div id="fica-seller"></div></div>
+    <div class="card"><div class="card-title">Purchaser — Individual</div><div id="fica-purchaser"></div></div>
+  </div>
+  <div class="cards-row">
+    <div class="card"><div class="card-title">Close Corporations</div><div id="fica-cc"></div></div>
+    <div class="card"><div class="card-title">Companies</div><div id="fica-companies"></div></div>
+  </div>
+  <div class="cards-row">
+    <div class="card"><div class="card-title">Trusts</div><div id="fica-trusts"></div></div>
+    <div class="card"><div class="card-title">Deceased Estates</div><div id="fica-deceased"></div></div>
+  </div>
+</div>
+
+<!-- ===== SA CALCULATORS ===== -->
+<div class="page" id="page-calcs">
+  <div class="page-header"><div><div class="page-title">SA Calculators</div><div class="page-sub">Bond affordability · Transfer duty · Levy</div></div></div>
+  <div class="tab-nav">
+    <button class="tab-btn active" onclick="showCalcTab('bond')">Bond Affordability</button>
+    <button class="tab-btn" onclick="showCalcTab('transfer')">Transfer Duty + Costs</button>
+    <button class="tab-btn" onclick="showCalcTab('levy')">Sectional Title Levy</button>
+  </div>
+  <div class="tab-content active" id="calc-bond">
+    <div class="card" style="max-width:640px">
+      <div class="card-title">🏦 Bond Affordability Calculator</div>
+      <div class="form-row col3">
+        <div class="form-group"><label class="form-label">Gross Monthly Income (R)</label><input id="ba-income" type="number" placeholder="18000" oninput="calcBond()"/></div>
+        <div class="form-group"><label class="form-label">Monthly Expenses (R)</label><input id="ba-exp" type="number" placeholder="5000" oninput="calcBond()"/></div>
+        <div class="form-group"><label class="form-label">Interest Rate (%)</label><input id="ba-rate" type="number" placeholder="11.75" value="11.75" oninput="calcBond()"/></div>
+      </div>
+      <div class="form-row col2">
+        <div class="form-group"><label class="form-label">Loan Term (years)</label><input id="ba-term" type="number" placeholder="20" value="20" oninput="calcBond()"/></div>
+        <div class="form-group"><label class="form-label">Co-applicant Income (R)</label><input id="ba-co" type="number" placeholder="0" oninput="calcBond()"/></div>
+      </div>
+      <div class="stats-grid" style="margin-top:14px">
+        <div class="stat"><div class="stat-label">Max Bond (30% rule)</div><div class="stat-value green" id="ba-maxbond">—</div></div>
+        <div class="stat"><div class="stat-label">Max Bond (40% rule)</div><div class="stat-value blue" id="ba-maxbond40">—</div></div>
+        <div class="stat"><div class="stat-label">Monthly Repayment</div><div class="stat-value amber" id="ba-repay">—</div></div>
+        <div class="stat"><div class="stat-label">Disposable Income</div><div class="stat-value" id="ba-disp">—</div></div>
+      </div>
+      <div id="ba-verdict" style="margin-top:12px;padding:10px 14px;border-radius:8px;font-size:13px;display:none"></div>
+    </div>
+  </div>
+  <div class="tab-content" id="calc-transfer">
+    <div class="card" style="max-width:640px">
+      <div class="card-title">📋 Transfer Duty + Full Cost to Buy (2024/25)</div>
+      <div class="form-row col2">
+        <div class="form-group"><label class="form-label">Purchase Price (R)</label><input id="td-price" type="number" placeholder="600000" oninput="calcTransfer()"/></div>
+        <div class="form-group"><label class="form-label">Bond Amount (R)</label><input id="td-bond" type="number" placeholder="600000" oninput="calcTransfer()"/></div>
+      </div>
+      <div id="td-exempt-banner" style="display:none;background:var(--green-light);border:1px solid #a8d8be;border-radius:8px;padding:10px 14px;font-size:13px;color:#155d36;margin-bottom:12px">✅ Transfer duty exemption applies — below R1,100,000 threshold (SARS 2024/25)</div>
+      <div class="stats-grid" style="margin-top:4px">
+        <div class="stat"><div class="stat-label">Transfer Duty</div><div class="stat-value amber" id="td-duty">—</div></div>
+        <div class="stat"><div class="stat-label">Conveyancing Fees</div><div class="stat-value blue" id="td-conv">—</div></div>
+        <div class="stat"><div class="stat-label">Bond Reg Fees</div><div class="stat-value blue" id="td-bondreg">—</div></div>
+        <div class="stat"><div class="stat-label">Total Cost to Buy</div><div class="stat-value red" id="td-total">—</div></div>
+      </div>
+      <div id="td-breakdown" style="margin-top:14px;font-size:12px;color:var(--sub);line-height:2"></div>
+    </div>
+  </div>
+  <div class="tab-content" id="calc-levy">
+    <div class="card" style="max-width:640px">
+      <div class="card-title">🏢 Sectional Title Levy (PQ Method)</div>
+      <div class="form-row col2">
+        <div class="form-group"><label class="form-label">Total Monthly Budget (R)</label><input id="lv-budget" type="number" placeholder="150000" oninput="calcLevy()"/></div>
+        <div class="form-group"><label class="form-label">Total Scheme Floor Area (m²)</label><input id="lv-total" type="number" placeholder="5000" oninput="calcLevy()"/></div>
+      </div>
+      <div class="form-row col2">
+        <div class="form-group"><label class="form-label">Your Unit Floor Area (m²)</label><input id="lv-unit" type="number" placeholder="85" oninput="calcLevy()"/></div>
+        <div class="form-group"><label class="form-label">Special Levy (R)</label><input id="lv-special" type="number" placeholder="0" oninput="calcLevy()"/></div>
+      </div>
+      <div class="stats-grid" style="margin-top:14px">
+        <div class="stat"><div class="stat-label">PQ (%)</div><div class="stat-value blue" id="lv-pq">—</div></div>
+        <div class="stat"><div class="stat-label">Monthly Levy</div><div class="stat-value green" id="lv-monthly">—</div></div>
+        <div class="stat"><div class="stat-label">Special Levy Contrib.</div><div class="stat-value amber" id="lv-spec-contrib">—</div></div>
+        <div class="stat"><div class="stat-label">Total Monthly Due</div><div class="stat-value" id="lv-total-due">—</div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== PIPELINE ===== -->
+<div class="page" id="page-pipeline">
+  <div class="page-header">
+    <div><div class="page-title">Deal Pipeline</div><div class="page-sub">SA property deal tracker with realistic timeline reminders</div></div>
+    <button class="btn btn-primary" onclick="document.getElementById('add-deal-form').style.display='block'">+ Add Deal</button>
+  </div>
+  <div class="stats-grid">
+    <div class="stat"><div class="stat-label">Total Pipeline Value</div><div class="stat-value green" id="pipe-total">R 0</div></div>
+    <div class="stat"><div class="stat-label">Deals in Progress</div><div class="stat-value blue" id="pipe-count">0</div></div>
+    <div class="stat"><div class="stat-label">Commission Forecast</div><div class="stat-value amber" id="pipe-comm">R 0</div></div>
+    <div class="stat"><div class="stat-label">Avg Deal Value</div><div class="stat-value" id="pipe-avg">—</div></div>
+  </div>
+  <div class="card" style="background:var(--navy);color:#fff;border-color:var(--navy);margin-bottom:16px">
+    <div class="card-title" style="color:var(--gold)">📅 SA Property Deal — Typical Timeline</div>
+    <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:10px;font-size:11px">
+      <div style="text-align:center;padding:10px;background:rgba(255,255,255,0.07);border-radius:8px"><div style="font-size:18px">✍️</div><strong style="color:var(--gold)">Day 1</strong><br>OTP Signed</div>
+      <div style="text-align:center;padding:10px;background:rgba(255,255,255,0.07);border-radius:8px"><div style="font-size:18px">🏦</div><strong style="color:var(--gold)">~14 days</strong><br>Bond Approval</div>
+      <div style="text-align:center;padding:10px;background:rgba(255,255,255,0.07);border-radius:8px"><div style="font-size:18px">📋</div><strong style="color:var(--gold)">~4-6 weeks</strong><br>Transfer Prep</div>
+      <div style="text-align:center;padding:10px;background:rgba(255,255,255,0.07);border-radius:8px"><div style="font-size:18px">📂</div><strong style="color:var(--gold)">~8-10 weeks</strong><br>Deeds Office</div>
+      <div style="text-align:center;padding:10px;background:rgba(255,255,255,0.07);border-radius:8px"><div style="font-size:18px">🔑</div><strong style="color:var(--gold)">~10-12 weeks</strong><br>Registered!</div>
+    </div>
+  </div>
+  <div class="card" id="add-deal-form" style="display:none">
+    <div class="card-title">Add Deal</div>
+    <div class="form-row col3">
+      <div class="form-group"><label class="form-label">Property Address</label><input id="deal-prop" placeholder="3134 Sky City, Watervalspruit"/></div>
+      <div class="form-group"><label class="form-label">Buyer Name</label><input id="deal-buyer" placeholder="Mpho Chakala"/></div>
+      <div class="form-group"><label class="form-label">Sale Price (R)</label><input id="deal-price" type="number" placeholder="600000"/></div>
+    </div>
+    <div class="form-row col3">
+      <div class="form-group"><label class="form-label">Commission Rate (%)</label><input id="deal-rate" type="number" value="5.5"/></div>
+      <div class="form-group"><label class="form-label">OTP Signed Date</label><input id="deal-otpdate" type="date"/></div>
+      <div class="form-group"><label class="form-label">Stage</label>
+        <select id="deal-stage">
+          <option>OTP Signed</option><option>Bond Pending</option><option>Bond Approved</option>
+          <option>Transfer Prep</option><option>At Deeds Office</option><option>Registered</option><option>Fallen Through</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-row col2">
+      <div class="form-group"><label class="form-label">Agent</label><input id="deal-agent" placeholder="Mary Mathenjwa"/></div>
+      <div class="form-group"><label class="form-label">Notes</label><input id="deal-notes" placeholder="Bond submitted to ooba..."/></div>
+    </div>
+    <div style="display:flex;gap:8px">
+      <button class="btn btn-primary" onclick="addDeal()">Save Deal</button>
+      <button class="btn" onclick="document.getElementById('add-deal-form').style.display='none'">Cancel</button>
+    </div>
+  </div>
+  <div id="pipeline-list"></div>
+</div>
+
+<!-- ===== RUNNERS ===== -->
+<div class="page" id="page-runners">
+  <div class="page-header">
+    <div><div class="page-title">Runners &amp; Agents</div><div class="page-sub">Team members, commission splits &amp; deal tracking</div></div>
+    <button class="btn btn-primary" onclick="document.getElementById('add-runner-form').style.display='block'">+ Add Runner</button>
+  </div>
+  <div class="card" id="add-runner-form" style="display:none">
+    <div class="card-title">Add Runner / Agent</div>
+    <div class="form-row col3">
+      <div class="form-group"><label class="form-label">Full Name</label><input id="rn-name" placeholder="Sipho Dlamini"/></div>
+      <div class="form-group"><label class="form-label">Role</label><select id="rn-role"><option>Runner</option><option>Agent</option><option>Senior Agent</option><option>Principal</option></select></div>
+      <div class="form-group"><label class="form-label">Commission Split (%)</label><input id="rn-split" type="number" placeholder="50"/></div>
+    </div>
+    <div class="form-row col3">
+      <div class="form-group"><label class="form-label">Contact Number</label><input id="rn-tel" placeholder="+27 82 000 0000"/></div>
+      <div class="form-group"><label class="form-label">Email</label><input id="rn-email" placeholder="agent@rehproperties.co.za"/></div>
+      <div class="form-group"><label class="form-label">FFC Number</label><input id="rn-ffc" placeholder="FFC number (PPRA)"/></div>
+    </div>
+    <div style="display:flex;gap:8px">
+      <button class="btn btn-primary" onclick="addRunner()">Save</button>
+      <button class="btn" onclick="document.getElementById('add-runner-form').style.display='none'">Cancel</button>
+    </div>
+  </div>
+  <div class="card"><div id="runners-list"><div style="color:#aaa;font-size:13px;padding:8px 0">No runners or agents added yet.</div></div></div>
+</div>
+
+<!-- ===== WHATSAPP ===== -->
+<div class="page" id="page-whatsapp">
+  <div class="page-header"><div><div class="page-title">WhatsApp Templates</div><div class="page-sub">One-click copy &amp; send</div></div></div>
+  <div class="card">
+    <div class="form-row col3">
+      <div class="form-group"><label class="form-label">Client Name</label><input id="wa-client" placeholder="Mpho" oninput="renderWA()"/></div>
+      <div class="form-group"><label class="form-label">Property Address</label><input id="wa-prop" placeholder="3134 Sky City" oninput="renderWA()"/></div>
+      <div class="form-group"><label class="form-label">Agent Name</label><input id="wa-agent" placeholder="Mary" oninput="renderWA()"/></div>
+    </div>
+    <div class="form-row col2">
+      <div class="form-group"><label class="form-label">Date</label><input id="wa-date" placeholder="Monday 10 March" oninput="renderWA()"/></div>
+      <div class="form-group"><label class="form-label">Time</label><input id="wa-time" placeholder="2:00 PM" oninput="renderWA()"/></div>
+    </div>
+  </div>
+  <div id="wa-templates"></div>
+</div>
+
+<!-- ===== MANDATE ===== -->
+<div class="page" id="page-mandate">
+  <div class="page-header">
+    <div><div class="page-title">Mandate Generator</div><div class="page-sub">Sole or joint mandate agreement</div></div>
+    <button class="btn btn-amber" onclick="exportMandatePDF()">⬇ Download PDF</button>
+  </div>
+  <div class="card">
+    <div class="form-row col2">
+      <div class="form-group"><label class="form-label">Mandate Type</label><select id="man-type"><option>Sole Mandate</option><option>Joint Mandate</option><option>Open Mandate</option></select></div>
+      <div class="form-group"><label class="form-label">Mandate Period</label><select id="man-period"><option>3 months</option><option>6 months</option><option>12 months</option><option>Other</option></select></div>
+    </div>
+    <div class="form-section">Property</div>
+    <div class="form-row col2">
+      <div class="form-group"><label class="form-label">Property Address</label><input id="man-prop" placeholder="3134 Sky City, Watervalspruit"/></div>
+      <div class="form-group"><label class="form-label">ERF Number</label><input id="man-erf" placeholder="ERF 3134"/></div>
+    </div>
+    <div class="form-row col3">
+      <div class="form-group"><label class="form-label">Asking Price (R)</label><input id="man-price" type="number" placeholder="600000"/></div>
+      <div class="form-group"><label class="form-label">Commission Rate (%)</label><input id="man-rate" type="number" value="5.5"/></div>
+      <div class="form-group"><label class="form-label">Mandate Start Date</label><input id="man-start" type="date"/></div>
+    </div>
+    <div class="form-section">Seller / Principal</div>
+    <div class="form-row col3">
+      <div class="form-group"><label class="form-label">Full Name</label><input id="man-seller" placeholder="Jesca Madalena Mokoena"/></div>
+      <div class="form-group"><label class="form-label">ID Number</label><input id="man-sellerid" placeholder="9503260456086"/></div>
+      <div class="form-group"><label class="form-label">Contact Number</label><input id="man-sellertel" placeholder="061 707 2643"/></div>
+    </div>
+    <div class="form-section">Agent</div>
+    <div class="form-row col3">
+      <div class="form-group"><label class="form-label">Agent Name</label><input id="man-agent" placeholder="Mary Mathenjwa"/></div>
+      <div class="form-group"><label class="form-label">FFC Number</label><input id="man-ffc" placeholder="FFC-XXXX"/></div>
+      <div class="form-group"><label class="form-label">Agency</label><input id="man-agency" placeholder="REH Reho Properties Investments"/></div>
+    </div>
+    <div class="form-section">Special Conditions</div>
+    <div class="form-row col1"><div class="form-group"><textarea id="man-cond" rows="3" placeholder="Property to be marketed on all major portals. Weekly feedback to seller."></textarea></div></div>
+    <div class="form-section">Signatures</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+      <div><div style="font-size:12px;font-weight:600;color:var(--sub);margin-bottom:6px">Seller</div>
+        <div class="sig-container"><canvas id="sig-mandate-seller" height="90"></canvas>
+        <div class="sig-btns"><button class="sig-btn clear" onclick="clearSig('sig-mandate-seller')">Clear</button></div>
+        <div class="sig-label">Seller — sign above</div></div>
+      </div>
+      <div><div style="font-size:12px;font-weight:600;color:var(--sub);margin-bottom:6px">Agent</div>
+        <div class="sig-container"><canvas id="sig-mandate-agent" height="90"></canvas>
+        <div class="sig-btns"><button class="sig-btn clear" onclick="clearSig('sig-mandate-agent')">Clear</button></div>
+        <div class="sig-label">Agent — sign above</div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== PROPERTY REPORT ===== -->
+<div class="page" id="page-propcard">
+  <div class="page-header">
+    <div><div class="page-title">Property Report Card</div><div class="page-sub">Branded one-pager with agent &amp; agency photos</div></div>
+    <button class="btn btn-amber" onclick="window.print()">Print / PDF</button>
+  </div>
+  <div class="card" style="max-width:720px">
+    <div class="form-row col2">
+      <div class="form-group"><label class="form-label">Property Address</label><input id="pc-addr" placeholder="3134 Sky City, Watervalspruit" oninput="renderPropCard()"/></div>
+      <div class="form-group"><label class="form-label">Type</label><select id="pc-type" onchange="renderPropCard()"><option>House</option><option>Townhouse</option><option>Sectional Title</option><option>Cluster</option><option>Apartment</option><option>Plot</option><option>Farm</option><option>Commercial</option></select></div>
+    </div>
+    <div class="form-row col4">
+      <div class="form-group"><label class="form-label">Asking Price (R)</label><input id="pc-price" type="number" placeholder="600000" oninput="renderPropCard()"/></div>
+      <div class="form-group"><label class="form-label">Bedrooms</label><input id="pc-beds" type="number" placeholder="3" oninput="renderPropCard()"/></div>
+      <div class="form-group"><label class="form-label">Bathrooms</label><input id="pc-baths" type="number" placeholder="2" oninput="renderPropCard()"/></div>
+      <div class="form-group"><label class="form-label">Garages</label><input id="pc-garages" type="number" placeholder="1" oninput="renderPropCard()"/></div>
+    </div>
+    <div class="form-row col3">
+      <div class="form-group"><label class="form-label">Floor Area (m²)</label><input id="pc-floor" type="number" placeholder="100" oninput="renderPropCard()"/></div>
+      <div class="form-group"><label class="form-label">Stand Size (m²)</label><input id="pc-stand" type="number" placeholder="151" oninput="renderPropCard()"/></div>
+      <div class="form-group"><label class="form-label">Monthly Levy (R)</label><input id="pc-levy" type="number" placeholder="600" oninput="renderPropCard()"/></div>
+    </div>
+    <div class="form-row col1"><div class="form-group"><label class="form-label">Key Features (comma separated)</label><input id="pc-features" placeholder="Solar, fibre, pet-friendly, new kitchen" oninput="renderPropCard()"/></div></div>
+    <div class="form-section">Agent &amp; Agency</div>
+    <div class="form-row col2">
+      <div class="form-group"><label class="form-label">Agent Name</label><input id="pc-agent" placeholder="Mary Mathenjwa" oninput="renderPropCard()"/></div>
+      <div class="form-group"><label class="form-label">Agent Contact</label><input id="pc-agenttel" placeholder="063 120 8233" oninput="renderPropCard()"/></div>
+    </div>
+    <div style="display:flex;gap:20px;align-items:flex-start;margin-top:12px">
+      <div>
+        <div class="form-label" style="margin-bottom:6px">Agent Photo</div>
+        <div class="agent-photo-area" onclick="document.getElementById('agent-photo-input').click()">
+          <img id="agent-photo-preview" src="" style="display:none"/>
+          <span id="agent-photo-placeholder" style="font-size:24px">👤</span>
+        </div>
+        <div class="photo-hint">Click to upload</div>
+        <input type="file" id="agent-photo-input" accept="image/*" style="display:none" onchange="loadPhoto('agent')"/>
+      </div>
+      <div>
+        <div class="form-label" style="margin-bottom:6px">Agency Logo</div>
+        <div class="agency-logo-area" onclick="document.getElementById('agency-logo-input').click()">
+          <img id="agency-logo-preview" src="" style="display:none"/>
+          <span id="agency-logo-placeholder" style="font-size:11px;color:var(--sub);text-align:center;padding:4px">Click to upload logo</span>
+        </div>
+        <div class="photo-hint">Click to upload</div>
+        <input type="file" id="agency-logo-input" accept="image/*" style="display:none" onchange="loadPhoto('agency')"/>
+      </div>
+    </div>
+  </div>
+  <div class="prop-card-preview">
+    <div class="prop-card-top">
+      <div style="flex:1">
+        <div style="color:var(--gold);font-family:'DM Serif Display',serif;font-size:20px" id="pcp-addr">Property Address</div>
+        <div style="color:rgba(255,255,255,0.5);font-size:12px;margin-top:3px" id="pcp-type">Type</div>
+        <div style="color:#fff;font-size:26px;font-weight:700;margin-top:10px" id="pcp-price">—</div>
+        <div style="color:rgba(255,255,255,0.4);font-size:11px">Asking price</div>
+      </div>
+      <div style="display:flex;flex-direction:column;align-items:center;gap:8px">
+        <div id="pcp-agent-photo" style="width:72px;height:72px;border-radius:50%;border:3px solid var(--gold);overflow:hidden;background:#2a3a5a;display:flex;align-items:center;justify-content:center;font-size:28px">👤</div>
+        <div id="pcp-agency-logo" style="width:90px;height:44px;border-radius:6px;overflow:hidden;background:rgba(255,255,255,0.1);display:flex;align-items:center;justify-content:center;font-size:11px;color:rgba(255,255,255,0.4)">Logo</div>
+      </div>
+    </div>
+    <div class="prop-card-body">
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:18px">
+        <div style="text-align:center;background:#f8f9fb;border-radius:8px;padding:12px"><div style="font-size:22px;font-weight:700;color:var(--navy)" id="pcp-beds">—</div><div style="font-size:11px;color:var(--sub)">Beds</div></div>
+        <div style="text-align:center;background:#f8f9fb;border-radius:8px;padding:12px"><div style="font-size:22px;font-weight:700;color:var(--navy)" id="pcp-baths">—</div><div style="font-size:11px;color:var(--sub)">Baths</div></div>
+        <div style="text-align:center;background:#f8f9fb;border-radius:8px;padding:12px"><div style="font-size:22px;font-weight:700;color:var(--navy)" id="pcp-garages">—</div><div style="font-size:11px;color:var(--sub)">Garages</div></div>
+        <div style="text-align:center;background:#f8f9fb;border-radius:8px;padding:12px"><div style="font-size:22px;font-weight:700;color:var(--navy)" id="pcp-floor">—</div><div style="font-size:11px;color:var(--sub)">Floor m²</div></div>
+      </div>
+      <div id="pcp-features" style="margin-bottom:16px;display:flex;flex-wrap:wrap;gap:4px"></div>
+      <div style="border-top:1px solid var(--border);padding-top:14px;display:flex;justify-content:space-between;align-items:center">
+        <div>
+          <div style="font-size:11px;color:var(--sub)">Listed by</div>
+          <div style="font-weight:700;color:var(--navy);font-size:14px" id="pcp-agent">—</div>
+          <div style="font-size:12px;color:var(--sub)" id="pcp-agenttel">—</div>
+        </div>
+        <div style="text-align:right">
+          <div style="font-weight:700;color:var(--navy);font-size:13px">REH Properties</div>
+          <div style="font-size:11px;color:var(--sub)">Powered by Mandated</div>
+          <div id="pcp-levy-row" style="font-size:11px;color:var(--sub);margin-top:2px"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</div><!-- end main -->
+</div><!-- end app -->
+
+<script>
+// ========== STATE ==========
+let otpList=[],clientList=[],invoiceList=[],eventList=[],dealList=[],runnerList=[];
+let agentPhotoData='',agencyLogoData='';
+let activeInvTab='rental';
+function g(id){return (document.getElementById(id)||{}).value||'';}
+let currentStep=0;
+const FIXTURES=['Fitted light fittings','Oven - built-in','Hob – built-in','Stove – upright','Extractor fan','Fitted carpets','Skirtings','Electric fencing','Burglar alarm','Panic remote/button','Remote Control/s','Fitted Awnings','Pelmets','Curtain rails, rods, rings','Built-in Cupboards','Fitted mirrors','Fitted heaters','Fireplace grates','Garden water feature','Water pump','Security Camera/s','Security Gate/s','TV and M-net aerials','DSTV Satellite dish','Internet Satellite dish','Swimming pool equipment','Pool cover / net','Pool filter and pump','Irrigation system','Electric gate motor','Automatic garage motor','Intercom system','Municipal Trolley Bin'];
+
+// ========== INIT ==========
+window.onload=function(){
+  const d=new Date();
+  document.getElementById('dash-date').textContent=d.toLocaleDateString('en-ZA',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
+  const td=d.toISOString().split('T')[0];
+  ['inv-date','cinv-date','sig-date','man-start'].forEach(id=>{const el=document.getElementById(id);if(el)el.value=td;});
+  buildFixtures();buildFICA();initSignatures();updateDash();renderWA();renderPropCard();
+  checkReminders();
+};
+function fmtR(n){return 'R '+Math.round(n).toLocaleString('en-ZA');}
+
+// ========== NAV ==========
+function showPage(id,el){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+  document.getElementById('page-'+id).classList.add('active');
+  if(el) el.classList.add('active');
+  else{
+    const map={dashboard:0,otp:1,invoice:2,clients:3,commission:4,calcs:5,pipeline:6,runners:7,ai:8,schedule:9,whatsapp:10,mandate:11,propcard:12,fica:13};
+    const items=document.querySelectorAll('.nav-item');
+    if(map[id]!==undefined)items[map[id]]?.classList.add('active');
+  }
+  if(id==='schedule')renderEvents();
+  if(id==='pipeline')renderPipeline();
+  if(id==='dashboard')updateDash();
+}
+
+// ========== OTP STEPS ==========
+function goStep(n){
+  document.querySelectorAll('.step-page').forEach((s,i)=>s.classList.toggle('active',i===n));
+  document.querySelectorAll('#otp-steps .step').forEach((s,i)=>{
+    s.classList.remove('active','done');
+    if(i===n)s.classList.add('active');
+    else if(i<n)s.classList.add('done');
+  });
+  currentStep=n;
+}
+function buildFixtures(){
+  const grid=document.getElementById('fixtures-grid');
+  grid.innerHTML=FIXTURES.map(f=>`<label class="check-item" onclick="this.classList.toggle('checked')"><input type="checkbox" value="${f}"> ${f}</label>`).join('');
+}
+function calcBalance(){
+  const price=parseFloat(document.getElementById('tx-price').value)||0;
+  const dep=parseFloat(document.getElementById('tx-deposit').value)||0;
+  const bond=parseFloat(document.getElementById('tx-bond').value)||0;
+  const cash=price-dep-bond;
+  document.getElementById('tx-cash').value=cash>0?fmtR(cash):'R 0';
+}
+function calcProfFee(){
+  const price=parseFloat(document.getElementById('tx-price').value)||0;
+  const rate=parseFloat(document.getElementById('tx-commrate').value)||5.5;
+  const net=price*rate/100;const vat=net*0.15;const gross=net+vat;
+  document.getElementById('tx-netfee').value=fmtR(net);
+  document.getElementById('tx-vatamt').value=fmtR(vat);
+  document.getElementById('tx-grossfee').value=fmtR(gross);
+  document.getElementById('tx-seller-balance').value=fmtR(price-gross);
+}
+function clearOTP(){
+  if(confirm('Clear all OTP fields and signatures?')){
+    document.querySelectorAll('#page-otp input,#page-otp select,#page-otp textarea').forEach(el=>{
+      if(el.type==='checkbox')el.checked=false;else el.value='';
+    });
+    document.querySelectorAll('.check-item').forEach(c=>c.classList.remove('checked'));
+    ['sig-seller','sig-purchaser','sig-purchaser2','sig-agent','sig-witness1','sig-witness2','sig-b-seller','sig-b-purchaser','sig-mentor'].forEach(clearSig);
+    goStep(0);
+  }
+}
+function saveOTP(){
+  const seller=(g('s1-title')+' '+g('s1-names')+' '+g('s1-surname')).trim();
+  const buyer=(g('p1-title')+' '+g('p1-names')+' '+g('p1-surname')).trim();
+  const prop=g('prop-streetno')+' '+g('prop-street')+', '+g('prop-suburb');
+  const price=parseFloat(g('tx-price'))||0;
+  const otpDate=g('sig-date')||new Date().toISOString().split('T')[0];
+  const otp={id:Date.now(),seller,buyer,prop,price,status:'Pending',date:new Date(otpDate).toLocaleDateString('en-ZA'),otpDate};
+  otpList.unshift(otp);
+  updateDash();
+  alert('OTP saved! You can now download the PDF.');
+}
+
+// ========== SIGNATURES ==========
+function initSignatures(){
+  const canvases=['sig-seller','sig-purchaser','sig-purchaser2','sig-agent','sig-witness1','sig-witness2','sig-b-seller','sig-b-purchaser','sig-mentor','sig-mandate-seller','sig-mandate-agent'];
+  canvases.forEach(id=>{
+    const canvas=document.getElementById(id);
+    if(!canvas)return;
+    canvas.width=canvas.offsetWidth||320;
+    canvas.height=parseInt(canvas.getAttribute('height'))||110;
+    const ctx=canvas.getContext('2d');
+    ctx.strokeStyle='#1a2540';ctx.lineWidth=2;ctx.lineCap='round';ctx.lineJoin='round';
+    let drawing=false,lx=0,ly=0;
+    const getPos=(e)=>{const r=canvas.getBoundingClientRect();const scaleX=canvas.width/r.width;const scaleY=canvas.height/r.height;return[(e.clientX-r.left)*scaleX,(e.clientY-r.top)*scaleY];};
+    canvas.addEventListener('mousedown',e=>{drawing=true;[lx,ly]=getPos(e);});
+    canvas.addEventListener('mousemove',e=>{if(!drawing)return;const[x,y]=getPos(e);ctx.beginPath();ctx.moveTo(lx,ly);ctx.lineTo(x,y);ctx.stroke();[lx,ly]=[x,y];});
+    canvas.addEventListener('mouseup',()=>drawing=false);
+    canvas.addEventListener('mouseleave',()=>drawing=false);
+    canvas.addEventListener('touchstart',e=>{e.preventDefault();drawing=true;[lx,ly]=getPos(e.touches[0]);},{passive:false});
+    canvas.addEventListener('touchmove',e=>{e.preventDefault();if(!drawing)return;const[x,y]=getPos(e.touches[0]);ctx.beginPath();ctx.moveTo(lx,ly);ctx.lineTo(x,y);ctx.stroke();[lx,ly]=[x,y];},{passive:false});
+    canvas.addEventListener('touchend',()=>drawing=false);
+  });
+}
+function clearSig(id){const c=document.getElementById(id);if(c)c.getContext('2d').clearRect(0,0,c.width,c.height);}
+
+// ========== OTP PDF ==========
+function exportOTPPDF(){
+  const {jsPDF}=window.jspdf;
+  const doc=new jsPDF('p','mm','a4');
+  const pw=210,ml=15,mr=15,tw=pw-ml-mr;let y=15;
+  const checkY=(h=10)=>{if(y+h>280){doc.addPage();y=15;}};
+  const hdr=(txt)=>{checkY(10);doc.setFillColor(26,37,64);doc.rect(ml,y,tw,8,'F');doc.setFont('helvetica','bold');doc.setFontSize(10);doc.setTextColor(255,255,255);doc.text(txt,ml+3,y+5.5);y+=12;};
+  const row=(l,v,l2,v2)=>{checkY(7);doc.setFont('helvetica','bold');doc.setFontSize(8.5);doc.setTextColor(100);doc.text(l||'',ml,y);doc.setFont('helvetica','normal');doc.setTextColor(26,37,64);doc.text(String(v||''),ml+38,y);if(l2){doc.setFont('helvetica','bold');doc.setTextColor(100);doc.text(l2||'',ml+tw/2,y);doc.setFont('helvetica','normal');doc.setTextColor(26,37,64);doc.text(String(v2||''),ml+tw/2+38,y);}y+=6;};
+  doc.setFillColor(26,37,64);doc.rect(0,0,210,26,'F');
+  doc.setFillColor(232,160,32);doc.rect(0,0,6,26,'F');
+  doc.setFont('helvetica','bold');doc.setFontSize(16);doc.setTextColor(232,160,32);
+  doc.text('OFFER TO PURCHASE',ml+6,12);
+  doc.setFont('helvetica','normal');doc.setFontSize(8);doc.setTextColor(180,190,210);
+  doc.text('Mandated Property Group (Pty) Ltd · Trading as Mandated · REH Properties',ml+6,18);
+  doc.text('This document constitutes a binding Agreement (deed of sale) once signed by both parties',ml+6,23);
+  doc.setFontSize(8);doc.setTextColor(180,190,210);
+  doc.text('S   W1   P   W2   A',190,12,{align:'right'});
+  y=34;
+  hdr('THE SELLER/S');
+  row('Seller 1 — Title:',g('s1-title'),'Surname:',g('s1-surname'));
+  row('Full Names:',g('s1-names'),'ID Number:',g('s1-id'));
+  row('Cellphone:',g('s1-cell'),'Income Tax No:',g('s1-taxno'));
+  row('Email:',g('s1-email'),'Residential Address:',g('s1-addr'));
+  row('Bond Bank:',g('s1-bank'),'Bond Account No:',g('s1-bondacc'));
+  row('Marital Status:',g('s1-marital'),'Status Changed:',g('s1-marital-changed'));
+  if(g('s2-surname')){y+=3;row('Seller 2 — Title:',g('s2-title'),'Surname:',g('s2-surname'));row('Full Names:',g('s2-names'),'ID Number:',g('s2-id'));}
+  if(g('s-entity-name')){row('Legal Entity:',g('s-entity-name'),'Reg Number:',g('s-entity-reg'));}
+  y+=3;
+  hdr('THE PURCHASER/S');
+  row('Purchaser 1 — Title:',g('p1-title'),'Surname:',g('p1-surname'));
+  row('Full Names:',g('p1-names'),'ID Number:',g('p1-id'));
+  row('Cellphone:',g('p1-cell'),'Income Tax No:',g('p1-taxno'));
+  row('Email:',g('p1-email'),'Residential Address:',g('p1-addr'));
+  row('Home Language:',g('p1-lang'),'City of Birth:',g('p1-city'));
+  row('Marital Status:',g('p1-marital'),'Source of Wealth:',g('p-wealth'));
+  if(g('p2-surname')){y+=3;row('Purchaser 2 — Title:',g('p2-title'),'Surname:',g('p2-surname'));row('Full Names:',g('p2-names'),'ID Number:',g('p2-id'));row('Home Language:',g('p2-lang'),'City of Birth:',g('p2-city'));row('Email:',g('p2-email'),'Address:',g('p2-addr'));}
+  y+=3;
+  hdr('THE PROPERTY SITUATED AT');
+  row('Type:',g('prop-type')==='sectional'?'Sectional Title':'Full Title','Municipality:',g('prop-muni'));
+  row('ERF No:',g('prop-erf'),'Portion:',g('prop-portion'));
+  row('Street No:',g('prop-streetno'),'Street Name:',g('prop-street'));
+  row('Suburb:',g('prop-suburb'),'Postal Code:',g('prop-postal'));
+  row('Size:',g('prop-size')+' m²','Province:',g('prop-prov'));
+  if(g('prop-complex')){row('Complex:',g('prop-complex'),'Section No:',g('prop-secno'));}
+  y+=3;
+  hdr('1. TRANSACTION DETAILS');
+  const price=parseFloat(g('tx-price'))||0;
+  const dep=parseFloat(g('tx-deposit'))||0;
+  const bond=parseFloat(g('tx-bond'))||0;
+  const rate=parseFloat(g('tx-commrate'))||5.5;
+  const net=price*rate/100;const vat=net*0.15;const gross=net+vat;
+  row('1.1 Purchase Price:','R '+price.toLocaleString('en-ZA'),'('+g('tx-price-words')+')',g('tx-vat')==='incl'?'Inclusive of VAT':'Exclusive of VAT');
+  row('1.2 Deposit:','R '+dep.toLocaleString('en-ZA'),'Deposit Due:','Within '+g('tx-depdays')+' days');
+  row('1.4.1 Balance (Bond):','R '+bond.toLocaleString('en-ZA'),'('+g('tx-bond-words')+')','');
+  row('1.5 Bond Approval Date:',g('tx-bonddate'),'1.6 Guarantee Date:',g('tx-guardays')+' days after contract');
+  row('1.7 Transfer Date:','To be advised by Attorney','1.9 Occupation Date:',g('tx-occdate')||'Date of registration');
+  row('1.8 Conveyancer:',g('tx-conv'),'Contact:',g('tx-conv-contact'));
+  row('Bond Originator:',g('tx-bond-orig'),'Contact:',g('tx-bond-contact'));
+  row('1.10 Occ. Rental:','R '+(parseFloat(g('tx-occrent'))||0).toLocaleString('en-ZA'),'1.11 Occ. Type:',g('tx-occtype'));
+  row('1.15 HOA/BC:',g('cond-hoa'),'Managing Agent:',g('cond-mgmt'));
+  row('1.16 Monthly Levy:','R '+(parseFloat(g('cond-levy'))||0).toLocaleString('en-ZA'),'1.18 Expiry Date:',g('tx-expiry'));
+  y+=3;
+  hdr('ANNEXURE B — PROFESSIONAL FEE AGREEMENT');
+  row('a) Purchase Price:','R '+price.toLocaleString('en-ZA'),'Rate:',rate+'%');
+  row('b) Net Professional Fee (excl VAT):','R '+Math.round(net).toLocaleString('en-ZA'),'c) VAT 15%:','R '+Math.round(vat).toLocaleString('en-ZA'));
+  row('d) Gross Professional Fee (incl VAT):','R '+Math.round(gross).toLocaleString('en-ZA'),'e) Balance to Seller (a-d):','R '+Math.round(price-gross).toLocaleString('en-ZA'));
+  row('Agent Names:',g('tx-agent'),'Agent FFC Numbers:',g('tx-agentid'));
+  row('Listing Agency:',g('tx-listing-agency'),'Contract Agency:',g('tx-contract-agency'));
+  y+=3;
+  if(g('cond-special')){
+    hdr('20. SPECIAL CONDITIONS');
+    doc.setFont('helvetica','normal');doc.setFontSize(9);doc.setTextColor(26,37,64);
+    const lines=doc.splitTextToSize(g('cond-special'),tw);
+    lines.forEach(l=>{checkY(6);doc.text(l,ml,y);y+=5;});y+=3;
+  }
+  const checked=Array.from(document.querySelectorAll('#fixtures-grid .check-item.checked')).map(el=>el.querySelector('input').value);
+  if(checked.length){
+    hdr('18. FIXTURES & FITTINGS INCLUDED');
+    const cols=3,colW=tw/cols;
+    for(let i=0;i<checked.length;i+=cols){
+      checkY(6);
+      for(let j=0;j<cols;j++){if(checked[i+j]){doc.setFont('helvetica','normal');doc.setFontSize(8);doc.setTextColor(26,37,64);doc.text('✓ '+checked[i+j],ml+j*colW,y);}}
+      y+=5;
+    }
+    if(g('fix-excluded')){y+=3;row('Specifically Excluding:',g('fix-excluded'),'','');}
+    y+=3;
+  }
+  doc.addPage();y=15;
+  hdr('24. SIGNATURES');
+  row('Signed at:',g('sig-city'),'Date:',g('sig-date'));
+  row('Day:',g('sig-day-words'),'Month / Year:',g('sig-month')+' 20'+g('sig-year'));
+  row('Witness 1:',g('w1-name'),'ID:',g('w1-id'));
+  row('Witness 2:',g('w2-name'),'ID:',g('w2-id'));
+  y+=10;
+  const sigs=[
+    {canvas:'sig-seller',label:'THE SELLER (1)'},
+    {canvas:'sig-purchaser',label:'THE PURCHASER (1)'},
+    {canvas:'sig-purchaser2',label:'THE PURCHASER (2)'},
+    {canvas:'sig-agent',label:'AGENT — MANDATED PROPERTY GROUP'},
+    {canvas:'sig-witness1',label:'AS WITNESS (1)'},
+    {canvas:'sig-witness2',label:'AS WITNESS (2)'}
+  ];
+  const sw=78,sh=28;
+  sigs.forEach((s,i)=>{
+    const xOff=(i%2)*(sw+14);
+    if(i%2===0&&i>0){y+=sh+16;checkY(sh+20);}
+    try{const imgData=document.getElementById(s.canvas).toDataURL('image/png');doc.addImage(imgData,'PNG',ml+xOff,y,sw,sh);}catch(e){}
+    doc.setDrawColor(150);doc.setLineWidth(0.3);doc.line(ml+xOff,y+sh+2,ml+xOff+sw,y+sh+2);
+    doc.setFont('helvetica','normal');doc.setFontSize(8);doc.setTextColor(80);doc.text(s.label,ml+xOff,y+sh+7);
+  });
+  y+=sh+18;
+  checkY(20);
+  doc.setFont('helvetica','normal');doc.setFontSize(9);doc.setTextColor(26,37,64);
+  doc.text('This Agreement has been negotiated by: '+g('tx-agent'),ml,y);y+=8;
+  doc.text("Agent's FFC Number: "+g('tx-agentid'),ml,y);y+=10;
+  doc.text('For and on behalf of Mandated Property Group',ml,y);y+=8;
+  doc.setDrawColor(150);doc.setLineWidth(0.3);doc.line(ml,y,ml+80,y);y+=5;
+  doc.setFontSize(8);doc.setTextColor(100);doc.text('Mentor Agent / Principal Agent',ml,y);
+  doc.addPage();y=15;
+  hdr('ANNEXURE B — PROFESSIONAL FEE — SIGNATURES');
+  y+=5;
+  ['sig-b-seller','sig-b-purchaser','sig-mentor'].forEach((s,i)=>{
+    const lbl=['THE SELLER','THE PURCHASER','MENTOR/PRINCIPAL'][i];
+    const xOff=i*(sw+14);
+    try{const imgData=document.getElementById(s).toDataURL('image/png');doc.addImage(imgData,'PNG',ml+xOff,y,sw,22);}catch(e){}
+    doc.setDrawColor(150);doc.setLineWidth(0.3);doc.line(ml+xOff,y+24,ml+xOff+sw,y+24);
+    doc.setFont('helvetica','normal');doc.setFontSize(8);doc.setTextColor(80);doc.text(lbl,ml+xOff,y+29);
+  });
+  const pc=doc.getNumberOfPages();
+  for(let i=1;i<=pc;i++){
+    doc.setPage(i);
+    doc.setFont('helvetica','normal');doc.setFontSize(7.5);doc.setTextColor(150);
+    doc.text('REH Properties — Powered by Mandated Property Group | Page '+i+' of '+pc,105,292,{align:'center'});
+    doc.text('S   W1   P   W2   A',195,292,{align:'right'});
+  }
+  doc.save('REH_OTP_'+g('s1-surname')+'_'+new Date().toISOString().split('T')[0]+'.pdf');
+}
+
+// ========== INVOICE ==========
+function showInvTab(t){
+  activeInvTab=t;
+  document.querySelectorAll('.tab-btn').forEach((b,i)=>b.classList.toggle('active',(i===0&&t==='rental')||(i===1&&t==='commission')));
+  document.getElementById('tab-rental').classList.toggle('active',t==='rental');
+  document.getElementById('tab-commission').classList.toggle('active',t==='commission');
+  document.getElementById('invoice-preview').style.display='none';
+}
+function calcInvoice(){
+  const rent=parseFloat(document.getElementById('inv-rent').value)||0;
+  const dep=parseFloat(document.getElementById('inv-dep').value)||0;
+  const admin=(rent+dep)*0.1;
+  document.getElementById('inv-admin').value='R '+Math.round(admin).toLocaleString('en-ZA');
+  document.getElementById('inv-total').value='R '+(rent+dep+admin).toLocaleString('en-ZA');
+}
+function calcCommInv(){
+  const sale=parseFloat(document.getElementById('cinv-sale').value)||0;
+  const rate=parseFloat(document.getElementById('cinv-rate').value)||5.5;
+  const excl=sale*rate/100,vat=excl*0.15;
+  document.getElementById('cinv-excl').value=fmtR(excl);
+  document.getElementById('cinv-vatat').value=fmtR(vat);
+  document.getElementById('cinv-total').value=fmtR(excl+vat);
+}
+function generateInvoice(){
+  const prev=document.getElementById('invoice-preview');
+  prev.style.display='block';
+  if(activeInvTab==='rental'){
+    const rent=parseFloat(g('inv-rent'))||0,dep=parseFloat(g('inv-dep'))||0,admin=(rent+dep)*0.1,total=rent+dep+admin;
+    const prop=g('inv-propname')||'Property';
+    document.getElementById('prev-company').textContent=g('inv-company')||'REH Reho Properties Investments Pty Ltd';
+    document.getElementById('prev-addr').innerHTML=(g('inv-addr')||'130 Leeuwpoort, Boksburg, 1459')+'<br>Tel: '+(g('inv-tel')||'063 120 8233');
+    document.getElementById('prev-date').textContent=g('inv-date');document.getElementById('prev-num').textContent=g('inv-num');
+    document.getElementById('prev-billto').innerHTML=g('inv-tenant')?'<strong>Bill to:</strong> '+g('inv-tenant'):'';
+    document.getElementById('prev-tbody').innerHTML=`<tr><td>${prop} — Rent</td><td style="text-align:right">R ${rent.toLocaleString('en-ZA',{minimumFractionDigits:2})}</td></tr><tr><td>${prop} — Deposit</td><td style="text-align:right">R ${dep.toLocaleString('en-ZA',{minimumFractionDigits:2})}</td></tr><tr><td>Admin Fee (10%)</td><td style="text-align:right">R ${admin.toLocaleString('en-ZA',{minimumFractionDigits:2})}</td></tr><tr class="inv-total-row"><td><strong>TOTAL AMOUNT DUE</strong></td><td style="text-align:right"><strong>R ${total.toLocaleString('en-ZA',{minimumFractionDigits:2})}</strong></td></tr>`;
+    invoiceList.push({type:'rental',num:g('inv-num'),tenant:g('inv-tenant'),total,date:g('inv-date')});
+  }else{
+    const sale=parseFloat(g('cinv-sale'))||0,rate=parseFloat(g('cinv-rate'))||5.5;
+    const excl=sale*rate/100,vat=excl*0.15,total=excl+vat;
+    document.getElementById('prev-company').textContent=g('cinv-company')||'REH Reho Properties Investments Pty Ltd';
+    document.getElementById('prev-addr').innerHTML='130 Leeuwpoort, Boksburg, 1459<br>VAT Reg: '+(g('cinv-vat')||'—');
+    document.getElementById('prev-date').textContent=g('cinv-date');document.getElementById('prev-num').textContent=g('cinv-num');
+    document.getElementById('prev-billto').innerHTML=g('cinv-client')?'<strong>Bill to:</strong> '+g('cinv-client')+(g('cinv-prop')?' — '+g('cinv-prop'):''):'';
+    document.getElementById('prev-tbody').innerHTML=`<tr><td>Commission (${rate}% of R${sale.toLocaleString('en-ZA')})</td><td style="text-align:right">R ${excl.toLocaleString('en-ZA',{minimumFractionDigits:2})}</td></tr><tr><td>VAT @ 15%</td><td style="text-align:right">R ${vat.toLocaleString('en-ZA',{minimumFractionDigits:2})}</td></tr><tr class="inv-total-row"><td><strong>TOTAL DUE (incl. VAT)</strong></td><td style="text-align:right"><strong>R ${total.toLocaleString('en-ZA',{minimumFractionDigits:2})}</strong></td></tr>`;
+    invoiceList.push({type:'commission',num:g('cinv-num'),client:g('cinv-client'),total,date:g('cinv-date')});
+  }
+  updateDash();prev.scrollIntoView({behavior:'smooth'});
+}
+function printInvoice(){window.print();}
+
+// ========== INVOICE PDF EXPORT ==========
+function exportInvoicePDF(){
+  const {jsPDF}=window.jspdf;
+  const doc=new jsPDF({orientation:'portrait',unit:'mm',format:'a4'});
+  const ml=20,tw=170;let y=15;
+  const checkY=(h=10)=>{if(y+h>280){doc.addPage();y=20;}};
+  const fmt=n=>n.toLocaleString('en-ZA',{minimumFractionDigits:2});
+
+  // Header banner
+  doc.setFillColor(26,37,64);
+  doc.rect(0,0,210,30,'F');
+  doc.setFillColor(232,160,32);
+  doc.rect(0,0,6,30,'F');
+  doc.setFont('helvetica','bold');
+  doc.setFontSize(18);
+  doc.setTextColor(255,255,255);
+  doc.text('INVOICE',ml+6,14);
+  doc.setFont('helvetica','bold');
+  doc.setFontSize(22);
+  doc.setTextColor(232,160,32);
+  doc.text('REH',190,18,{align:'right'});
+  doc.setFont('helvetica','normal');
+  doc.setFontSize(8);
+  doc.setTextColor(180,190,210);
+  doc.text('REH Reho Properties Investments Pty Ltd',ml+6,22);
+  doc.text('130 Leeuwpoort, Boksburg, 1459 | Tel: 063 120 8233',ml+6,27);
+
+  y=38;
+
+  if(activeInvTab==='rental'){
+    const company=g('inv-company')||'REH Reho Properties Investments Pty Ltd';
+    const addr=g('inv-addr')||'130 Leeuwpoort, Boksburg, 1459';
+    const tel=g('inv-tel')||'063 120 8233';
+    const invNum=g('inv-num'), invDate=g('inv-date');
+    const tenant=g('inv-tenant'), propName=g('inv-propname')||'Property';
+    const rent=parseFloat(g('inv-rent'))||0;
+    const dep=parseFloat(g('inv-dep'))||0;
+    const admin=(rent+dep)*0.1;
+    const total=rent+dep+admin;
+
+    doc.setFont('helvetica','normal');
+    doc.setFontSize(9);
+    doc.setTextColor(80);
+    doc.text(company,190,36,{align:'right'});
+    doc.text(addr,190,42,{align:'right'});
+    doc.text('Tel: '+tel,190,48,{align:'right'});
+
+    y=62;
+    doc.setDrawColor(26,37,64);
+    doc.setLineWidth(0.8);
+    doc.line(ml,y,190,y);
+    y+=8;
+
+    doc.setFont('helvetica','bold');
+    doc.setFontSize(9);
+    doc.setTextColor(100);
+    doc.text('Invoice No:',ml,y);
+    doc.setFont('helvetica','normal');
+    doc.setTextColor(26,37,64);
+    doc.text(invNum||'—',ml+28,y);
+    doc.setFont('helvetica','bold');
+    doc.setTextColor(100);
+    doc.text('Date:',140,y);
+    doc.setFont('helvetica','normal');
+    doc.setTextColor(26,37,64);
+    doc.text(invDate||'—',154,y);
+    y+=8;
+
+    if(tenant){
+      doc.setFont('helvetica','bold');
+      doc.setTextColor(100);
+      doc.text('Bill To:',ml,y);
+      doc.setFont('helvetica','normal');
+      doc.setTextColor(26,37,64);
+      doc.text(tenant,ml+18,y);
+      y+=8;
+    }
+    y+=6;
+
+    // Table header
+    doc.setFillColor(26,37,64);
+    doc.rect(ml,y,tw,9,'F');
+    doc.setFont('helvetica','bold');
+    doc.setFontSize(10);
+    doc.setTextColor(255,255,255);
+    doc.text('Description',ml+4,y+6);
+    doc.text('Amount (R)',186,y+6,{align:'right'});
+    y+=13;
+
+    // Rows
+    const rows=[
+      [propName+' — Monthly Rent',rent],
+      [propName+' — Deposit',dep],
+      ['Admin Fee (10%)',admin]
+    ];
+    rows.forEach(([desc,amt])=>{
+      doc.setFont('helvetica','normal');
+      doc.setFontSize(10);
+      doc.setTextColor(40);
+      doc.text(desc,ml+4,y);
+      doc.text('R '+fmt(amt),186,y,{align:'right'});
+      doc.setDrawColor(220);
+      doc.setLineWidth(0.2);
+      doc.line(ml,y+4,190,y+4);
+      y+=12;
+    });
+
+    // Total row
+    doc.setFillColor(240,240,240);
+    doc.rect(ml,y-3,tw,12,'F');
+    doc.setDrawColor(26,37,64);
+    doc.setLineWidth(0.6);
+    doc.line(ml,y-3,190,y-3);
+    doc.setFont('helvetica','bold');
+    doc.setFontSize(11);
+    doc.setTextColor(26,37,64);
+    doc.text('TOTAL AMOUNT DUE',ml+4,y+5);
+    doc.text('R '+fmt(total),186,y+5,{align:'right'});
+    y+=20;
+
+    // Bank details
+    doc.setFillColor(248,249,251);
+    doc.setDrawColor(232,160,32);
+    doc.setLineWidth(1);
+    doc.rect(ml,y,tw,44,'F');
+    doc.line(ml,y,ml,y+44);
+    doc.setFont('helvetica','bold');
+    doc.setFontSize(9);
+    doc.setTextColor(26,37,64);
+    doc.text('Bank Details:',ml+5,y+8);
+    doc.setFont('helvetica','normal');
+    doc.text('Bank: FNB',ml+5,y+16);
+    doc.text('Account Holder: REH REHO PROPERTIES INVESTMENTS PTY LTD',ml+5,y+23);
+    doc.text('Account Number: 63092941939',ml+5,y+30);
+    doc.setFont('helvetica','bold');
+    doc.setTextColor(100);
+    doc.text('Please send proof of payment when payment is made.',ml+5,y+38);
+    y+=56;
+
+    doc.setFont('helvetica','normal');
+    doc.setFontSize(8);
+    doc.setTextColor(150);
+    doc.text('Thank you for your business!   |   Enquiries: 063 120 8233',105,y,{align:'center'});
+
+  } else {
+    // Commission invoice
+    const company=g('cinv-company')||'REH Reho Properties Investments Pty Ltd';
+    const vatNum=g('cinv-vat');
+    const invNum=g('cinv-num'), invDate=g('cinv-date');
+    const client=g('cinv-client'), prop=g('cinv-prop');
+    const sale=parseFloat(g('cinv-sale'))||0;
+    const rate=parseFloat(g('cinv-rate'))||5.5;
+    const excl=sale*rate/100, vat=excl*0.15, total=excl+vat;
+
+    doc.setFont('helvetica','normal');
+    doc.setFontSize(9);
+    doc.setTextColor(80);
+    doc.text(company,190,36,{align:'right'});
+    doc.text('130 Leeuwpoort, Boksburg, 1459',190,42,{align:'right'});
+    if(vatNum) doc.text('VAT Reg: '+vatNum,190,48,{align:'right'});
+
+    y=62;
+    doc.setDrawColor(26,37,64);
+    doc.setLineWidth(0.8);
+    doc.line(ml,y,190,y);
+    y+=8;
+
+    doc.setFont('helvetica','bold');
+    doc.setFontSize(9);
+    doc.setTextColor(100);
+    doc.text('Invoice No:',ml,y);
+    doc.setFont('helvetica','normal');
+    doc.setTextColor(26,37,64);
+    doc.text(invNum||'—',ml+28,y);
+    doc.setFont('helvetica','bold');
+    doc.setTextColor(100);
+    doc.text('Date:',140,y);
+    doc.setFont('helvetica','normal');
+    doc.setTextColor(26,37,64);
+    doc.text(invDate||'—',154,y);
+    y+=8;
+
+    if(client){
+      doc.setFont('helvetica','bold');
+      doc.setTextColor(100);
+      doc.text('Bill To:',ml,y);
+      doc.setFont('helvetica','normal');
+      doc.setTextColor(26,37,64);
+      doc.text(client+(prop?' — '+prop:''),ml+18,y);
+      y+=8;
+    }
+    y+=6;
+
+    // Table header
+    doc.setFillColor(26,37,64);
+    doc.rect(ml,y,tw,9,'F');
+    doc.setFont('helvetica','bold');
+    doc.setFontSize(10);
+    doc.setTextColor(255,255,255);
+    doc.text('Description',ml+4,y+6);
+    doc.text('Amount (R)',186,y+6,{align:'right'});
+    y+=13;
+
+    const rows=[
+      ['Commission ('+rate+'% of R'+sale.toLocaleString('en-ZA')+')',excl],
+      ['VAT @ 15%',vat]
+    ];
+    rows.forEach(([desc,amt])=>{
+      doc.setFont('helvetica','normal');
+      doc.setFontSize(10);
+      doc.setTextColor(40);
+      doc.text(desc,ml+4,y);
+      doc.text('R '+fmt(amt),186,y,{align:'right'});
+      doc.setDrawColor(220);
+      doc.setLineWidth(0.2);
+      doc.line(ml,y+4,190,y+4);
+      y+=12;
+    });
+
+    // Total row
+    doc.setFillColor(240,240,240);
+    doc.rect(ml,y-3,tw,12,'F');
+    doc.setDrawColor(26,37,64);
+    doc.setLineWidth(0.6);
+    doc.line(ml,y-3,190,y-3);
+    doc.setFont('helvetica','bold');
+    doc.setFontSize(11);
+    doc.setTextColor(26,37,64);
+    doc.text('TOTAL DUE (incl. VAT)',ml+4,y+5);
+    doc.text('R '+fmt(total),186,y+5,{align:'right'});
+    y+=20;
+
+    // Bank details
+    doc.setFillColor(248,249,251);
+    doc.setDrawColor(232,160,32);
+    doc.setLineWidth(1);
+    doc.rect(ml,y,tw,44,'F');
+    doc.line(ml,y,ml,y+44);
+    doc.setFont('helvetica','bold');
+    doc.setFontSize(9);
+    doc.setTextColor(26,37,64);
+    doc.text('Bank Details:',ml+5,y+8);
+    doc.setFont('helvetica','normal');
+    doc.text('Bank: FNB',ml+5,y+16);
+    doc.text('Account Holder: REH REHO PROPERTIES INVESTMENTS PTY LTD',ml+5,y+23);
+    doc.text('Account Number: 63092941939',ml+5,y+30);
+    doc.setFont('helvetica','bold');
+    doc.setTextColor(100);
+    doc.text('Please send proof of payment when payment is made.',ml+5,y+38);
+    y+=56;
+
+    doc.setFont('helvetica','normal');
+    doc.setFontSize(8);
+    doc.setTextColor(150);
+    doc.text('Thank you for your business!   |   Enquiries: 063 120 8233',105,y,{align:'center'});
+  }
+
+  const dateStr=new Date().toISOString().split('T')[0];
+  const num=activeInvTab==='rental'?(g('inv-num')||'INV'):(g('cinv-num')||'INV');
+  doc.save('REH_Invoice_'+num+'_'+dateStr+'.pdf');
+}
+
+// ========== CLIENTS ==========
+function addClient(){
+  const name=g('cl-name');if(!name){alert('Please enter client name');return;}
+  clientList.push({name,role:g('cl-role'),tel:g('cl-tel'),email:g('cl-email'),notes:g('cl-notes'),id:g('cl-id')});
+  renderClients();updateDash();
+  ['cl-name','cl-tel','cl-email','cl-id','cl-notes'].forEach(i=>{const el=document.getElementById(i);if(el)el.value='';});
+  document.getElementById('add-client-form').style.display='none';
+}
+function renderClients(){
+  const colors={Buyer:'badge-blue',Seller:'badge-green',Tenant:'badge-amber',Landlord:'badge-gray'};
+  const list=document.getElementById('clients-list');
+  if(!clientList.length){list.innerHTML='<div style="color:#aaa;font-size:13px;padding:8px 0">No clients yet.</div>';return;}
+  list.innerHTML=clientList.map((c,i)=>`<div class="list-item"><div><div class="li-main">${c.name}</div><div class="li-sub">${c.tel||''}${c.email?' · '+c.email:''}${c.notes?' · '+c.notes:''}</div></div><div style="display:flex;gap:6px;align-items:center"><span class="badge ${colors[c.role]||'badge-gray'}">${c.role}</span><button class="btn btn-sm" style="color:var(--red)" onclick="removeClient(${i})">Remove</button></div></div>`).join('');
+}
+function removeClient(i){clientList.splice(i,1);renderClients();updateDash();}
+
+// ========== SCHEDULE ==========
+function addEvent(){
+  const title=g('ev-title');if(!title)return;
+  eventList.push({title,dt:g('ev-dt'),type:g('ev-type'),client:g('ev-client'),notes:g('ev-notes')});
+  eventList.sort((a,b)=>a.dt.localeCompare(b.dt));
+  renderEvents();checkReminders();
+  ['ev-title','ev-dt','ev-client','ev-notes'].forEach(i=>{const el=document.getElementById(i);if(el)el.value='';});
+  document.getElementById('add-event-form').style.display='none';
+}
+function getEventStatus(dt){
+  if(!dt)return'past';
+  const now=new Date();const evDate=new Date(dt);
+  const diffH=(evDate-now)/3600000;
+  if(diffH<0)return'past';
+  if(diffH<=2)return'today';
+  if(diffH<=26)return'tomorrow';
+  return'upcoming';
+}
+function renderEvents(){
+  const list=document.getElementById('events-list');
+  const dotClass={Viewing:'viewing','OTP Signing':'otp','Client Meeting':'meeting',Deadline:'deadline','Bond Application':'deadline','Transfer Step':'otp',Other:'other'};
+  const statusLabel={past:'Past',today:'TODAY',tomorrow:'Tomorrow',upcoming:'Upcoming'};
+  if(!eventList.length){list.innerHTML='<div style="color:#aaa;font-size:13px;padding:8px 0">No events yet.</div>';return;}
+  list.innerHTML=eventList.map((e,i)=>{
+    const status=getEventStatus(e.dt);
+    const dtStr=e.dt?new Date(e.dt).toLocaleString('en-ZA',{weekday:'short',day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'}):'';
+    return`<div class="event-card"><div style="display:flex;align-items:center;gap:10px;flex:1"><div class="event-dot ${dotClass[e.type]||'other'}"></div><div><div class="li-main">${e.title}</div><div class="li-sub">${dtStr}${e.client?' · '+e.client:''}</div>${e.notes?`<div class="li-sub" style="margin-top:2px">📝 ${e.notes}</div>`:''}</div></div><div style="display:flex;align-items:center;gap:8px"><span class="event-due ${status}">${statusLabel[status]}</span><button class="btn btn-sm" style="color:var(--red)" onclick="removeEvent(${i})">✕</button></div></div>`;
+  }).join('');
+}
+function removeEvent(i){eventList.splice(i,1);renderEvents();checkReminders();}
+function checkReminders(){
+  const today=new Date();today.setHours(0,0,0,0);
+  const tomorrow=new Date(today);tomorrow.setDate(tomorrow.getDate()+1);
+  const due=eventList.filter(e=>{if(!e.dt)return false;const d=new Date(e.dt);d.setHours(0,0,0,0);return d<=tomorrow&&d>=today;});
+  const overdue=eventList.filter(e=>{if(!e.dt)return false;const d=new Date(e.dt);return d<today;});
+  const dashR=document.getElementById('dash-reminders');
+  if(dashR){
+    let html='';
+    overdue.forEach(e=>{html+=`<div class="reminder-banner overdue">⚠️ OVERDUE: <strong>${e.title}</strong>${e.dt?' — was '+new Date(e.dt).toLocaleString('en-ZA',{weekday:'short',day:'numeric',month:'short'}):''}</div>`;});
+    due.forEach(e=>{html+=`<div class="reminder-banner">🔔 TODAY/TOMORROW: <strong>${e.title}</strong>${e.dt?' — '+new Date(e.dt).toLocaleString('en-ZA',{weekday:'short',day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'}):''}</div>`;});
+    dashR.innerHTML=html;
+  }
+  const schedR=document.getElementById('sched-reminders-banner');
+  if(schedR){
+    let html='';
+    if(overdue.length)html+=`<div class="reminder-banner overdue" style="margin-bottom:8px">⚠️ You have ${overdue.length} overdue event${overdue.length>1?'s':''}.</div>`;
+    if(due.length)html+=`<div class="reminder-banner" style="margin-bottom:8px">🔔 ${due.length} event${due.length>1?'s':''} due today or tomorrow.</div>`;
+    schedR.innerHTML=html;
+  }
+}
+
+// ========== PIPELINE ==========
+const STAGE_PROB={'OTP Signed':0.5,'Bond Pending':0.55,'Bond Approved':0.85,'Transfer Prep':0.9,'At Deeds Office':0.95,'Registered':1,'Fallen Through':0};
+function addDeal(){
+  const prop=g('deal-prop'),price=parseFloat(document.getElementById('deal-price').value)||0;
+  if(!prop||!price){alert('Please enter property and price');return;}
+  const otpDate=g('deal-otpdate')||new Date().toISOString().split('T')[0];
+  dealList.push({prop,buyer:g('deal-buyer'),price,rate:parseFloat(document.getElementById('deal-rate').value)||5.5,stage:g('deal-stage'),agent:g('deal-agent'),notes:g('deal-notes'),otpDate,added:new Date().toLocaleDateString('en-ZA')});
+  renderPipeline();
+  document.getElementById('add-deal-form').style.display='none';
+  ['deal-prop','deal-buyer','deal-price','deal-agent','deal-notes','deal-otpdate'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
+}
+function getDealReminder(deal){
+  if(!deal.otpDate||deal.stage==='Registered'||deal.stage==='Fallen Through')return null;
+  const otpD=new Date(deal.otpDate);
+  const today=new Date();today.setHours(0,0,0,0);
+  const daysSinceOTP=Math.floor((today-otpD)/86400000);
+  const stageOrder=['OTP Signed','Bond Pending','Bond Approved','Transfer Prep','At Deeds Office','Registered'];
+  const milestones={'Bond Pending':14,'Bond Approved':21,'Transfer Prep':42,'At Deeds Office':70,'Registered':84};
+  const currentIdx=stageOrder.indexOf(deal.stage);
+  if(currentIdx<0)return null;
+  const nextStage=stageOrder[currentIdx+1];
+  if(!nextStage||!milestones[nextStage])return null;
+  const daysLeft=milestones[nextStage]-daysSinceOTP;
+  if(daysLeft<=0)return{type:'overdue',msg:`⚠️ ${deal.prop} — ${nextStage} expected ${Math.abs(daysLeft)} days ago`};
+  if(daysLeft<=3)return{type:'due',msg:`🔔 ${deal.prop} — ${nextStage} expected in ${daysLeft} day${daysLeft===1?'':'s'}`};
+  return null;
+}
+function removeDeal(i){if(confirm('Remove this deal?')){dealList.splice(i,1);renderPipeline();}}
+function updateDealStage(i,stage){dealList[i].stage=stage;renderPipeline();}
+function renderPipeline(){
+  const list=document.getElementById('pipeline-list');
+  const active=dealList.filter(d=>d.stage!=='Fallen Through'&&d.stage!=='Registered');
+  const totalVal=dealList.reduce((s,d)=>s+(d.price||0),0);
+  const commForecast=active.reduce((s,d)=>s+d.price*(d.rate/100)*1.15*(STAGE_PROB[d.stage]||0.5),0);
+  document.getElementById('pipe-total').textContent=fmtR(totalVal);
+  document.getElementById('pipe-count').textContent=active.length;
+  document.getElementById('pipe-comm').textContent=fmtR(commForecast);
+  document.getElementById('pipe-avg').textContent=dealList.length?fmtR(totalVal/dealList.length):'—';
+  if(!dealList.length){list.innerHTML='<div class="card" style="color:#aaa;font-size:13px">No deals yet.</div>';return;}
+  const stageColors={'OTP Signed':'badge-gray','Bond Pending':'badge-amber','Bond Approved':'badge-green','Transfer Prep':'badge-blue','At Deeds Office':'badge-blue','Registered':'badge-green','Fallen Through':'badge-red'};
+  list.innerHTML=dealList.map((d,i)=>{
+    const reminder=getDealReminder(d);
+    const otpD=d.otpDate?new Date(d.otpDate):null;
+    const daysSince=otpD?Math.floor((new Date()-otpD)/86400000):null;
+    const progress=STAGE_PROB[d.stage]||0;
+    return`<div class="card" style="margin-bottom:12px;border-left:4px solid ${d.stage==='Fallen Through'?'var(--red)':d.stage==='Registered'?'var(--green)':'var(--gold)'}">
+      ${reminder?`<div class="reminder-banner ${reminder.type}" style="margin-bottom:10px">${reminder.msg}</div>`:''}
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:10px">
+        <div style="flex:1">
+          <div class="li-main" style="font-size:15px">${d.prop}</div>
+          <div class="li-sub">Buyer: ${d.buyer||'—'} · ${fmtR(d.price)} · Agent: ${d.agent||'—'}</div>
+          ${daysSince!==null?`<div class="li-sub" style="margin-top:2px">📅 Day <strong>${daysSince}</strong> since OTP</div>`:''}
+          ${d.notes?`<div class="li-sub" style="margin-top:2px">📝 ${d.notes}</div>`:''}
+        </div>
+        <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+          <select style="font-size:12px;padding:5px 8px;border-radius:6px;border:1.5px solid var(--border);font-family:inherit" onchange="updateDealStage(${i},this.value)">
+            ${['OTP Signed','Bond Pending','Bond Approved','Transfer Prep','At Deeds Office','Registered','Fallen Through'].map(s=>`<option${s===d.stage?' selected':''}>${s}</option>`).join('')}
+          </select>
+          <span class="badge ${stageColors[d.stage]||'badge-gray'}">${d.stage}</span>
+          <span style="font-size:11px;color:var(--sub)">Comm: ${fmtR(d.price*(d.rate/100)*1.15)}</span>
+          <button class="btn btn-sm" style="color:var(--red)" onclick="removeDeal(${i})">Remove</button>
+        </div>
+      </div>
+      <div class="progress-bar"><div class="progress-fill" style="width:${progress*100}%"></div></div>
+    </div>`;
+  }).join('');
+}
+
+// ========== RUNNERS ==========
+function addRunner(){
+  const name=g('rn-name');if(!name){alert('Please enter name');return;}
+  runnerList.push({name,role:g('rn-role'),split:parseFloat(document.getElementById('rn-split').value)||50,tel:g('rn-tel'),email:g('rn-email'),ffc:g('rn-ffc')});
+  renderRunners();document.getElementById('add-runner-form').style.display='none';
+}
+function removeRunner(i){runnerList.splice(i,1);renderRunners();}
+function renderRunners(){
+  const list=document.getElementById('runners-list');
+  if(!runnerList.length){list.innerHTML='<div style="color:#aaa;font-size:13px;padding:8px 0">No runners or agents yet.</div>';return;}
+  const roleColors={Runner:'badge-gray',Agent:'badge-blue','Senior Agent':'badge-green',Principal:'badge-amber'};
+  list.innerHTML=`<table style="width:100%;border-collapse:collapse"><thead><tr style="background:#f8f9fb">${['Name','Role','Split','Contact','FFC',''].map(h=>`<th style="padding:10px 12px;text-align:left;font-size:11px;color:var(--sub);font-weight:600">${h}</th>`).join('')}</tr></thead><tbody>${runnerList.map((r,i)=>`<tr style="border-top:1px solid #f0f0f0"><td style="padding:10px 12px;font-weight:600;font-size:13px">${r.name}</td><td style="padding:10px 12px"><span class="badge ${roleColors[r.role]||'badge-gray'}">${r.role}</span></td><td style="padding:10px 12px"><span style="background:var(--gold);color:#fff;font-weight:700;font-size:13px;padding:3px 10px;border-radius:20px">${r.split}%</span></td><td style="padding:10px 12px;font-size:12px;color:var(--sub)">${r.tel||'—'}<br>${r.email||''}</td><td style="padding:10px 12px;font-size:12px;color:var(--sub)">${r.ffc||'—'}</td><td style="padding:10px 12px"><button class="btn btn-sm" style="color:var(--red)" onclick="removeRunner(${i})">Remove</button></td></tr>`).join('')}</tbody></table>`;
+}
+
+// ========== COMMISSION CALC ==========
+function calcSplit(){
+  const price=parseFloat(document.getElementById('cc-price').value)||0;
+  const rate=parseFloat(document.getElementById('cc-rate').value)||5.5;
+  const split=parseFloat(document.getElementById('cc-split').value)||60;
+  const gross=price*rate/100,vat=gross*0.15,total=gross+vat;
+  document.getElementById('cc-gross').textContent=gross>0?fmtR(gross):'—';
+  document.getElementById('cc-vat').textContent=gross>0?fmtR(vat):'—';
+  document.getElementById('cc-agent').textContent=gross>0?fmtR(total*split/100):'—';
+  document.getElementById('cc-agency').textContent=gross>0?fmtR(total*(1-split/100)):'—';
+}
+
+// ========== DASHBOARD ==========
+function updateDash(){
+  document.getElementById('stat-listings').textContent=clientList.filter(c=>c.role==='Seller').length;
+  document.getElementById('stat-otps').textContent=otpList.length;
+  document.getElementById('stat-clients').textContent=clientList.length;
+  document.getElementById('stat-invoices').textContent=invoiceList.length;
+  const do_=document.getElementById('dash-otps');
+  if(!otpList.length)do_.innerHTML='<div style="color:#aaa;font-size:13px">No OTPs yet.</div>';
+  else do_.innerHTML=otpList.slice(0,4).map(o=>`<div class="list-item"><div><div class="li-main">${o.prop}</div><div class="li-sub">Buyer: ${o.buyer} · R${o.price.toLocaleString('en-ZA')} · ${o.date}</div></div><span class="badge badge-amber">${o.status}</span></div>`).join('');
+  const dc=document.getElementById('dash-clients');
+  if(!clientList.length)dc.innerHTML='<div style="color:#aaa;font-size:13px">No clients yet.</div>';
+  else dc.innerHTML=clientList.slice(0,4).map(c=>`<div class="list-item"><div><div class="li-main">${c.name}</div><div class="li-sub">${c.role}${c.notes?' · '+c.notes:''}</div></div><span class="badge badge-blue">${c.role}</span></div>`).join('');
+  checkReminders();
+}
+
+// ========== AI ASSISTANT ==========
+async function sendAI(){
+  const input=document.getElementById('ai-input');
+  const msg=input.value.trim();
+  if(!msg)return;
+  input.value='';
+  askAI(msg);
+}
+async function askAI(msg){
+  const chat=document.getElementById('ai-chat');
+  const uDiv=document.createElement('div');uDiv.className='ai-msg user';uDiv.textContent=msg;chat.appendChild(uDiv);
+  const bDiv=document.createElement('div');bDiv.className='ai-msg thinking';bDiv.textContent='Thinking...';chat.appendChild(bDiv);
+  chat.scrollTop=chat.scrollHeight;
+  try{
+    const res=await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',
+      headers:{
+        'Content-Type':'application/json',
+        'x-api-key':'ANTHROPIC_API_KEY',
+        'anthropic-version':'2023-06-01',
+        'anthropic-dangerous-direct-browser-calls':'true'
+      },
+      body:JSON.stringify({
+        model:'claude-sonnet-4-20250514',
+        max_tokens:1000,
+        system:'You are an expert South African real estate admin assistant for REH Properties / Mandated Property Group. Help with OTPs under the Alienation of Land Act, FICA compliance, lease agreements, commission calculations (5.5% is standard for Mandated), transfer duty (SARS 2024/25 rates), VAT, SARS clearance, Body Corporate rules, bond applications, conveyancing, and all SA property admin. Use ZAR. Be concise and practical. Mention Hammond Pole as a known conveyancer if relevant.',
+        messages:[{role:'user',content:msg}]
+      })
+    });
+    if(!res.ok){const err=await res.text();throw new Error('API error: '+res.status+' '+err);}
+    const data=await res.json();
+    bDiv.className='ai-msg bot';
+    bDiv.textContent=data.content?.map(b=>b.text||'').join('')||'Sorry, no response received.';
+  }catch(e){
+    bDiv.className='ai-msg bot';
+    bDiv.textContent='⚠️ Error: '+e.message;
+  }
+  chat.scrollTop=chat.scrollHeight;
+}
+
+// ========== SA CALCULATORS ==========
+function showCalcTab(t){
+  ['bond','transfer','levy'].forEach(id=>document.getElementById('calc-'+id).classList.toggle('active',id===t));
+  document.querySelectorAll('#page-calcs .tab-btn').forEach((b,i)=>b.classList.toggle('active',['bond','transfer','levy'][i]===t));
+}
+function calcBond(){
+  const inc=(parseFloat(document.getElementById('ba-income').value)||0)+(parseFloat(document.getElementById('ba-co').value)||0);
+  const exp=parseFloat(document.getElementById('ba-exp').value)||0;
+  const r=(parseFloat(document.getElementById('ba-rate').value)||11.75)/100/12;
+  const n=(parseFloat(document.getElementById('ba-term').value)||20)*12;
+  if(!inc||!r||!n)return;
+  const max30=inc*0.30/r*(1-Math.pow(1+r,-n));
+  const max40=inc*0.40/r*(1-Math.pow(1+r,-n));
+  const repay=max30*r/(1-Math.pow(1+r,-n));
+  document.getElementById('ba-maxbond').textContent=fmtR(max30);
+  document.getElementById('ba-maxbond40').textContent=fmtR(max40);
+  document.getElementById('ba-repay').textContent=fmtR(repay);
+  document.getElementById('ba-disp').textContent=fmtR(inc-exp);
+  const v=document.getElementById('ba-verdict');v.style.display='block';
+  if((inc-exp)>repay){v.style.background='var(--green-light)';v.style.color='#155d36';v.textContent='✅ Applicant qualifies — disposable income exceeds estimated repayment.';}
+  else{v.style.background='var(--red-light)';v.style.color='#8b1c1c';v.textContent='⚠️ Caution — disposable income may be insufficient.';}
+}
+function calcTransfer(){
+  const p=parseFloat(document.getElementById('td-price').value)||0;
+  const b=parseFloat(document.getElementById('td-bond').value)||0;
+  if(!p){document.getElementById('td-exempt-banner').style.display='none';return;}
+  let duty=0;
+  if(p<=1100000){duty=0;document.getElementById('td-exempt-banner').style.display='block';}
+  else{
+    document.getElementById('td-exempt-banner').style.display='none';
+    if(p<=1512500)duty=(p-1100000)*0.03;
+    else if(p<=2117500)duty=12375+(p-1512500)*0.06;
+    else if(p<=2722500)duty=48675+(p-2117500)*0.08;
+    else if(p<=12100000)duty=97075+(p-2722500)*0.11;
+    else duty=1128600+(p-12100000)*0.13;
+  }
+  const conv=p<=500000?8000:p<=1000000?12000:p<=2000000?18000:p<=5000000?28000:42000;
+  const bondreg=b<=500000?6000:b<=1000000?9000:b<=2000000?14000:b<=5000000?22000:35000;
+  const total=duty+conv+(b>0?bondreg:0);
+  document.getElementById('td-duty').textContent=fmtR(duty);
+  document.getElementById('td-conv').textContent=fmtR(conv);
+  document.getElementById('td-bondreg').textContent=b>0?fmtR(bondreg):'N/A';
+  document.getElementById('td-total').textContent=fmtR(total);
+  document.getElementById('td-breakdown').innerHTML=`<strong>Breakdown:</strong><br>Transfer duty: ${fmtR(duty)}<br>Conveyancing fees (est.): ${fmtR(conv)}<br>${b>0?`Bond registration fees (est.): ${fmtR(bondreg)}<br>`:''}<strong>Total: ${fmtR(total)}</strong><br><span style="color:var(--sub)">Conveyancing &amp; bond fees are estimates.</span>`;
+}
+function calcLevy(){
+  const budget=parseFloat(document.getElementById('lv-budget').value)||0;
+  const total=parseFloat(document.getElementById('lv-total').value)||1;
+  const unit=parseFloat(document.getElementById('lv-unit').value)||0;
+  const special=parseFloat(document.getElementById('lv-special').value)||0;
+  if(!budget||!unit)return;
+  const pq=(unit/total)*100,monthly=budget*(unit/total),specC=special*(unit/total);
+  document.getElementById('lv-pq').textContent=pq.toFixed(2)+'%';
+  document.getElementById('lv-monthly').textContent=fmtR(monthly);
+  document.getElementById('lv-spec-contrib').textContent=fmtR(specC);
+  document.getElementById('lv-total-due').textContent=fmtR(monthly+specC);
+}
+
+// ========== WHATSAPP ==========
+const WA_TEMPLATES=[
+  {label:'Viewing Reminder',icon:'📅',fn:(c,p,d,t,a)=>`Hi ${c||'[client]'} 👋\n\nThis is a friendly reminder of your property viewing at *${p||'[address]'}* on *${d||'[date]'}* at *${t||'[time]'}*.\n\nPlease let me know if anything changes. Looking forward to seeing you!\n\n${a||'[Agent]'} — REH Properties\n📞 063 120 8233`},
+  {label:'OTP Follow-up',icon:'📋',fn:(c,p,d,t,a)=>`Hi ${c||'[client]'} 👋\n\nFollowing up on the Offer to Purchase for *${p||'[address]'}*. We are still awaiting your signature/confirmation to proceed.\n\nPlease don't hesitate to reach out if you have any questions!\n\nKind regards,\n${a||'[Agent]'} — REH Properties`},
+  {label:'Bond Update',icon:'🏦',fn:(c,p,d,t,a)=>`Hi ${c||'[client]'} 👋\n\nUpdate on the bond application for *${p||'[address]'}*. We have submitted your application and are awaiting feedback from the bank. We'll keep you posted!\n\nKind regards,\n${a||'[Agent]'} — REH Properties`},
+  {label:'Bond Approved 🎉',icon:'✅',fn:(c,p,d,t,a)=>`Hi ${c||'[client]'} 👋 🎉\n\nGreat news! Your bond for *${p||'[address]'}* has been *APPROVED*!\n\nThe conveyancers will now start preparing the transfer documents. We will keep you updated every step of the way!\n\n${a||'[Agent]'} — REH Properties`},
+  {label:'Transfer Update',icon:'🔑',fn:(c,p,d,t,a)=>`Hi ${c||'[client]'} 👋\n\nUpdate on the transfer of *${p||'[address]'}*. The conveyancers have lodged the documents at the Deeds Office. We expect registration ${d?'around *'+d+'*':'shortly'}.\n\nWe will contact you as soon as it registers! 🏠\n\n${a||'[Agent]'} — REH Properties`},
+  {label:'New Listing',icon:'🏠',fn:(c,p,d,t,a)=>`Hi ${c||'[client]'} 👋\n\nI have a property I think you'll love! 🏠\n\n📍 *${p||'[address]'}*\n\nCan I arrange a viewing for you? I'm available ${d?'on *'+d+'*':'this week'} ${t?'at *'+t+'*':'at a time that suits you'}.\n\n${a||'[Agent]'} — REH Properties\n📞 063 120 8233`},
+  {label:'FICA Reminder',icon:'📄',fn:(c,p,d,t,a)=>`Hi ${c||'[client]'} 👋\n\nWe still need the following FICA documents from you:\n✅ ID document (certified copy)\n✅ Proof of residence (not older than 3 months)\n✅ Income Tax number\n\nPlease WhatsApp these through at your earliest convenience to avoid any delays.\n\nThank you!\n${a||'[Agent]'} — REH Properties`},
+  {label:'Congratulations! 🎉',icon:'🎊',fn:(c,p,d,t,a)=>`Congratulations ${c||'[client]'} 🎉🏡\n\nThe transfer of *${p||'[address]'}* has been *successfully registered*! The property is now officially in your name!\n\nIt was a pleasure working with you. Wishing you many wonderful years in your new home! 🙏\n\n${a||'[Agent]'} — REH Properties\n📞 063 120 8233`}
+];
+function renderWA(){
+  const c=g('wa-client')||'[client]',p=g('wa-prop')||'[address]',d=g('wa-date')||'[date]',t=g('wa-time')||'[time]',a=g('wa-agent')||'[agent]';
+  const cont=document.getElementById('wa-templates');
+  cont.innerHTML=WA_TEMPLATES.map((tpl,i)=>{
+    const msg=tpl.fn(c,p,d,t,a);
+    return`<div class="wa-card"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px"><div class="card-title" style="margin-bottom:0">${tpl.icon} ${tpl.label}</div><div style="display:flex;gap:6px"><button class="btn btn-sm" onclick="copyWA(${i})">Copy</button><a href="https://wa.me/?text=${encodeURIComponent(msg)}" target="_blank" class="btn btn-primary btn-sm">Open WhatsApp</a></div></div><textarea id="wa-msg-${i}" style="width:100%;font-size:12px;padding:10px;border-radius:8px;border:1.5px solid var(--border);background:#fafbfc;font-family:inherit;line-height:1.7;resize:vertical" rows="5">${msg}</textarea></div>`;
+  }).join('');
+}
+function copyWA(i){navigator.clipboard.writeText(document.getElementById('wa-msg-'+i).value).catch(()=>{});}
+
+// ========== MANDATE PDF ==========
+function exportMandatePDF(){
+  const {jsPDF}=window.jspdf;
+  const doc=new jsPDF({orientation:'portrait',unit:'mm',format:'a4'});
+  const ml=20,tw=170;let y=20;
+  const checkY=(h=10)=>{if(y+h>280){doc.addPage();y=20;}};
+  const hdr=(txt)=>{checkY(10);doc.setFillColor(26,37,64);doc.rect(ml,y,tw,8,'F');doc.setFont('helvetica','bold');doc.setFontSize(10);doc.setTextColor(255,255,255);doc.text(txt,ml+3,y+5.5);y+=12;};
+  const row=(l,v,l2,v2)=>{checkY(8);doc.setFont('helvetica','bold');doc.setFontSize(9);doc.setTextColor(80);doc.text(l||'',ml,y);doc.setFont('helvetica','normal');doc.setTextColor(26,37,64);doc.text(String(v||''),ml+40,y);if(l2){doc.setFont('helvetica','bold');doc.setTextColor(80);doc.text(l2||'',ml+90,y);doc.setFont('helvetica','normal');doc.setTextColor(26,37,64);doc.text(String(v2||''),ml+130,y);}y+=7;};
+  doc.setFillColor(26,37,64);doc.rect(0,0,210,22,'F');
+  doc.setFont('helvetica','bold');doc.setFontSize(16);doc.setTextColor(232,160,32);
+  doc.text('REH PROPERTIES',ml,13);
+  doc.setFont('helvetica','normal');doc.setFontSize(9);doc.setTextColor(180,190,210);
+  doc.text('Mandated Property Group | Mandate Agreement',ml,19);
+  doc.setFont('helvetica','bold');doc.setFontSize(18);doc.setTextColor(232,160,32);
+  doc.text(g('man-type').toUpperCase(),210-ml,13,{align:'right'});
+  y=30;
+  hdr('1. PROPERTY');
+  row('Address:',g('man-prop'),'ERF:',g('man-erf'));
+  row('Asking Price:','R '+(parseFloat(g('man-price'))||0).toLocaleString('en-ZA'),'Commission:',g('man-rate')+'%');
+  row('Period:',g('man-period'),'Start Date:',g('man-start'));
+  y+=4;hdr('2. SELLER');
+  row('Full Name:',g('man-seller'),'ID:',g('man-sellerid'));
+  row('Contact:',g('man-sellertel'),'','');
+  y+=4;hdr('3. AGENT');
+  row('Agent:',g('man-agent'),'FFC Number:',g('man-ffc'));
+  row('Agency:',g('man-agency'),'','');
+  if(g('man-cond')){y+=4;hdr('4. SPECIAL CONDITIONS');doc.setFont('helvetica','normal');doc.setFontSize(9);doc.setTextColor(26,37,64);const lines=doc.splitTextToSize(g('man-cond'),tw);lines.forEach(l=>{checkY(6);doc.text(l,ml,y);y+=5;});y+=4;}
+  hdr('5. SIGNATURES');y+=4;
+  [['sig-mandate-seller','SELLER'],['sig-mandate-agent','AGENT']].forEach((s,i)=>{
+    const xOff=i*(tw/2+5);
+    try{const imgData=document.getElementById(s[0]).toDataURL('image/png');doc.addImage(imgData,'PNG',ml+xOff,y,75,25);}catch(e){}
+    doc.setDrawColor(150);doc.setLineWidth(0.3);doc.line(ml+xOff,y+27,ml+xOff+75,y+27);
+    doc.setFont('helvetica','normal');doc.setFontSize(8);doc.setTextColor(80);doc.text(s[1],ml+xOff,y+32);
+  });
+  doc.save('REH_Mandate_'+new Date().toISOString().split('T')[0]+'.pdf');
+}
+
+// ========== PROPERTY REPORT ==========
+function loadPhoto(type){
+  const input=document.getElementById(type==='agent'?'agent-photo-input':'agency-logo-input');
+  const file=input.files[0];if(!file)return;
+  const reader=new FileReader();
+  reader.onload=e=>{
+    const data=e.target.result;
+    if(type==='agent'){
+      agentPhotoData=data;
+      document.getElementById('agent-photo-preview').src=data;
+      document.getElementById('agent-photo-preview').style.display='block';
+      document.getElementById('agent-photo-placeholder').style.display='none';
+      document.getElementById('pcp-agent-photo').innerHTML=`<img src="${data}" style="width:100%;height:100%;object-fit:cover;border-radius:50%"/>`;
+    }else{
+      agencyLogoData=data;
+      document.getElementById('agency-logo-preview').src=data;
+      document.getElementById('agency-logo-preview').style.display='block';
+      document.getElementById('agency-logo-placeholder').style.display='none';
+      document.getElementById('pcp-agency-logo').innerHTML=`<img src="${data}" style="width:100%;height:100%;object-fit:contain"/>`;
+    }
+    renderPropCard();
+  };
+  reader.readAsDataURL(file);
+}
+function renderPropCard(){
+  const addr=g('pc-addr')||'Property Address';
+  const type=document.getElementById('pc-type')?.value||'House';
+  const price=parseFloat(g('pc-price'))||0;
+  const features=(g('pc-features')||'').split(',').map(s=>s.trim()).filter(Boolean);
+  document.getElementById('pcp-addr').textContent=addr;
+  document.getElementById('pcp-type').textContent=type;
+  document.getElementById('pcp-price').textContent=price?fmtR(price):'—';
+  document.getElementById('pcp-beds').textContent=g('pc-beds')||'—';
+  document.getElementById('pcp-baths').textContent=g('pc-baths')||'—';
+  document.getElementById('pcp-garages').textContent=g('pc-garages')||'—';
+  const floor=g('pc-floor');
+  document.getElementById('pcp-floor').textContent=floor?floor+' m²':'—';
+  document.getElementById('pcp-agent').textContent=g('pc-agent')||'—';
+  document.getElementById('pcp-agenttel').textContent=g('pc-agenttel')||'—';
+  const levy=parseFloat(g('pc-levy'))||0;
+  document.getElementById('pcp-levy-row').textContent=levy?'Monthly levy: '+fmtR(levy):'';
+  document.getElementById('pcp-features').innerHTML=features.map(f=>`<span class="feat-tag">${f}</span>`).join('');
+}
+
+// ========== FICA ==========
+function buildFICA(){
+  const sellerItems=['Identity Document','Marriage Certificate (if applicable)','Antenuptial Contract (if applicable)','Proof of residence (not older than 3 months — not bank statements)','Income Tax Number','Divorce order & Settlement agreement (if applicable)','Latest municipal statement for property being sold','Latest BC / HOA statement (if applicable)'];
+  const buyerItems=['Identity Document','Marriage Certificate (if applicable)','Antenuptial Contract (if applicable)','Proof of residence (not older than 3 months — not bank statements)','Income Tax Number'];
+  const ccItems=['CK1 or CK2 document','Resolution signed by all members nominating representative','Contact details of accounting officer','Identity document of each member','Proof of residence for each member'];
+  const coItems=['CoR 14.3 — Registration Certificate','CoR 15.1A — Memorandum of Incorporation','CoR 14.1 Annex A or CoR 39 — directors','CoR 14.1 Annex D or CoR 44 — auditors','Resolution signed by all directors nominating representative','Contact details of Auditor'];
+  const trustItems=['Deed of Trust','Letter of Authority','Resolution signed by all Trustees','Contact details of Auditor','Identity document of each Trustee','Proof of residence for each trustee'];
+  const decItems=['Letter of Executorship','Copy of the Will','Executor\'s name & contact number','Attorney firm attending to transfer','Executor\'s Contact No. and Email Address'];
+  const makeList=(id,items)=>{document.getElementById(id).innerHTML=items.map(item=>`<label class="check-item" onclick="this.classList.toggle('checked')" style="display:flex;align-items:flex-start;gap:8px;padding:8px;margin-bottom:4px;border-radius:6px;cursor:pointer"><input type="checkbox" style="margin-top:2px;accent-color:var(--green)"> <span>${item}</span></label>`).join('');};
+  makeList('fica-seller',sellerItems);makeList('fica-purchaser',buyerItems);
+  makeList('fica-cc',ccItems);makeList('fica-companies',coItems);
+  makeList('fica-trusts',trustItems);makeList('fica-deceased',decItems);
+}
+</script>
+</body>
+</html>
