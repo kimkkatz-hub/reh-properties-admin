@@ -2385,7 +2385,7 @@ async function onSignedIn(user){
 }
 
 // Check if opened from file:// and warn
-window.addEventListener('DOMContentLoaded',()=>{
+window.addEventListener('DOMContentLoaded', async ()=>{
   if(window.location.protocol==='file:'){
     document.getElementById('file-warning').style.display='block';
     document.getElementById('conn-status').style.background='var(--red-light)';
@@ -2393,8 +2393,12 @@ window.addEventListener('DOMContentLoaded',()=>{
     document.getElementById('conn-status').textContent='❌ Opened from file:// — Supabase will not work. See red banner above.';
     document.getElementById('login-btn').style.background='#aaa';
   } else {
-    // Test connection
     testConnection();
+    // Resume existing session if already logged in
+    try{
+      const {data:{session}} = await db.auth.getSession();
+      if(session?.user) await onSignedIn(session.user);
+    }catch(e){ console.warn('Session check failed:',e.message); }
   }
 });
 
@@ -2411,11 +2415,6 @@ async function testConnection(){
     status.textContent='❌ Cannot reach database. Check your internet connection.';
   }
 }
-  const {data:{session}} = await db.auth.getSession();
-  if(session?.user){
-    await onSignedIn(session.user);
-  }
-});
 
 // ============================================
 // ACTIVITY LOGGING
