@@ -218,7 +218,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);fon
 <body>
 
 <!-- LOGIN PAGE -->
-<div id="login-page">
+<div id="login-page" style="display:none">
   <div id="file-warning" style="display:none;background:#b52a2a;color:#fff;padding:12px 20px;font-size:12px;text-align:center;width:100%;position:absolute;top:0;left:0;z-index:99999;line-height:1.6">
     ⚠️ <strong>Opening from file:// blocks Supabase.</strong> Save this file to a folder, then open it via a local server:<br>
     <strong>Option 1:</strong> VS Code → right-click → "Open with Live Server" &nbsp;|&nbsp;
@@ -239,9 +239,9 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);fon
     </div>
     <div class="login-field">
       <label>Password</label>
-      <input type="password" id="login-password" placeholder="••••••••" autocomplete="current-password" onkeydown="if(event.key==='Enter')doLogin()"/>
+      <input type="password" id="login-password" placeholder="••••••••" autocomplete="current-password" id="login-password-input"/>
     </div>
-    <button class="login-btn" id="login-btn" onclick="doLogin()">Sign In</button>
+    <button class="login-btn" id="login-btn">Sign In</button>
     <div class="login-error" id="login-error"></div>
     <div style="margin-top:14px;padding:10px 12px;background:#f8f9fb;border-radius:8px;font-size:11px;color:var(--sub);line-height:1.7">
       <strong>First time?</strong> Your admin must create your login via Admin Panel → User Management.<br>
@@ -252,7 +252,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);fon
 </div>
 
 <!-- TOP BAR -->
-<div id="top-bar" style="display:none">
+<div id="top-bar">
   <div class="agent-info">
     <div class="agent-avatar" id="tb-avatar">M</div>
     <div>
@@ -266,7 +266,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);fon
   </div>
 </div>
 
-<div class="app" id="main-app" style="display:none">
+<div class="app" id="main-app">
 <div class="sidebar">
   <div class="brand">
     <div class="brand-icon">R</div>
@@ -1313,15 +1313,20 @@ window.addEventListener('DOMContentLoaded', async () => {
   // Test connection
   testConnection();
 
-  // Resume session if already logged in
-  if (db) {
-    try {
-      const { data: { session } } = await db.auth.getSession();
-      if (session?.user) await onSignedIn(session.user);
-    } catch(e) {
-      console.warn('Session check failed:', e.message);
-    }
-  }
+  // Skip login — go straight into app
+  document.getElementById('top-bar').style.display = 'flex';
+  document.getElementById('main-app').style.display = 'flex';
+  document.getElementById('tb-name').innerHTML = 'Mary Mathenjwa <span class="admin-badge">ADMIN</span>';
+  document.getElementById('tb-role').textContent = 'Admin · REH Properties';
+  document.getElementById('tb-avatar').textContent = 'M';
+  document.getElementById('tb-date').textContent = new Date().toLocaleDateString('en-ZA',{weekday:'short',day:'numeric',month:'short',year:'numeric'});
+  const adminNav = document.getElementById('admin-nav');
+  if (adminNav) adminNav.style.display = 'block';
+  const greet = document.querySelector('#page-dashboard .page-title');
+  if (greet) greet.textContent = 'Good day, Mary 👋';
+  updateDash();
+  checkBondReminders();
+  checkReminders();
 });
 
 // ─── AUTH ─────────────────────────────────────────────────────────────────────
