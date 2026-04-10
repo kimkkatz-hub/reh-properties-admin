@@ -839,7 +839,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);fon
       <div class="form-group"><label class="form-label">Notes</label><input id="ev-notes" placeholder="Call 30 min before to confirm"/></div>
     </div>
     <div style="background:#f0f4ff;border-radius:8px;padding:10px 14px;font-size:12px;color:#1a5fa8;margin-bottom:8px">
-      🔔 <strong>Auto-reminders:</strong> You'll receive a browser notification 1 day before and 2 hours before this event.
+      🔔 <strong>Auto-reminders:</strong> You will receive a browser notification 1 day before and 2 hours before this event.
     </div>
     <div style="display:flex;gap:8px">
       <button class="btn btn-primary" onclick="addEvent()">Save &amp; Set Reminder</button>
@@ -1758,7 +1758,7 @@ function requestNotifPermission(){
     updateNotifUI();
     if(perm==='granted'){
       scheduleAllReminders();
-      showToast('✅ Reminders enabled! You'll be notified 1 day & 2 hours before each event.');
+      showToast('✅ Reminders enabled! You will be notified 1 day & 2 hours before each event.');
     }
   });
 }
@@ -1831,7 +1831,7 @@ function addEvent(){
   ['ev-title','ev-dt','ev-client','ev-notes'].forEach(i=>{const el=document.getElementById(i);if(el)el.value='';});
   document.getElementById('add-event-form').style.display='none';
   if(Notification.permission==='granted'){
-    showToast('✅ Event saved! Reminders set for 1 day &amp; 2 hours before.');
+    showToast('✅ Event saved! Reminders set for 1 day and 2 hours before.');
   } else {
     updateNotifUI();
   }
