@@ -195,6 +195,12 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);fon
   .main{margin-left:0}
   .invoice-preview{border:none;padding:0}
 }
+
+.otp-stab{flex:1;text-align:center;padding:10px 4px;font-size:11px;font-weight:600;color:var(--sub);cursor:pointer;transition:all 0.15s;border-right:1px solid var(--border);user-select:none}
+.otp-stab:last-child{border-right:none}
+.otp-stab:hover{background:#f5f7ff;color:var(--navy)}
+.otp-stab.active{background:var(--navy);color:var(--gold)}
+.otp-step{display:block}
 </style>
 </head>
 <body>
@@ -289,378 +295,379 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);fon
 </div>
 
 <!-- ===== OTP PAGE ===== -->
-<div class="page" id="page-otp">
+<div class="page" <div class="page" id="page-otp">
   <div class="page-header">
     <div>
       <div class="page-title">Offer to Purchase</div>
-      <div class="page-sub">Mandated Property Group — REH Properties — complete all sections and sign</div>
+      <div class="page-sub">Mandated Property Group — REH Properties</div>
     </div>
     <div style="display:flex;gap:8px">
-      <button class="btn" onclick="clearOTP()">Clear</button>
+      <button class="btn" onclick="clearOTP()">🗑 Clear Form</button>
       <button class="btn btn-amber" onclick="exportOTPPDF()">⬇ Download PDF</button>
     </div>
   </div>
-  <div class="otp-header-block">
-    <div class="otp-brand">
-      <div class="otp-brand-m">M</div>
-      <div>
-        <div class="otp-title">OFFER TO PURCHASE</div>
-        <div class="otp-subtitle">Mandated Property Group (Pty) Ltd · Trading as Mandated</div>
-      </div>
-    </div>
-    <div style="text-align:right;color:rgba(255,255,255,0.6);font-size:11px;line-height:1.8">
-      This document constitutes a binding<br>Agreement (deed of sale) once signed<br>by both parties.
-    </div>
-  </div>
-  <div class="steps" id="otp-steps">
-    <div class="step active" onclick="goStep(0)">1. Seller/s</div>
-    <div class="step" onclick="goStep(1)">2. Purchaser/s</div>
-    <div class="step" onclick="goStep(2)">3. Property</div>
-    <div class="step" onclick="goStep(3)">4. Transaction</div>
-    <div class="step" onclick="goStep(4)">5. Conditions</div>
-    <div class="step" onclick="goStep(5)">6. Fixtures</div>
-    <div class="step" onclick="goStep(6)">7. Signature</div>
+
+  <!-- Step tabs -->
+  <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:18px">
+    <button class="otp-tab active" id="otab-1" onclick="goOTPStep(1)">1 · Seller</button>
+    <button class="otp-tab" id="otab-2" onclick="goOTPStep(2)">2 · Purchaser</button>
+    <button class="otp-tab" id="otab-3" onclick="goOTPStep(3)">3 · Property</button>
+    <button class="otp-tab" id="otab-4" onclick="goOTPStep(4)">4 · Transaction</button>
+    <button class="otp-tab" id="otab-5" onclick="goOTPStep(5)">5 · Conditions</button>
+    <button class="otp-tab" id="otab-6" onclick="goOTPStep(6)">6 · Fixtures</button>
+    <button class="otp-tab" id="otab-7" onclick="goOTPStep(7)">7 · Signatures</button>
   </div>
 
-  <!-- STEP 1: SELLERS -->
-  <div class="step-page active" id="otp-step-0">
+  <!-- ── STEP 1: SELLER ── -->
+  <div class="otp-step" id="ostep-1">
     <div class="card">
-      <div class="form-section">Seller 1 — Individual / Legal Entity</div>
-      <div class="form-row col4">
-        <div class="form-group"><label class="form-label">Title</label><select id="s1-title"><option></option><option>Mr</option><option>Mrs</option><option>Ms</option><option>Miss</option><option>Dr</option><option>Prof</option></select></div>
-        <div class="form-group" style="grid-column:span 2"><label class="form-label">Surname</label><input id="s1-surname" placeholder="Mokoena"/></div>
-        <div class="form-group"><label class="form-label">ID Number</label><input id="s1-id" placeholder="9503260456086"/></div>
-      </div>
-      <div class="form-row col1"><div class="form-group"><label class="form-label">Full Names</label><input id="s1-names" placeholder="Jesca Madalena"/></div></div>
-      <div class="form-row col2">
-        <div class="form-group"><label class="form-label">Cellphone Number</label><input id="s1-cell" placeholder="061 707 2643"/></div>
-        <div class="form-group"><label class="form-label">Income Tax Number</label><input id="s1-taxno" placeholder="1752834174"/></div>
-      </div>
-      <div class="form-row col2">
-        <div class="form-group"><label class="form-label">Email Address</label><input id="s1-email" placeholder="mokoenajessy26@gmail.com"/></div>
-        <div class="form-group"><label class="form-label">Residential Address</label><input id="s1-addr" placeholder="3134 Clownfish Street, Ext 17, Watervalspruit"/></div>
-      </div>
-      <div class="form-row col2">
-        <div class="form-group"><label class="form-label">Existing Bond Bank</label><input id="s1-bank" placeholder="FNB"/></div>
-        <div class="form-group"><label class="form-label">Bond Account Number</label><input id="s1-bondacc" placeholder="3-000-018-203-161"/></div>
-      </div>
-      <div class="form-row col2">
-        <div class="form-group"><label class="form-label">Marital Status</label>
-          <select id="s1-marital"><option>Unmarried</option><option>Divorced</option><option>Married in Community of Property</option><option>Married with Antenuptial Contract</option><option>Customary/Traditional Marriage</option><option>Married in Other Country</option></select>
-        </div>
-        <div class="form-group"><label class="form-label">Marital Status Changed?</label>
-          <select id="s1-marital-changed"><option>No</option><option>Yes</option></select>
-        </div>
-      </div>
-      <div class="form-section" style="margin-top:20px">Seller 2 / Spouse (if applicable)</div>
-      <div class="form-row col4">
-        <div class="form-group"><label class="form-label">Title</label><select id="s2-title"><option></option><option>Mr</option><option>Mrs</option><option>Ms</option><option>Miss</option><option>Dr</option></select></div>
-        <div class="form-group" style="grid-column:span 2"><label class="form-label">Surname</label><input id="s2-surname" placeholder="Leave blank if N/A"/></div>
-        <div class="form-group"><label class="form-label">ID Number</label><input id="s2-id" placeholder=""/></div>
-      </div>
-      <div class="form-row col1"><div class="form-group"><label class="form-label">Full Names</label><input id="s2-names" placeholder=""/></div></div>
-      <div class="form-section" style="margin-top:20px">Legal Entity Seller (if applicable)</div>
-      <div class="form-row col2">
-        <div class="form-group"><label class="form-label">Name of Legal Entity</label><input id="s-entity-name" placeholder="Leave blank if N/A"/></div>
-        <div class="form-group"><label class="form-label">Registration Number</label><input id="s-entity-reg" placeholder=""/></div>
-      </div>
-    </div>
-    <div style="display:flex;justify-content:flex-end"><button class="btn btn-primary" onclick="goStep(1)">Next: Purchaser/s →</button></div>
-  </div>
-
-  <!-- STEP 2: PURCHASERS -->
-  <div class="step-page" id="otp-step-1">
-    <div class="card">
-      <div class="form-section">Purchaser 1 — Individual / Legal Entity</div>
-      <div class="form-row col4">
-        <div class="form-group"><label class="form-label">Title</label><select id="p1-title"><option></option><option>Mr</option><option>Mrs</option><option>Ms</option><option>Miss</option><option>Dr</option><option>Prof</option></select></div>
-        <div class="form-group" style="grid-column:span 2"><label class="form-label">Surname</label><input id="p1-surname" placeholder="Chakala"/></div>
-        <div class="form-group"><label class="form-label">ID Number</label><input id="p1-id" placeholder="9510235805081"/></div>
-      </div>
-      <div class="form-row col1"><div class="form-group"><label class="form-label">Full Names</label><input id="p1-names" placeholder="Mpho"/></div></div>
+      <div class="card-title">Seller 1</div>
       <div class="form-row col3">
-        <div class="form-group"><label class="form-label">Cellphone</label><input id="p1-cell" placeholder="082-582-9125"/></div>
-        <div class="form-group"><label class="form-label">Income Tax No</label><input id="p1-taxno" placeholder=""/></div>
-        <div class="form-group"><label class="form-label">Home Language</label><input id="p1-lang" placeholder="S. Sotho"/></div>
-      </div>
-      <div class="form-row col2">
-        <div class="form-group"><label class="form-label">City of Birth</label><input id="p1-city" placeholder="Alberton / Johannesburg"/></div>
-        <div class="form-group"><label class="form-label">Email</label><input id="p1-email" placeholder="Mpho.chakala@gmail.com"/></div>
-      </div>
-      <div class="form-row col2">
-        <div class="form-group"><label class="form-label">Residential Address</label><input id="p1-addr" placeholder="6629 Tenyane Street"/></div>
-        <div class="form-group"><label class="form-label">Marital Status</label>
-          <select id="p1-marital"><option>Unmarried</option><option>Divorced</option><option>Married in Community of Property</option><option>Married with Antenuptial Contract</option><option>Customary/Traditional Marriage</option><option>Married in Other Country</option></select>
-        </div>
-      </div>
-      <div class="form-section" style="margin-top:20px">Purchaser 2 / Spouse (if applicable)</div>
-      <div class="form-row col4">
-        <div class="form-group"><label class="form-label">Title</label><select id="p2-title"><option></option><option>Mr</option><option>Mrs</option><option>Ms</option><option>Miss</option><option>Dr</option></select></div>
-        <div class="form-group" style="grid-column:span 2"><label class="form-label">Surname</label><input id="p2-surname" placeholder="Moloi"/></div>
-        <div class="form-group"><label class="form-label">ID Number</label><input id="p2-id" placeholder="960119 0525085"/></div>
-      </div>
-      <div class="form-row col1"><div class="form-group"><label class="form-label">Full Names</label><input id="p2-names" placeholder="Nthubiseng Rebone"/></div></div>
-      <div class="form-row col3">
-        <div class="form-group"><label class="form-label">Cellphone</label><input id="p2-cell" placeholder=""/></div>
-        <div class="form-group"><label class="form-label">Home Language</label><input id="p2-lang" placeholder="S. Sotho"/></div>
-        <div class="form-group"><label class="form-label">City of Birth</label><input id="p2-city" placeholder="Alberton"/></div>
-      </div>
-      <div class="form-row col2">
-        <div class="form-group"><label class="form-label">Email</label><input id="p2-email" placeholder="ntrubichrostan@gmail.com"/></div>
-        <div class="form-group"><label class="form-label">Residential Address</label><input id="p2-addr" placeholder="6219 Matela Street"/></div>
-      </div>
-      <div class="form-section" style="margin-top:20px">Transaction financing</div>
-      <div class="form-row col3">
-        <div class="form-group"><label class="form-label">Financed by</label>
-          <select id="p-finance"><option>Bond</option><option>Cash</option><option>Bond and Cash</option><option>Proceeds of 2nd property</option></select>
-        </div>
-        <div class="form-group"><label class="form-label">Cash payment > R25 000?</label><select id="p-cash25k"><option>No</option><option>Yes</option></select></div>
-        <div class="form-group"><label class="form-label">Source of wealth</label><input id="p-wealth" placeholder="Work"/></div>
-      </div>
-    </div>
-    <div style="display:flex;justify-content:space-between"><button class="btn" onclick="goStep(0)">← Back</button><button class="btn btn-primary" onclick="goStep(2)">Next: Property →</button></div>
-  </div>
-
-  <!-- STEP 3: PROPERTY -->
-  <div class="step-page" id="otp-step-2">
-    <div class="card">
-      <div class="form-section">Property Type</div>
-      <div class="form-row col2">
-        <div class="form-group"><label class="form-label">Title Type</label><select id="prop-type"><option value="full">Full Title</option><option value="sectional">Sectional Title</option></select></div>
-        <div class="form-group"><label class="form-label">Municipality</label><input id="prop-muni" placeholder="City of Tshwane / Johannesburg"/></div>
-      </div>
-      <div class="form-section">Full Title Details</div>
-      <div class="form-row col3">
-        <div class="form-group"><label class="form-label">ERF Number</label><input id="prop-erf" placeholder="3134"/></div>
-        <div class="form-group"><label class="form-label">Portion</label><input id="prop-portion" placeholder="0"/></div>
-        <div class="form-group"><label class="form-label">Street Number</label><input id="prop-streetno" placeholder="3134"/></div>
-      </div>
-      <div class="form-row col2">
-        <div class="form-group"><label class="form-label">Street Name</label><input id="prop-street" placeholder="Sky City"/></div>
-        <div class="form-group"><label class="form-label">Suburb</label><input id="prop-suburb" placeholder="Watervalspruit"/></div>
+        <div class="form-group"><label class="form-label">Title</label><select id="s1-title"><option>Mr</option><option>Mrs</option><option>Ms</option><option>Dr</option><option>Prof</option></select></div>
+        <div class="form-group"><label class="form-label">Surname *</label><input id="s1-surname" placeholder="e.g. Stemela"/></div>
+        <div class="form-group"><label class="form-label">Full Names *</label><input id="s1-names" placeholder="e.g. Xolisa"/></div>
       </div>
       <div class="form-row col3">
-        <div class="form-group"><label class="form-label">Postal Code</label><input id="prop-postal" placeholder=""/></div>
-        <div class="form-group"><label class="form-label">Size (m²)</label><input id="prop-size" placeholder="151"/></div>
-        <div class="form-group"><label class="form-label">Province</label><select id="prop-prov"><option>Gauteng</option><option>Western Cape</option><option>KwaZulu-Natal</option><option>Eastern Cape</option><option>Limpopo</option><option>Mpumalanga</option><option>North West</option><option>Free State</option><option>Northern Cape</option></select></div>
-      </div>
-      <div style="display:flex;gap:16px;margin-top:8px">
-        <label style="display:flex;align-items:center;gap:6px;font-size:12px"><input type="checkbox" id="prop-dwellings" accent-color="var(--green)"> Together with dwellings</label>
-        <label style="display:flex;align-items:center;gap:6px;font-size:12px"><input type="checkbox" id="prop-vacant" accent-color="var(--green)"> Being a vacant stand</label>
-      </div>
-      <div class="form-section" style="margin-top:18px">Sectional Title Details (if applicable)</div>
-      <div class="form-row col3">
-        <div class="form-group"><label class="form-label">Section Number</label><input id="prop-secno" placeholder=""/></div>
-        <div class="form-group"><label class="form-label">Door Number</label><input id="prop-doorno" placeholder=""/></div>
-        <div class="form-group"><label class="form-label">Complex Name</label><input id="prop-complex" placeholder=""/></div>
+        <div class="form-group"><label class="form-label">ID Number *</label><input id="s1-id" placeholder="13-digit ID number"/></div>
+        <div class="form-group"><label class="form-label">Cell Number</label><input id="s1-cell" placeholder="082 000 0000"/></div>
+        <div class="form-group"><label class="form-label">Email</label><input id="s1-email" placeholder="seller@email.com"/></div>
       </div>
       <div class="form-row col3">
-        <div class="form-group"><label class="form-label">Garage No.</label><input id="prop-garage" placeholder=""/></div>
-        <div class="form-group"><label class="form-label">Parking No.</label><input id="prop-parking" placeholder=""/></div>
-        <div class="form-group"><label class="form-label">Storage No.</label><input id="prop-storage" placeholder=""/></div>
+        <div class="form-group"><label class="form-label">Income Tax No</label><input id="s1-tax" placeholder="Tax number"/></div>
+        <div class="form-group"><label class="form-label">Marital Status</label><select id="s1-marital"><option>Unmarried</option><option>Married in Community of Property</option><option>Married with ANC</option><option>Customary/Traditional</option><option>Divorced</option><option>Married in Other Country</option></select></div>
+        <div class="form-group"><label class="form-label">Existing Bond Bank</label><input id="s1-bank" placeholder="e.g. FNB"/></div>
       </div>
-    </div>
-    <div style="display:flex;justify-content:space-between"><button class="btn" onclick="goStep(1)">← Back</button><button class="btn btn-primary" onclick="goStep(3)">Next: Transaction →</button></div>
-  </div>
-
-  <!-- STEP 4: TRANSACTION -->
-  <div class="step-page" id="otp-step-3">
-    <div class="card">
-      <div class="form-section">Purchase Price (Clause 1.1)</div>
-      <div class="form-row col3">
-        <div class="form-group"><label class="form-label">Purchase Price (R)</label><input id="tx-price" type="number" placeholder="600000" oninput="calcBalance();calcProfFee()"/></div>
-        <div class="form-group"><label class="form-label">VAT</label><select id="tx-vat"><option value="excl">Exclusive of VAT</option><option value="incl">Inclusive of VAT</option></select></div>
-        <div class="form-group"><label class="form-label">Purchase Price in Words</label><input id="tx-price-words" placeholder="Six hundred thousand rand"/></div>
-      </div>
-      <div class="form-section">Deposit (Clause 1.2)</div>
-      <div class="form-row col3">
-        <div class="form-group"><label class="form-label">Deposit (R)</label><input id="tx-deposit" type="number" placeholder="0" oninput="calcBalance()"/></div>
-        <div class="form-group"><label class="form-label">Deposit Due (days)</label><input id="tx-depdays" type="number" placeholder="7"/></div>
-        <div class="form-group"><label class="form-label">Deposit in Words</label><input id="tx-dep-words" placeholder="(if applicable)"/></div>
-      </div>
-      <div class="form-section">Balance (Clauses 1.4.1 — 1.4.3)</div>
-      <div class="form-row col3">
-        <div class="form-group"><label class="form-label">Balance — Mortgage Bond (R)</label><input id="tx-bond" type="number" placeholder="600000" oninput="calcBalance()"/></div>
-        <div class="form-group"><label class="form-label">Bond in Words</label><input id="tx-bond-words" placeholder="Six hundred thousand rands"/></div>
-        <div class="form-group"><label class="form-label">Balance — Cash (R)</label><input id="tx-cash" readonly placeholder="Auto-calculated"/></div>
-      </div>
-      <div class="form-section">Key Dates</div>
-      <div class="form-row col3">
-        <div class="form-group"><label class="form-label">Bond Approval Date (1.5)</label><input id="tx-bonddate" type="date" oninput="buildDealTimeline()"/></div>
-        <div class="form-group"><label class="form-label">Guarantee Date — days after fulfillment</label><input id="tx-guardays" type="number" placeholder="15" value="15"/></div>
-        <div class="form-group"><label class="form-label">Occupation Date (1.9)</label><input id="tx-occdate" type="date"/></div>
-      </div>
-      <div class="form-row col2">
-        <div class="form-group"><label class="form-label">Occupation Type (1.11)</label><select id="tx-occtype"><option>Vacant occupation</option><option>Subject to existing tenancy</option></select></div>
-        <div class="form-group"><label class="form-label">Occupational Rental/month (R)</label><input id="tx-occrent" type="number" placeholder="0"/></div>
-      </div>
-      <div class="form-row col2">
-        <div class="form-group"><label class="form-label">Expiry Date &amp; Time (1.18)</label><input id="tx-expiry" type="datetime-local"/></div>
-        <div class="form-group"><label class="form-label">Conditional Sale Date (1.14)</label><input id="tx-conddate" type="date"/></div>
-      </div>
-      <div class="form-section">Conveyancer &amp; Bond (1.8)</div>
-      <div class="form-row col2">
-        <div class="form-group"><label class="form-label">Conveyancing Firm</label><input id="tx-conv" placeholder="Hammond Pole"/></div>
-        <div class="form-group"><label class="form-label">Conveyancer Contact</label><input id="tx-conv-contact" placeholder="Adel du Plessis — 082 871 7347"/></div>
-      </div>
-      <div class="form-row col2">
-        <div class="form-group"><label class="form-label">Bond Originator</label><input id="tx-bond-orig" placeholder="ooba / BetterBond"/></div>
-        <div class="form-group"><label class="form-label">Bond Originator Contact</label><input id="tx-bond-contact" placeholder="Name / number"/></div>
-      </div>
-      <div class="form-section">HOA / Body Corporate (1.15 — 1.16)</div>
-      <div class="form-row col3">
-        <div class="form-group"><label class="form-label">HOA / Body Corporate Name</label><input id="cond-hoa" placeholder="(if applicable)"/></div>
-        <div class="form-group"><label class="form-label">Managing Agent</label><input id="cond-mgmt" placeholder=""/></div>
-        <div class="form-group"><label class="form-label">Monthly Levy (R) (1.16)</label><input id="cond-levy" type="number" placeholder="600"/></div>
-      </div>
-      <div class="form-section">Annexure B — Professional Fee</div>
-      <div class="form-row col4">
-        <div class="form-group"><label class="form-label">Commission Rate (%)</label><input id="tx-commrate" type="number" placeholder="5.5" value="5.5" oninput="calcProfFee()"/></div>
-        <div class="form-group"><label class="form-label">Net Fee (excl VAT)</label><input id="tx-netfee" readonly placeholder="Auto"/></div>
-        <div class="form-group"><label class="form-label">VAT (15%)</label><input id="tx-vatamt" readonly placeholder="Auto"/></div>
-        <div class="form-group"><label class="form-label">Gross Fee (incl VAT)</label><input id="tx-grossfee" readonly placeholder="Auto"/></div>
-      </div>
-      <div class="form-row col1"><div class="form-group"><label class="form-label">Balance of Purchase Price to Seller (a-d)</label><input id="tx-seller-balance" readonly placeholder="Auto"/></div></div>
-      <div class="form-section">Agent Details (Annexure B)</div>
-      <div class="form-row col3">
-        <div class="form-group"><label class="form-label">Agent Full Names</label><input id="tx-agent" placeholder="Abraham/Cindy &amp; Mary"/></div>
-        <div class="form-group"><label class="form-label">Agent FFC Numbers</label><input id="tx-agentid" placeholder="FFC-XXXX &amp; FFC-YYYY"/></div>
-        <div class="form-group"><label class="form-label">Listing Agency</label><input id="tx-listing-agency" placeholder="Mary Mathenjwa (REH PROPERTIES MANDATED)"/></div>
-      </div>
-      <div class="form-row col1"><div class="form-group"><label class="form-label">Contract Agency (joint marketing — if applicable)</label><input id="tx-contract-agency" placeholder="Abraham Mathenjwa &amp; Cindy Mathenjwa (REH PROPERTIES MANDATED)"/></div></div>
-    </div>
-    <div style="display:flex;justify-content:space-between"><button class="btn" onclick="goStep(2)">← Back</button><button class="btn btn-primary" onclick="goStep(4)">Next: Conditions →</button></div>
-  </div>
-
-  <!-- STEP 5: CONDITIONS -->
-  <div class="step-page" id="otp-step-4">
-    <div class="card">
-      <div class="form-section">Alien &amp; Invasive Species — Clause 19</div>
       <div class="form-row col1">
-        <div class="form-group"><label class="form-label">Declaration</label>
-          <select id="cond-invasive">
-            <option value="none">19.1 — No Invasive Alien Species present on the Property</option>
-            <option value="present">19.2 — Listed alien invasive species ARE present on the Property (specify below)</option>
+        <div class="form-group"><label class="form-label">Residential Address</label><input id="s1-addr" placeholder="Full residential address"/></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Seller 2 <span style="font-weight:400;font-size:12px;color:var(--sub)">(spouse / second seller — leave blank if not applicable)</span></div>
+      <div class="form-row col3">
+        <div class="form-group"><label class="form-label">Title</label><select id="s2-title"><option></option><option>Mr</option><option>Mrs</option><option>Ms</option><option>Dr</option></select></div>
+        <div class="form-group"><label class="form-label">Surname</label><input id="s2-surname" placeholder="e.g. Stemela"/></div>
+        <div class="form-group"><label class="form-label">Full Names</label><input id="s2-names" placeholder="Full names"/></div>
+      </div>
+      <div class="form-row col3">
+        <div class="form-group"><label class="form-label">ID Number</label><input id="s2-id" placeholder="13-digit ID number"/></div>
+        <div class="form-group"><label class="form-label">Cell Number</label><input id="s2-cell" placeholder="082 000 0000"/></div>
+        <div class="form-group"><label class="form-label">Email</label><input id="s2-email" placeholder="seller2@email.com"/></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Legal Entity <span style="font-weight:400;font-size:12px;color:var(--sub)">(company / CC / trust — leave blank if not applicable)</span></div>
+      <div class="form-row col2">
+        <div class="form-group"><label class="form-label">Name of Legal Entity</label><input id="s-entity-name" placeholder="Entity name"/></div>
+        <div class="form-group"><label class="form-label">Registration Number</label><input id="s-entity-reg" placeholder="Registration number"/></div>
+      </div>
+    </div>
+    <div style="display:flex;justify-content:flex-end"><button class="btn btn-primary" onclick="goOTPStep(2)">Next: Purchaser →</button></div>
+  </div>
+
+  <!-- ── STEP 2: PURCHASER ── -->
+  <div class="otp-step" id="ostep-2" style="display:none">
+    <div class="card">
+      <div class="card-title">Purchaser 1</div>
+      <div class="form-row col3">
+        <div class="form-group"><label class="form-label">Title</label><select id="p1-title"><option>Mr</option><option>Mrs</option><option>Ms</option><option>Dr</option><option>Prof</option></select></div>
+        <div class="form-group"><label class="form-label">Surname *</label><input id="p1-surname" placeholder="e.g. Xaba"/></div>
+        <div class="form-group"><label class="form-label">Full Names *</label><input id="p1-names" placeholder="e.g. Nkosinathi Alex"/></div>
+      </div>
+      <div class="form-row col3">
+        <div class="form-group"><label class="form-label">ID Number *</label><input id="p1-id" placeholder="13-digit ID number"/></div>
+        <div class="form-group"><label class="form-label">Cell Number</label><input id="p1-cell" placeholder="082 000 0000"/></div>
+        <div class="form-group"><label class="form-label">Email</label><input id="p1-email" placeholder="purchaser@email.com"/></div>
+      </div>
+      <div class="form-row col3">
+        <div class="form-group"><label class="form-label">Income Tax No</label><input id="p1-tax" placeholder="Tax number"/></div>
+        <div class="form-group"><label class="form-label">Home Language</label><input id="p1-lang" placeholder="e.g. Zulu"/></div>
+        <div class="form-group"><label class="form-label">City of Birth</label><input id="p1-city" placeholder="e.g. Johannesburg"/></div>
+      </div>
+      <div class="form-row col2">
+        <div class="form-group"><label class="form-label">Marital Status</label><select id="p1-marital"><option>Unmarried</option><option>Married in Community of Property</option><option>Married with ANC</option><option>Customary/Traditional</option><option>Divorced</option><option>Married in Other Country</option></select></div>
+        <div class="form-group"><label class="form-label">Residential Address</label><input id="p1-addr" placeholder="Full residential address"/></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Purchaser 2 <span style="font-weight:400;font-size:12px;color:var(--sub)">(spouse / second purchaser — leave blank if not applicable)</span></div>
+      <div class="form-row col3">
+        <div class="form-group"><label class="form-label">Title</label><select id="p2-title"><option></option><option>Mr</option><option>Mrs</option><option>Ms</option><option>Dr</option></select></div>
+        <div class="form-group"><label class="form-label">Surname</label><input id="p2-surname" placeholder="e.g. Xaba"/></div>
+        <div class="form-group"><label class="form-label">Full Names</label><input id="p2-names" placeholder="e.g. Thelma Fulufhelo"/></div>
+      </div>
+      <div class="form-row col3">
+        <div class="form-group"><label class="form-label">ID Number</label><input id="p2-id" placeholder="13-digit ID number"/></div>
+        <div class="form-group"><label class="form-label">Cell Number</label><input id="p2-cell" placeholder="082 000 0000"/></div>
+        <div class="form-group"><label class="form-label">Email</label><input id="p2-email" placeholder="purchaser2@email.com"/></div>
+      </div>
+      <div class="form-row col2">
+        <div class="form-group"><label class="form-label">Marital Status</label><select id="p2-marital"><option>Unmarried</option><option>Married in Community of Property</option><option>Married with ANC</option><option>Customary/Traditional</option><option>Divorced</option><option>Married in Other Country</option></select></div>
+        <div class="form-group"><label class="form-label">Residential Address</label><input id="p2-addr" placeholder="Full residential address"/></div>
+      </div>
+    </div>
+
+    <div style="display:flex;justify-content:space-between">
+      <button class="btn" onclick="goOTPStep(1)">← Back</button>
+      <button class="btn btn-primary" onclick="goOTPStep(3)">Next: Property →</button>
+    </div>
+  </div>
+
+  <!-- ── STEP 3: PROPERTY ── -->
+  <div class="otp-step" id="ostep-3" style="display:none">
+    <div class="card">
+      <div class="card-title">Property Type</div>
+      <div class="form-row col2">
+        <div class="form-group"><label class="form-label">Title Type</label>
+          <select id="prop-type" onchange="togglePropType()">
+            <option value="full">Full Title</option>
+            <option value="sectional">Sectional Title</option>
           </select>
         </div>
+        <div class="form-group"><label class="form-label">Municipality</label><input id="prop-municipality" placeholder="e.g. City of Ekurhuleni Metropolitan Municipality"/></div>
       </div>
-      <div class="form-row col1"><div class="form-group"><label class="form-label">If 19.2 applies — specify invasive species:</label><textarea id="cond-invasive-detail" rows="2" placeholder="List invasive species if applicable"></textarea></div></div>
-      <div class="form-section" style="margin-top:16px">Special Conditions — Clause 20</div>
-      <div class="form-row col1"><div class="form-group"><label class="form-label">Special Conditions</label><textarea id="cond-special" rows="7" placeholder="e.g. The sale is subject to the Purchaser obtaining a mortgage bond of R600 000 within 30 days of acceptance.&#10;Property sold voetstoots.&#10;No deposit required.&#10;Guarantee date: 15 fifteen days after contract date where no deposit is due."></textarea></div></div>
-      <div class="form-section">Second Property (Clause 1.13 / 8)</div>
-      <div class="form-row col1"><div class="form-group"><label class="form-label">Purchaser's 2nd Property Address (if sale subject to)</label><input id="cond-2ndprop" placeholder="Leave blank if not applicable"/></div></div>
     </div>
-    <div style="display:flex;justify-content:space-between"><button class="btn" onclick="goStep(3)">← Back</button><button class="btn btn-primary" onclick="goStep(5)">Next: Fixtures →</button></div>
-  </div>
 
-  <!-- STEP 6: FIXTURES -->
-  <div class="step-page" id="otp-step-5">
-    <div class="card">
-      <div class="form-section">Fixtures &amp; Fittings — Clause 18.1 (tick all that apply)</div>
-      <div class="check-grid" id="fixtures-grid"></div>
-      <div style="margin-top:12px">
-        <div class="form-group"><label class="form-label">Additional items (18.1)</label><input id="fix-additional" placeholder="e.g. Solar geyser, borehole pump..."/></div>
-      </div>
-      <div class="form-section" style="margin-top:16px">Specifically Excluding — Clause 18.2</div>
-      <div class="form-row col1"><div class="form-group"><label class="form-label">Items excluded from sale</label><textarea id="fix-excluded" rows="2" placeholder="e.g. Lounge curtains, garden pot plants..."></textarea></div></div>
-    </div>
-    <div style="display:flex;justify-content:space-between"><button class="btn" onclick="goStep(4)">← Back</button><button class="btn btn-primary" onclick="goStep(6)">Next: Signatures →</button></div>
-  </div>
-
-  <!-- STEP 7: SIGNATURES -->
-  <div class="step-page" id="otp-step-6">
-    <div class="card">
-      <div class="form-section">Signing Details</div>
+    <div class="card" id="prop-full-section">
+      <div class="card-title">Full Title Details</div>
       <div class="form-row col3">
-        <div class="form-group"><label class="form-label">Signed at (City)</label><input id="sig-city" placeholder="Sky City"/></div>
-        <div class="form-group"><label class="form-label">Date Signed</label><input id="sig-date" type="date"/></div>
-        <div class="form-group"><label class="form-label">Day (in words)</label><input id="sig-day-words" placeholder="tenth"/></div>
+        <div class="form-group"><label class="form-label">Erf Number *</label><input id="prop-erf" placeholder="e.g. 4970"/></div>
+        <div class="form-group"><label class="form-label">Portion</label><input id="prop-portion" placeholder="Portion no."/></div>
+        <div class="form-group"><label class="form-label">Street Number *</label><input id="prop-streetno" placeholder="e.g. 4970"/></div>
+      </div>
+      <div class="form-row col3">
+        <div class="form-group"><label class="form-label">Street Name *</label><input id="prop-street" placeholder="e.g. Mostert"/></div>
+        <div class="form-group"><label class="form-label">Suburb *</label><input id="prop-suburb" placeholder="e.g. Boksburg"/></div>
+        <div class="form-group"><label class="form-label">Postal Code</label><input id="prop-postal" placeholder="e.g. 1459"/></div>
+      </div>
+      <div class="form-row col3">
+        <div class="form-group"><label class="form-label">Size (m²)</label><input id="prop-size" placeholder="e.g. 253"/></div>
+        <div class="form-group"><label class="form-label">Together with Dwellings</label><select id="prop-dwellings"><option value="yes">Yes</option><option value="no">No</option></select></div>
+        <div class="form-group"><label class="form-label">Vacant Stand</label><select id="prop-vacant"><option value="no">No</option><option value="yes">Yes</option></select></div>
+      </div>
+    </div>
+
+    <div class="card" id="prop-sect-section" style="display:none">
+      <div class="card-title">Sectional Title Details</div>
+      <div class="form-row col3">
+        <div class="form-group"><label class="form-label">Section Number</label><input id="prop-secno" placeholder="Section no."/></div>
+        <div class="form-group"><label class="form-label">Door Number</label><input id="prop-doorno" placeholder="Door no."/></div>
+        <div class="form-group"><label class="form-label">Complex Name</label><input id="prop-complex" placeholder="Complex name"/></div>
+      </div>
+      <div class="form-row col3">
+        <div class="form-group"><label class="form-label">Street Name</label><input id="prop-sect-street" placeholder="Street name"/></div>
+        <div class="form-group"><label class="form-label">Suburb</label><input id="prop-sect-suburb" placeholder="Suburb"/></div>
+        <div class="form-group"><label class="form-label">Size (m²)</label><input id="prop-sect-size" placeholder="m²"/></div>
+      </div>
+      <div class="form-row col3">
+        <div class="form-group"><label class="form-label">Exclusive Use (m²)</label><input id="prop-excl" placeholder="m²"/></div>
+        <div class="form-group"><label class="form-label">Garage No</label><input id="prop-garage" placeholder="Garage no."/></div>
+        <div class="form-group"><label class="form-label">Parking No</label><input id="prop-parking" placeholder="Parking no."/></div>
+      </div>
+    </div>
+
+    <div style="display:flex;justify-content:space-between">
+      <button class="btn" onclick="goOTPStep(2)">← Back</button>
+      <button class="btn btn-primary" onclick="goOTPStep(4)">Next: Transaction →</button>
+    </div>
+  </div>
+
+  <!-- ── STEP 4: TRANSACTION ── -->
+  <div class="otp-step" id="ostep-4" style="display:none">
+    <div class="card">
+      <div class="card-title">Purchase Price</div>
+      <div class="form-row col3">
+        <div class="form-group"><label class="form-label">Purchase Price (R) *</label><input id="tx-price" type="number" placeholder="635000" oninput="calcOTPBalance()"/></div>
+        <div class="form-group"><label class="form-label">VAT</label><select id="tx-vat"><option value="inclusive">Inclusive of VAT</option><option value="exclusive">Exclusive of VAT</option></select></div>
+        <div class="form-group"><label class="form-label">Price in Words</label><input id="tx-price-words" placeholder="Six hundred and thirty five thousand rands"/></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Deposit</div>
+      <div class="form-row col3">
+        <div class="form-group"><label class="form-label">Deposit Amount (R)</label><input id="tx-deposit" type="number" placeholder="0" oninput="calcOTPBalance()"/></div>
+        <div class="form-group"><label class="form-label">Deposit in Words</label><input id="tx-deposit-words" placeholder="e.g. Zero rands"/></div>
+        <div class="form-group"><label class="form-label">Deposit Due (days after acceptance)</label><input id="tx-deposit-days" type="number" placeholder="e.g. 5"/></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Balance</div>
+      <div class="form-row col3">
+        <div class="form-group"><label class="form-label">Bond Amount (R)</label><input id="tx-bond" type="number" placeholder="635000" oninput="calcOTPBalance()"/></div>
+        <div class="form-group"><label class="form-label">Bond in Words</label><input id="tx-bond-words" placeholder="Six hundred and thirty five thousand rands"/></div>
+        <div class="form-group"><label class="form-label">Cash Amount (R)</label><input id="tx-cash" type="number" placeholder="0" oninput="calcOTPBalance()"/></div>
       </div>
       <div class="form-row col2">
-        <div class="form-group"><label class="form-label">Month</label><input id="sig-month" placeholder="March"/></div>
-        <div class="form-group"><label class="form-label">Year (last 2 digits)</label><input id="sig-year" placeholder="26"/></div>
+        <div class="form-group"><label class="form-label">Bond Approval Date</label><input id="tx-bond-date" type="date"/></div>
+        <div class="form-group"><label class="form-label">Guarantee Date (days after suspensive condition)</label><input id="tx-guarantee-days" type="number" placeholder="e.g. 15"/></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Dates &amp; Occupation</div>
+      <div class="form-row col3">
+        <div class="form-group"><label class="form-label">Occupation Date</label>
+          <select id="tx-occ-type" onchange="document.getElementById('tx-occ-date-wrap').style.display=this.value==='date'?'block':'none'">
+            <option value="registration">Date of Registration</option>
+            <option value="date">Specific Date</option>
+          </select>
+        </div>
+        <div class="form-group" id="tx-occ-date-wrap" style="display:none"><label class="form-label">Occupation Date</label><input id="tx-occ-date" type="date"/></div>
+        <div class="form-group"><label class="form-label">Occupational Rental (R/month)</label><input id="tx-occ-rental" type="number" placeholder="0"/></div>
       </div>
       <div class="form-row col2">
-        <div class="form-group"><label class="form-label">Witness 1 Full Name &amp; Surname</label><input id="w1-name" placeholder="Witness 1 full name"/></div>
-        <div class="form-group"><label class="form-label">Witness 1 ID Number</label><input id="w1-id" placeholder=""/></div>
+        <div class="form-group"><label class="form-label">Type of Occupation</label>
+          <select id="tx-occ-vacant">
+            <option value="vacant">Vacant Occupation</option>
+            <option value="tenancy">Subject to Existing Tenancy</option>
+          </select>
+        </div>
+        <div class="form-group"><label class="form-label">Monthly Levy (R)</label><input id="tx-levy" type="number" placeholder="0"/></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Conveyancer &amp; Bond Originator</div>
+      <div class="form-row col2">
+        <div class="form-group"><label class="form-label">Conveyancing Firm</label><input id="tx-conv-firm" placeholder="e.g. Hammond Pole" value="Hammond Pole"/></div>
+        <div class="form-group"><label class="form-label">Contact Name</label><input id="tx-conv-name" placeholder="e.g. Adel du Plessis" value="Adel du Plessis"/></div>
       </div>
       <div class="form-row col2">
-        <div class="form-group"><label class="form-label">Witness 2 Full Name &amp; Surname</label><input id="w2-name" placeholder="Witness 2 full name"/></div>
-        <div class="form-group"><label class="form-label">Witness 2 ID Number</label><input id="w2-id" placeholder=""/></div>
+        <div class="form-group"><label class="form-label">Contact Details</label><input id="tx-conv-contact" placeholder="e.g. 082 871 7347" value="082 8717347"/></div>
+        <div class="form-group"><label class="form-label">Expiry Date &amp; Time</label><input id="tx-expiry" type="datetime-local"/></div>
       </div>
-      <div class="form-section" style="margin-top:16px">Digital Signatures</div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:14px">
-        <div>
-          <div style="font-size:12px;font-weight:600;color:var(--sub);margin-bottom:6px">THE SELLER (1)</div>
-          <div class="sig-container"><canvas id="sig-seller" height="110"></canvas>
-          <div class="sig-btns"><button class="sig-btn clear" onclick="clearSig('sig-seller')">Clear</button></div>
-          <div class="sig-label">Seller 1 — sign above</div></div>
-        </div>
-        <div>
-          <div style="font-size:12px;font-weight:600;color:var(--sub);margin-bottom:6px">THE PURCHASER (1)</div>
-          <div class="sig-container"><canvas id="sig-purchaser" height="110"></canvas>
-          <div class="sig-btns"><button class="sig-btn clear" onclick="clearSig('sig-purchaser')">Clear</button></div>
-          <div class="sig-label">Purchaser 1 — sign above</div></div>
-        </div>
-        <div>
-          <div style="font-size:12px;font-weight:600;color:var(--sub);margin-bottom:6px">THE PURCHASER (2)</div>
-          <div class="sig-container"><canvas id="sig-purchaser2" height="110"></canvas>
-          <div class="sig-btns"><button class="sig-btn clear" onclick="clearSig('sig-purchaser2')">Clear</button></div>
-          <div class="sig-label">Purchaser 2 — sign above</div></div>
-        </div>
-        <div>
-          <div style="font-size:12px;font-weight:600;color:var(--sub);margin-bottom:6px">AGENT (Property Practitioner)</div>
-          <div class="sig-container"><canvas id="sig-agent" height="110"></canvas>
-          <div class="sig-btns"><button class="sig-btn clear" onclick="clearSig('sig-agent')">Clear</button></div>
-          <div class="sig-label">Agent — sign above</div></div>
-        </div>
-        <div>
-          <div style="font-size:12px;font-weight:600;color:var(--sub);margin-bottom:6px">AS WITNESS (1)</div>
-          <div class="sig-container"><canvas id="sig-witness1" height="110"></canvas>
-          <div class="sig-btns"><button class="sig-btn clear" onclick="clearSig('sig-witness1')">Clear</button></div>
-          <div class="sig-label">Witness 1 — sign above</div></div>
-        </div>
-        <div>
-          <div style="font-size:12px;font-weight:600;color:var(--sub);margin-bottom:6px">AS WITNESS (2)</div>
-          <div class="sig-container"><canvas id="sig-witness2" height="110"></canvas>
-          <div class="sig-btns"><button class="sig-btn clear" onclick="clearSig('sig-witness2')">Clear</button></div>
-          <div class="sig-label">Witness 2 — sign above</div></div>
-        </div>
+    </div>
+
+    <div class="card" style="background:#f0f6ff;border-color:#c0d8f5">
+      <div class="card-title">Balance Summary</div>
+      <div id="otp-balance-summary" style="font-size:13px;color:var(--navy)">Fill in price, deposit and bond amounts above.</div>
+    </div>
+
+    <div style="display:flex;justify-content:space-between">
+      <button class="btn" onclick="goOTPStep(3)">← Back</button>
+      <button class="btn btn-primary" onclick="goOTPStep(5)">Next: Conditions →</button>
+    </div>
+  </div>
+
+  <!-- ── STEP 5: CONDITIONS ── -->
+  <div class="otp-step" id="ostep-5" style="display:none">
+    <div class="card">
+      <div class="card-title">Suspensive Condition — Mortgage Bond</div>
+      <div style="background:#f8f9fb;border-radius:8px;padding:12px;font-size:12px;color:#444;margin-bottom:14px;line-height:1.6">
+        This agreement is subject to the purchaser obtaining approval of a mortgage bond in the amount stated, by the Bond Approval Date. An automatic 10-day extension applies if the bond is not approved in time. The suspensive condition exists for the benefit of the Purchaser.
       </div>
-      <div class="form-section">Annexure B — Professional Fee Signatures</div>
-      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px">
-        <div>
-          <div style="font-size:12px;font-weight:600;color:var(--sub);margin-bottom:6px">Seller (Annexure B)</div>
-          <div class="sig-container"><canvas id="sig-b-seller" height="80"></canvas>
-          <div class="sig-btns"><button class="sig-btn clear" onclick="clearSig('sig-b-seller')">Clear</button></div>
-          <div class="sig-label">Seller</div></div>
-        </div>
-        <div>
-          <div style="font-size:12px;font-weight:600;color:var(--sub);margin-bottom:6px">Purchaser (Annexure B)</div>
-          <div class="sig-container"><canvas id="sig-b-purchaser" height="80"></canvas>
-          <div class="sig-btns"><button class="sig-btn clear" onclick="clearSig('sig-b-purchaser')">Clear</button></div>
-          <div class="sig-label">Purchaser</div></div>
-        </div>
-        <div>
-          <div style="font-size:12px;font-weight:600;color:var(--sub);margin-bottom:6px">Mentor/Principal</div>
-          <div class="sig-container"><canvas id="sig-mentor" height="80"></canvas>
-          <div class="sig-btns"><button class="sig-btn clear" onclick="clearSig('sig-mentor')">Clear</button></div>
-          <div class="sig-label">Mentor/Principal</div></div>
+      <div class="form-row col1">
+        <div class="form-group"><label class="form-label">Special Conditions <span style="color:var(--sub);font-weight:400">(Section 20 — any special conditions agreed between parties)</span></label>
+          <textarea id="tx-special" rows="5" placeholder="Enter any special conditions here..." style="width:100%;padding:10px;border:1.5px solid var(--border);border-radius:8px;font-family:inherit;font-size:13px;resize:vertical"></textarea>
         </div>
       </div>
     </div>
-    <div style="display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px">
-      <button class="btn" onclick="goStep(5)">← Back</button>
-      <div style="display:flex;gap:8px">
-        <button class="btn btn-amber" onclick="exportOTPPDF()">⬇ Download PDF</button>
-        <button class="btn btn-primary" onclick="saveOTP()">✓ Save OTP</button>
+
+    <div class="card">
+      <div class="card-title">Professional Fee — Annexure B</div>
+      <div class="form-row col2">
+        <div class="form-group"><label class="form-label">Commission Rate (%)</label><input id="tx-comm-rate" type="number" placeholder="5.5" value="5.5" step="0.1" oninput="calcOTPCommission()"/></div>
+        <div class="form-group"><label class="form-label">Net Professional Fee (excl VAT)</label><input id="tx-comm-net" readonly style="background:#f5f5f5"/></div>
       </div>
+      <div class="form-row col2">
+        <div class="form-group"><label class="form-label">VAT (15%)</label><input id="tx-comm-vat" readonly style="background:#f5f5f5"/></div>
+        <div class="form-group"><label class="form-label">Gross Professional Fee (incl VAT)</label><input id="tx-comm-gross" readonly style="background:#f5f5f5"/></div>
+      </div>
+      <div class="form-row col1">
+        <div class="form-group"><label class="form-label">Balance of Purchase Price paid to Seller</label><input id="tx-comm-balance" readonly style="background:#f5f5f5"/></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Agent Details</div>
+      <div class="form-row col2">
+        <div class="form-group"><label class="form-label">Listing Agent(s)</label><input id="tx-agent-listing" placeholder="e.g. Abraham/Cindy Mathenjwa (REH Mandated)" value="Abraham/Cindy Mathenjwa (REH Mandated)"/></div>
+        <div class="form-group"><label class="form-label">Contract Agent(s)</label><input id="tx-agent-contract" placeholder="e.g. Mary Mathenjwa &amp; Solomon Mahlangu" value="Mary Mathenjwa &amp; Solomon Mahlangu"/></div>
+      </div>
+      <div class="form-row col2">
+        <div class="form-group"><label class="form-label">Agent ID Numbers</label><input id="tx-agent-ids" placeholder="e.g. 1763738 &amp; 3700000 &amp; 1272480 &amp; 1271717" value="1763738 &amp; 3700000 &amp; 1272480 &amp; 1271717"/></div>
+        <div class="form-group"><label class="form-label">Signed at (City)</label><input id="tx-sign-city" placeholder="e.g. Boksburg"/></div>
+      </div>
+      <div class="form-row col2">
+        <div class="form-group"><label class="form-label">Seller Signature Date</label><input id="tx-sign-date-s" type="date"/></div>
+        <div class="form-group"><label class="form-label">Purchaser Signature Date</label><input id="tx-sign-date-p" type="date"/></div>
+      </div>
+    </div>
+
+    <div style="display:flex;justify-content:space-between">
+      <button class="btn" onclick="goOTPStep(4)">← Back</button>
+      <button class="btn btn-primary" onclick="goOTPStep(6)">Next: Fixtures →</button>
+    </div>
+  </div>
+
+  <!-- ── STEP 6: FIXTURES ── -->
+  <div class="otp-step" id="ostep-6" style="display:none">
+    <div class="card">
+      <div class="card-title">Fixtures &amp; Fittings Included <span style="font-weight:400;font-size:12px;color:var(--sub)">(tick all that are included in the sale)</span></div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:8px;margin-bottom:12px" id="fixtures-grid"></div>
+    </div>
+    <div class="card">
+      <div class="card-title">Additional Items &amp; Exclusions</div>
+      <div class="form-row col1">
+        <div class="form-group"><label class="form-label">Additional Items Included</label><input id="fix-additional" placeholder="List any additional items included in the sale"/></div>
+      </div>
+      <div class="form-row col1">
+        <div class="form-group"><label class="form-label">Items Specifically Excluded</label><input id="fix-excluded" placeholder="List any items specifically excluded from the sale"/></div>
+      </div>
+    </div>
+    <div style="display:flex;justify-content:space-between">
+      <button class="btn" onclick="goOTPStep(5)">← Back</button>
+      <button class="btn btn-primary" onclick="goOTPStep(7)">Next: Signatures →</button>
+    </div>
+  </div>
+
+  <!-- ── STEP 7: SIGNATURES ── -->
+  <div class="otp-step" id="ostep-7" style="display:none">
+    <div class="card">
+      <div class="card-title">Witness Details</div>
+      <div class="form-row col2">
+        <div class="form-group"><label class="form-label">Witness 1 — Full Name</label><input id="wit1-name" placeholder="Witness 1 full name"/></div>
+        <div class="form-group"><label class="form-label">Witness 1 — ID Number</label><input id="wit1-id" placeholder="Witness 1 ID number"/></div>
+      </div>
+      <div class="form-row col2">
+        <div class="form-group"><label class="form-label">Witness 2 — Full Name</label><input id="wit2-name" placeholder="Witness 2 full name"/></div>
+        <div class="form-group"><label class="form-label">Witness 2 — ID Number</label><input id="wit2-id" placeholder="Witness 2 ID number"/></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Seller Signature</div>
+      <p style="font-size:12px;color:var(--sub);margin-bottom:8px">Sign in the box below using your mouse or finger</p>
+      <canvas id="sig-seller" width="500" height="120" style="border:1.5px solid var(--border);border-radius:8px;background:#fff;cursor:crosshair;touch-action:none;max-width:100%"></canvas>
+      <div style="margin-top:6px"><button class="btn btn-sm" onclick="clearSig('sig-seller')">Clear</button></div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Purchaser Signature</div>
+      <p style="font-size:12px;color:var(--sub);margin-bottom:8px">Sign in the box below using your mouse or finger</p>
+      <canvas id="sig-purchaser" width="500" height="120" style="border:1.5px solid var(--border);border-radius:8px;background:#fff;cursor:crosshair;touch-action:none;max-width:100%"></canvas>
+      <div style="margin-top:6px"><button class="btn btn-sm" onclick="clearSig('sig-purchaser')">Clear</button></div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Agent / Principal Signature</div>
+      <p style="font-size:12px;color:var(--sub);margin-bottom:8px">Sign in the box below using your mouse or finger</p>
+      <canvas id="sig-agent" width="500" height="120" style="border:1.5px solid var(--border);border-radius:8px;background:#fff;cursor:crosshair;touch-action:none;max-width:100%"></canvas>
+      <div style="margin-top:6px"><button class="btn btn-sm" onclick="clearSig('sig-agent')">Clear</button></div>
+    </div>
+
+    <div style="display:flex;justify-content:space-between;align-items:center">
+      <button class="btn" onclick="goOTPStep(6)">← Back</button>
+      <button class="btn btn-amber" style="font-size:14px;padding:12px 28px" onclick="exportOTPPDF()">⬇ Download OTP PDF</button>
     </div>
   </div>
 </div>
 
-<!-- ===== INVOICE PAGE ===== -->
-<div class="page" id="page-invoice">
+  <div class="page" id="page-invoice">
   <div class="page-header">
     <div><div class="page-title">Invoice Generator</div><div class="page-sub">REH Reho Properties Investments — rental &amp; commission invoices</div></div>
     <div style="display:flex;gap:8px">
@@ -1206,220 +1213,311 @@ function showPage(id,el){
   if(id==='dashboard')updateDash();
 }
 
-// ========== OTP STEPS ==========
-function goStep(n){
-  document.querySelectorAll('.step-page').forEach((s,i)=>s.classList.toggle('active',i===n));
-  document.querySelectorAll('#otp-steps .step').forEach((s,i)=>{
-    s.classList.remove('active','done');
-    if(i===n)s.classList.add('active');
-    else if(i<n)s.classList.add('done');
+// ========== OTP ==========
+const FIXTURES_LIST = [
+  'Fitted light fittings','Oven - built-in','Hob - built-in','Stove - upright',
+  'Extractor fan','Fitted carpets','Skirtings','Electric fencing','Burglar alarm',
+  'Panic remote/button','Remote Control/s','Fitted Awnings','Pelmets',
+  'Curtain rails, rods, rings','Built-in Cupboards','Fitted mirrors','Fitted heaters',
+  'Fireplace grates','Garden water feature','Water pump','Security Camera/s',
+  'Security Gate/s','TV and M-net aerials','DSTV Satellite dish',
+  'Internet Satellite dish','Swimming pool equipment','Pool cover / net',
+  'Pool filter and pump','Irrigation system','Electric gate motor',
+  'Automatic garage motor','Intercom system','Municipal Trolley Bin'
+];
+
+function buildFixturesGrid(){
+  const grid = document.getElementById('fixtures-grid');
+  if(!grid) return;
+  grid.innerHTML = FIXTURES_LIST.map(f =>
+    `<label style="display:flex;align-items:center;gap:7px;font-size:12px;padding:7px 10px;background:#f8f9fb;border-radius:7px;cursor:pointer;border:1px solid var(--border)">
+      <input type="checkbox" id="fix-${f.replace(/[^a-z]/gi,'_')}" style="accent-color:var(--green);width:14px;height:14px"> ${f}
+    </label>`
+  ).join('');
+}
+
+function goOTPStep(n){
+  document.querySelectorAll('.otp-step').forEach(s => s.style.display='none');
+  document.querySelectorAll('.otp-tab').forEach((t,i) => {
+    t.classList.toggle('active', i+1===n);
   });
-  currentStep=n;
+  const el = document.getElementById('ostep-'+n);
+  if(el) el.style.display='block';
+  if(n===6) buildFixturesGrid();
+  if(n===7) initSigCanvases();
+  window.scrollTo({top:0,behavior:'smooth'});
 }
-function buildFixtures(){
-  const grid=document.getElementById('fixtures-grid');
-  grid.innerHTML=FIXTURES.map(f=>`<label class="check-item" onclick="this.classList.toggle('checked')"><input type="checkbox" value="${f}"> ${f}</label>`).join('');
+
+function togglePropType(){
+  const t = document.getElementById('prop-type').value;
+  document.getElementById('prop-full-section').style.display = t==='full'?'block':'none';
+  document.getElementById('prop-sect-section').style.display = t==='sectional'?'block':'none';
 }
-function calcBalance(){
-  const price=parseFloat(document.getElementById('tx-price').value)||0;
-  const dep=parseFloat(document.getElementById('tx-deposit').value)||0;
-  const bond=parseFloat(document.getElementById('tx-bond').value)||0;
-  const cash=price-dep-bond;
-  document.getElementById('tx-cash').value=cash>0?fmtR(cash):'R 0';
+
+function calcOTPBalance(){
+  const price = parseFloat(document.getElementById('tx-price').value)||0;
+  const deposit = parseFloat(document.getElementById('tx-deposit').value)||0;
+  const bond = parseFloat(document.getElementById('tx-bond').value)||0;
+  const cash = parseFloat(document.getElementById('tx-cash').value)||0;
+  const total = deposit + bond + cash;
+  const diff = price - total;
+  const fmt = v => 'R ' + v.toLocaleString('en-ZA', {minimumFractionDigits:2});
+  const el = document.getElementById('otp-balance-summary');
+  if(el) el.innerHTML = `
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:10px">
+      <div style="background:#fff;border-radius:8px;padding:10px;border:1px solid var(--border)"><div style="font-size:10px;color:var(--sub);margin-bottom:3px">PURCHASE PRICE</div><div style="font-weight:700;font-size:15px">${fmt(price)}</div></div>
+      <div style="background:#fff;border-radius:8px;padding:10px;border:1px solid var(--border)"><div style="font-size:10px;color:var(--sub);margin-bottom:3px">DEPOSIT</div><div style="font-weight:700;font-size:15px">${fmt(deposit)}</div></div>
+      <div style="background:#fff;border-radius:8px;padding:10px;border:1px solid var(--border)"><div style="font-size:10px;color:var(--sub);margin-bottom:3px">BOND + CASH</div><div style="font-weight:700;font-size:15px">${fmt(bond+cash)}</div></div>
+      <div style="background:${Math.abs(diff)<0.01?'#e6f5ed':'#fde8e8'};border-radius:8px;padding:10px;border:1px solid var(--border)"><div style="font-size:10px;color:var(--sub);margin-bottom:3px">DIFFERENCE</div><div style="font-weight:700;font-size:15px;color:${Math.abs(diff)<0.01?'var(--green)':'#b52a2a'}">${fmt(Math.abs(diff))} ${Math.abs(diff)<0.01?'✓':diff>0?'shortfall':'excess'}</div></div>
+    </div>`;
+  calcOTPCommission();
 }
-function calcProfFee(){
-  const price=parseFloat(document.getElementById('tx-price').value)||0;
-  const rate=parseFloat(document.getElementById('tx-commrate').value)||5.5;
-  const net=price*rate/100;const vat=net*0.15;const gross=net+vat;
-  document.getElementById('tx-netfee').value=fmtR(net);
-  document.getElementById('tx-vatamt').value=fmtR(vat);
-  document.getElementById('tx-grossfee').value=fmtR(gross);
-  document.getElementById('tx-seller-balance').value=fmtR(price-gross);
+
+function calcOTPCommission(){
+  const price = parseFloat(document.getElementById('tx-price').value)||0;
+  const rate = parseFloat(document.getElementById('tx-comm-rate').value)||5.5;
+  const net = price * rate / 100;
+  const vat = net * 0.15;
+  const gross = net + vat;
+  const balance = price - gross;
+  const fmt = v => 'R ' + v.toLocaleString('en-ZA', {minimumFractionDigits:2});
+  const s = (id,val) => { const el=document.getElementById(id); if(el) el.value=fmt(val); };
+  s('tx-comm-net', net);
+  s('tx-comm-vat', vat);
+  s('tx-comm-gross', gross);
+  s('tx-comm-balance', balance);
 }
+
+function initSigCanvases(){
+  ['sig-seller','sig-purchaser','sig-agent'].forEach(id => {
+    const canvas = document.getElementById(id);
+    if(!canvas || canvas._init) return;
+    canvas._init = true;
+    const ctx = canvas.getContext('2d');
+    let drawing = false;
+    const pos = (e) => {
+      const r = canvas.getBoundingClientRect();
+      const src = e.touches ? e.touches[0] : e;
+      return {x:(src.clientX-r.left)*(canvas.width/r.width), y:(src.clientY-r.top)*(canvas.height/r.height)};
+    };
+    canvas.addEventListener('mousedown', e=>{drawing=true;const p=pos(e);ctx.beginPath();ctx.moveTo(p.x,p.y);});
+    canvas.addEventListener('mousemove', e=>{if(!drawing)return;const p=pos(e);ctx.lineTo(p.x,p.y);ctx.strokeStyle='#1a2540';ctx.lineWidth=2;ctx.lineCap='round';ctx.stroke();});
+    canvas.addEventListener('mouseup', ()=>drawing=false);
+    canvas.addEventListener('mouseleave', ()=>drawing=false);
+    canvas.addEventListener('touchstart', e=>{e.preventDefault();drawing=true;const p=pos(e);ctx.beginPath();ctx.moveTo(p.x,p.y);},{passive:false});
+    canvas.addEventListener('touchmove', e=>{e.preventDefault();if(!drawing)return;const p=pos(e);ctx.lineTo(p.x,p.y);ctx.strokeStyle='#1a2540';ctx.lineWidth=2;ctx.lineCap='round';ctx.stroke();},{passive:false});
+    canvas.addEventListener('touchend', ()=>drawing=false);
+  });
+}
+
+function clearSig(id){ const c=document.getElementById(id); if(c){const ctx=c.getContext('2d');ctx.clearRect(0,0,c.width,c.height);} }
+
+function g(id){ const el=document.getElementById(id); return el?el.value||'':''; }
+
 function clearOTP(){
-  if(confirm('Clear all OTP fields and signatures?')){
-    document.querySelectorAll('#page-otp input,#page-otp select,#page-otp textarea').forEach(el=>{
-      if(el.type==='checkbox')el.checked=false;else el.value='';
-    });
-    document.querySelectorAll('.check-item').forEach(c=>c.classList.remove('checked'));
-    ['sig-seller','sig-purchaser','sig-purchaser2','sig-agent','sig-witness1','sig-witness2','sig-b-seller','sig-b-purchaser','sig-mentor'].forEach(clearSig);
-    goStep(0);
-  }
-}
-function saveOTP(){
-  const seller=(g('s1-title')+' '+g('s1-names')+' '+g('s1-surname')).trim();
-  const buyer=(g('p1-title')+' '+g('p1-names')+' '+g('p1-surname')).trim();
-  const prop=g('prop-streetno')+' '+g('prop-street')+', '+g('prop-suburb');
-  const price=parseFloat(g('tx-price'))||0;
-  const otpDate=g('sig-date')||new Date().toISOString().split('T')[0];
-  const otp={id:Date.now(),seller,buyer,prop,price,status:'Pending',date:new Date(otpDate).toLocaleDateString('en-ZA'),otpDate};
-  otpList.unshift(otp);
-  updateDash();
-  alert('OTP saved! You can now download the PDF.');
-}
-
-// ========== SIGNATURES ==========
-function initSignatures(){
-  const canvases=['sig-seller','sig-purchaser','sig-purchaser2','sig-agent','sig-witness1','sig-witness2','sig-b-seller','sig-b-purchaser','sig-mentor','sig-mandate-seller','sig-mandate-agent'];
-  canvases.forEach(id=>{
-    const canvas=document.getElementById(id);
-    if(!canvas)return;
-    canvas.width=canvas.offsetWidth||320;
-    canvas.height=parseInt(canvas.getAttribute('height'))||110;
-    const ctx=canvas.getContext('2d');
-    ctx.strokeStyle='#1a2540';ctx.lineWidth=2;ctx.lineCap='round';ctx.lineJoin='round';
-    let drawing=false,lx=0,ly=0;
-    const getPos=(e)=>{const r=canvas.getBoundingClientRect();const scaleX=canvas.width/r.width;const scaleY=canvas.height/r.height;return[(e.clientX-r.left)*scaleX,(e.clientY-r.top)*scaleY];};
-    canvas.addEventListener('mousedown',e=>{drawing=true;[lx,ly]=getPos(e);});
-    canvas.addEventListener('mousemove',e=>{if(!drawing)return;const[x,y]=getPos(e);ctx.beginPath();ctx.moveTo(lx,ly);ctx.lineTo(x,y);ctx.stroke();[lx,ly]=[x,y];});
-    canvas.addEventListener('mouseup',()=>drawing=false);
-    canvas.addEventListener('mouseleave',()=>drawing=false);
-    canvas.addEventListener('touchstart',e=>{e.preventDefault();drawing=true;[lx,ly]=getPos(e.touches[0]);},{passive:false});
-    canvas.addEventListener('touchmove',e=>{e.preventDefault();if(!drawing)return;const[x,y]=getPos(e.touches[0]);ctx.beginPath();ctx.moveTo(lx,ly);ctx.lineTo(x,y);ctx.stroke();[lx,ly]=[x,y];},{passive:false});
-    canvas.addEventListener('touchend',()=>drawing=false);
+  if(!confirm('Clear all OTP fields?')) return;
+  document.querySelectorAll('#page-otp input, #page-otp select, #page-otp textarea').forEach(el=>{
+    if(el.type==='checkbox') el.checked=false;
+    else if(el.tagName==='SELECT') el.selectedIndex=0;
+    else el.value='';
   });
+  // Restore defaults
+  document.getElementById('tx-conv-firm').value='Hammond Pole';
+  document.getElementById('tx-conv-name').value='Adel du Plessis';
+  document.getElementById('tx-conv-contact').value='082 8717347';
+  document.getElementById('tx-comm-rate').value='5.5';
+  document.getElementById('tx-agent-listing').value='Abraham/Cindy Mathenjwa (REH Mandated)';
+  document.getElementById('tx-agent-contract').value='Mary Mathenjwa & Solomon Mahlangu';
+  document.getElementById('tx-agent-ids').value='1763738 & 3700000 & 1272480 & 1271717';
+  ['sig-seller','sig-purchaser','sig-agent'].forEach(id=>clearSig(id));
+  goOTPStep(1);
 }
-function clearSig(id){const c=document.getElementById(id);if(c)c.getContext('2d').clearRect(0,0,c.width,c.height);}
 
-// ========== OTP PDF ==========
 function exportOTPPDF(){
-  const {jsPDF}=window.jspdf;
-  const doc=new jsPDF('p','mm','a4');
-  const pw=210,ml=15,mr=15,tw=pw-ml-mr;let y=15;
-  const checkY=(h=10)=>{if(y+h>280){doc.addPage();y=15;}};
-  const hdr=(txt)=>{checkY(10);doc.setFillColor(26,37,64);doc.rect(ml,y,tw,8,'F');doc.setFont('helvetica','bold');doc.setFontSize(10);doc.setTextColor(255,255,255);doc.text(txt,ml+3,y+5.5);y+=12;};
-  const row=(l,v,l2,v2)=>{checkY(7);doc.setFont('helvetica','bold');doc.setFontSize(8.5);doc.setTextColor(100);doc.text(l||'',ml,y);doc.setFont('helvetica','normal');doc.setTextColor(26,37,64);doc.text(String(v||''),ml+38,y);if(l2){doc.setFont('helvetica','bold');doc.setTextColor(100);doc.text(l2||'',ml+tw/2,y);doc.setFont('helvetica','normal');doc.setTextColor(26,37,64);doc.text(String(v2||''),ml+tw/2+38,y);}y+=6;};
-  doc.setFillColor(26,37,64);doc.rect(0,0,210,32,'F');
-  doc.setFillColor(232,160,32);doc.rect(0,0,6,32,'F');
-  try{doc.addImage(LOGO_B64,'JPEG',ml+6,3,26,26);}catch(e){}
-  doc.setFont('helvetica','bold');doc.setFontSize(16);doc.setTextColor(232,160,32);
-  doc.text('OFFER TO PURCHASE',ml+36,13);
-  doc.setFont('helvetica','normal');doc.setFontSize(8);doc.setTextColor(180,190,210);
-  doc.text('Mandated Property Group (Pty) Ltd · Trading as Mandated · REH Properties',ml+36,19);
-  doc.text('This document constitutes a binding Agreement (deed of sale) once signed by both parties',ml+36,25);
-  doc.setFontSize(8);doc.setTextColor(180,190,210);
-  doc.text('S   W1   P   W2   A',190,12,{align:'right'});
-  y=38;
-  hdr('THE SELLER/S');
-  row('Seller 1 — Title:',g('s1-title'),'Surname:',g('s1-surname'));
-  row('Full Names:',g('s1-names'),'ID Number:',g('s1-id'));
-  row('Cellphone:',g('s1-cell'),'Income Tax No:',g('s1-taxno'));
-  row('Email:',g('s1-email'),'Residential Address:',g('s1-addr'));
-  row('Bond Bank:',g('s1-bank'),'Bond Account No:',g('s1-bondacc'));
-  row('Marital Status:',g('s1-marital'),'Status Changed:',g('s1-marital-changed'));
-  if(g('s2-surname')){y+=3;row('Seller 2 — Title:',g('s2-title'),'Surname:',g('s2-surname'));row('Full Names:',g('s2-names'),'ID Number:',g('s2-id'));}
-  if(g('s-entity-name')){row('Legal Entity:',g('s-entity-name'),'Reg Number:',g('s-entity-reg'));}
-  y+=3;
-  hdr('THE PURCHASER/S');
-  row('Purchaser 1 — Title:',g('p1-title'),'Surname:',g('p1-surname'));
-  row('Full Names:',g('p1-names'),'ID Number:',g('p1-id'));
-  row('Cellphone:',g('p1-cell'),'Income Tax No:',g('p1-taxno'));
-  row('Email:',g('p1-email'),'Residential Address:',g('p1-addr'));
-  row('Home Language:',g('p1-lang'),'City of Birth:',g('p1-city'));
-  row('Marital Status:',g('p1-marital'),'Source of Wealth:',g('p-wealth'));
-  if(g('p2-surname')){y+=3;row('Purchaser 2 — Title:',g('p2-title'),'Surname:',g('p2-surname'));row('Full Names:',g('p2-names'),'ID Number:',g('p2-id'));row('Home Language:',g('p2-lang'),'City of Birth:',g('p2-city'));row('Email:',g('p2-email'),'Address:',g('p2-addr'));}
-  y+=3;
-  hdr('THE PROPERTY SITUATED AT');
-  row('Type:',g('prop-type')==='sectional'?'Sectional Title':'Full Title','Municipality:',g('prop-muni'));
-  row('ERF No:',g('prop-erf'),'Portion:',g('prop-portion'));
-  row('Street No:',g('prop-streetno'),'Street Name:',g('prop-street'));
-  row('Suburb:',g('prop-suburb'),'Postal Code:',g('prop-postal'));
-  row('Size:',g('prop-size')+' m²','Province:',g('prop-prov'));
-  if(g('prop-complex')){row('Complex:',g('prop-complex'),'Section No:',g('prop-secno'));}
-  y+=3;
-  hdr('1. TRANSACTION DETAILS');
-  const price=parseFloat(g('tx-price'))||0;
-  const dep=parseFloat(g('tx-deposit'))||0;
-  const bond=parseFloat(g('tx-bond'))||0;
-  const rate=parseFloat(g('tx-commrate'))||5.5;
-  const net=price*rate/100;const vat=net*0.15;const gross=net+vat;
-  row('1.1 Purchase Price:','R '+price.toLocaleString('en-ZA'),'('+g('tx-price-words')+')',g('tx-vat')==='incl'?'Inclusive of VAT':'Exclusive of VAT');
-  row('1.2 Deposit:','R '+dep.toLocaleString('en-ZA'),'Deposit Due:','Within '+g('tx-depdays')+' days');
-  row('1.4.1 Balance (Bond):','R '+bond.toLocaleString('en-ZA'),'('+g('tx-bond-words')+')','');
-  row('1.5 Bond Approval Date:',g('tx-bonddate'),'1.6 Guarantee Date:',g('tx-guardays')+' days after contract');
-  row('1.7 Transfer Date:','To be advised by Attorney','1.9 Occupation Date:',g('tx-occdate')||'Date of registration');
-  row('1.8 Conveyancer:',g('tx-conv'),'Contact:',g('tx-conv-contact'));
-  row('Bond Originator:',g('tx-bond-orig'),'Contact:',g('tx-bond-contact'));
-  row('1.10 Occ. Rental:','R '+(parseFloat(g('tx-occrent'))||0).toLocaleString('en-ZA'),'1.11 Occ. Type:',g('tx-occtype'));
-  row('1.15 HOA/BC:',g('cond-hoa'),'Managing Agent:',g('cond-mgmt'));
-  row('1.16 Monthly Levy:','R '+(parseFloat(g('cond-levy'))||0).toLocaleString('en-ZA'),'1.18 Expiry Date:',g('tx-expiry'));
-  y+=3;
-  hdr('ANNEXURE B — PROFESSIONAL FEE AGREEMENT');
-  row('a) Purchase Price:','R '+price.toLocaleString('en-ZA'),'Rate:',rate+'%');
-  row('b) Net Professional Fee (excl VAT):','R '+Math.round(net).toLocaleString('en-ZA'),'c) VAT 15%:','R '+Math.round(vat).toLocaleString('en-ZA'));
-  row('d) Gross Professional Fee (incl VAT):','R '+Math.round(gross).toLocaleString('en-ZA'),'e) Balance to Seller (a-d):','R '+Math.round(price-gross).toLocaleString('en-ZA'));
-  row('Agent Names:',g('tx-agent'),'Agent FFC Numbers:',g('tx-agentid'));
-  row('Listing Agency:',g('tx-listing-agency'),'Contract Agency:',g('tx-contract-agency'));
-  y+=3;
-  if(g('cond-special')){
-    hdr('20. SPECIAL CONDITIONS');
-    doc.setFont('helvetica','normal');doc.setFontSize(9);doc.setTextColor(26,37,64);
-    const lines=doc.splitTextToSize(g('cond-special'),tw);
-    lines.forEach(l=>{checkY(6);doc.text(l,ml,y);y+=5;});y+=3;
-  }
-  const checked=Array.from(document.querySelectorAll('#fixtures-grid .check-item.checked')).map(el=>el.querySelector('input').value);
-  if(checked.length){
-    hdr('18. FIXTURES & FITTINGS INCLUDED');
-    const cols=3,colW=tw/cols;
-    for(let i=0;i<checked.length;i+=cols){
-      checkY(6);
-      for(let j=0;j<cols;j++){if(checked[i+j]){doc.setFont('helvetica','normal');doc.setFontSize(8);doc.setTextColor(26,37,64);doc.text('✓ '+checked[i+j],ml+j*colW,y);}}
-      y+=5;
-    }
-    if(g('fix-excluded')){y+=3;row('Specifically Excluding:',g('fix-excluded'),'','');}
-    y+=3;
-  }
-  doc.addPage();y=15;
-  hdr('24. SIGNATURES');
-  row('Signed at:',g('sig-city'),'Date:',g('sig-date'));
-  row('Day:',g('sig-day-words'),'Month / Year:',g('sig-month')+' 20'+g('sig-year'));
-  row('Witness 1:',g('w1-name'),'ID:',g('w1-id'));
-  row('Witness 2:',g('w2-name'),'ID:',g('w2-id'));
-  y+=10;
-  const sigs=[
-    {canvas:'sig-seller',label:'THE SELLER (1)'},
-    {canvas:'sig-purchaser',label:'THE PURCHASER (1)'},
-    {canvas:'sig-purchaser2',label:'THE PURCHASER (2)'},
-    {canvas:'sig-agent',label:'AGENT — MANDATED PROPERTY GROUP'},
-    {canvas:'sig-witness1',label:'AS WITNESS (1)'},
-    {canvas:'sig-witness2',label:'AS WITNESS (2)'}
-  ];
-  const sw=78,sh=28;
-  sigs.forEach((s,i)=>{
-    const xOff=(i%2)*(sw+14);
-    if(i%2===0&&i>0){y+=sh+16;checkY(sh+20);}
-    try{const imgData=document.getElementById(s.canvas).toDataURL('image/png');doc.addImage(imgData,'PNG',ml+xOff,y,sw,sh);}catch(e){}
-    doc.setDrawColor(150);doc.setLineWidth(0.3);doc.line(ml+xOff,y+sh+2,ml+xOff+sw,y+sh+2);
-    doc.setFont('helvetica','normal');doc.setFontSize(8);doc.setTextColor(80);doc.text(s.label,ml+xOff,y+sh+7);
-  });
-  y+=sh+18;
-  checkY(20);
-  doc.setFont('helvetica','normal');doc.setFontSize(9);doc.setTextColor(26,37,64);
-  doc.text('This Agreement has been negotiated by: '+g('tx-agent'),ml,y);y+=8;
-  doc.text("Agent's FFC Number: "+g('tx-agentid'),ml,y);y+=10;
-  doc.text('For and on behalf of Mandated Property Group',ml,y);y+=8;
-  doc.setDrawColor(150);doc.setLineWidth(0.3);doc.line(ml,y,ml+80,y);y+=5;
-  doc.setFontSize(8);doc.setTextColor(100);doc.text('Mentor Agent / Principal Agent',ml,y);
-  doc.addPage();y=15;
-  hdr('ANNEXURE B — PROFESSIONAL FEE — SIGNATURES');
-  y+=5;
-  ['sig-b-seller','sig-b-purchaser','sig-mentor'].forEach((s,i)=>{
-    const lbl=['THE SELLER','THE PURCHASER','MENTOR/PRINCIPAL'][i];
-    const xOff=i*(sw+14);
-    try{const imgData=document.getElementById(s).toDataURL('image/png');doc.addImage(imgData,'PNG',ml+xOff,y,sw,22);}catch(e){}
-    doc.setDrawColor(150);doc.setLineWidth(0.3);doc.line(ml+xOff,y+24,ml+xOff+sw,y+24);
-    doc.setFont('helvetica','normal');doc.setFontSize(8);doc.setTextColor(80);doc.text(lbl,ml+xOff,y+29);
-  });
-  const pc=doc.getNumberOfPages();
-  for(let i=1;i<=pc;i++){
-    doc.setPage(i);
-    doc.setFont('helvetica','normal');doc.setFontSize(7.5);doc.setTextColor(150);
-    doc.text('REH Properties — Powered by Mandated Property Group | Page '+i+' of '+pc,105,292,{align:'center'});
-    doc.text('S   W1   P   W2   A',195,292,{align:'right'});
-  }
-  doc.save('REH_OTP_'+g('s1-surname')+'_'+new Date().toISOString().split('T')[0]+'.pdf');
-}
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF({orientation:'portrait', unit:'mm', format:'a4'});
+  const W=210, margin=14, cw=W-margin*2;
+  let y=14;
 
+  // Header
+  if(typeof LOGO_B64 !== 'undefined'){
+    doc.addImage('data:image/jpeg;base64,'+LOGO_B64,'JPEG',margin,y,22,22);
+  }
+  doc.setFont('helvetica','bold');
+  doc.setFontSize(16);
+  doc.setTextColor(26,37,64);
+  doc.text('OFFER TO PURCHASE',W/2,y+10,{align:'center'});
+  doc.setFontSize(9);
+  doc.setFont('helvetica','normal');
+  doc.setTextColor(100,116,139);
+  doc.text('Mandated Property Group (Pty) Ltd  |  REH Reho Properties Investments',W/2,y+17,{align:'center'});
+  y+=30;
+
+  // Helper fns
+  const line = (label, val, x2, w2) => {
+    doc.setFont('helvetica','bold'); doc.setFontSize(8); doc.setTextColor(100,116,139);
+    doc.text(label, margin, y);
+    doc.setFont('helvetica','normal'); doc.setTextColor(30,30,30);
+    doc.text(String(val||''), margin+w2||margin+45, y);
+    y+=5.5;
+  };
+  const section = (title) => {
+    if(y>265){doc.addPage();y=14;}
+    doc.setFillColor(26,37,64); doc.roundedRect(margin,y,cw,6,1,1,'F');
+    doc.setFont('helvetica','bold'); doc.setFontSize(9); doc.setTextColor(255,255,255);
+    doc.text(title.toUpperCase(), margin+3, y+4.2);
+    y+=9; doc.setTextColor(30,30,30);
+  };
+  const row2 = (l1,v1,l2,v2) => {
+    const hw=cw/2-3;
+    doc.setFont('helvetica','bold'); doc.setFontSize(8); doc.setTextColor(100,116,139);
+    doc.text(l1,margin,y); doc.text(l2,margin+cw/2,y);
+    doc.setFont('helvetica','normal'); doc.setTextColor(30,30,30);
+    doc.text(String(v1||''),margin+35,y); doc.text(String(v2||''),margin+cw/2+35,y);
+    y+=5.5;
+  };
+  const row3 = (l1,v1,l2,v2,l3,v3) => {
+    doc.setFont('helvetica','bold'); doc.setFontSize(7.5); doc.setTextColor(100,116,139);
+    doc.text(l1,margin,y); doc.text(l2,margin+cw/3,y); doc.text(l3,margin+2*cw/3,y);
+    doc.setFont('helvetica','normal'); doc.setTextColor(30,30,30);
+    doc.text(String(v1||''),margin+25,y); doc.text(String(v2||''),margin+cw/3+25,y); doc.text(String(v3||''),margin+2*cw/3+25,y);
+    y+=5.5;
+  };
+  const chkLine = (label, checked) => {
+    doc.setFont('helvetica','normal'); doc.setFontSize(8); doc.setTextColor(30,30,30);
+    doc.text((checked?'☑ ':'☐ ')+label, margin+3, y);
+    y+=5;
+  };
+  const addSig = (canvasId, label) => {
+    if(y>240){doc.addPage();y=14;}
+    doc.setFont('helvetica','bold'); doc.setFontSize(8); doc.setTextColor(100,116,139);
+    doc.text(label, margin, y); y+=4;
+    const canvas=document.getElementById(canvasId);
+    if(canvas){
+      try{
+        const imgData=canvas.toDataURL('image/png');
+        doc.addImage(imgData,'PNG',margin,y,80,18);
+      }catch(e){}
+    }
+    doc.setDrawColor(200,200,200); doc.line(margin,y+20,margin+80,y+20);
+    y+=24;
+  };
+  const fmt = v => v?'R '+parseFloat(v).toLocaleString('en-ZA',{minimumFractionDigits:2}):'';
+
+  // ── SELLER ──
+  section('SELLER/S');
+  row3('Title',g('s1-title'),'Surname',g('s1-surname'),'Full Names',g('s1-names'));
+  row3('ID Number',g('s1-id'),'Cell',g('s1-cell'),'Email',g('s1-email'));
+  row3('Tax No',g('s1-tax'),'Marital Status',g('s1-marital'),'Bond Bank',g('s1-bank'));
+  if(g('s1-addr')) line('Residential Address', g('s1-addr'));
+  if(g('s2-surname')){ y+=2;
+    row3('Seller 2 Title',g('s2-title'),'Surname',g('s2-surname'),'Full Names',g('s2-names'));
+    row3('ID Number',g('s2-id'),'Cell',g('s2-cell'),'Email',g('s2-email'));
+  }
+  if(g('s-entity-name')){
+    row2('Legal Entity',g('s-entity-name'),'Reg Number',g('s-entity-reg'));
+  }
+
+  // ── PURCHASER ──
+  section('PURCHASER/S');
+  row3('Title',g('p1-title'),'Surname',g('p1-surname'),'Full Names',g('p1-names'));
+  row3('ID Number',g('p1-id'),'Cell',g('p1-cell'),'Email',g('p1-email'));
+  row3('Tax No',g('p1-tax'),'Home Language',g('p1-lang'),'City of Birth',g('p1-city'));
+  row2('Marital Status',g('p1-marital'),'Residential Address',g('p1-addr'));
+  if(g('p2-surname')){ y+=2;
+    row3('Purchaser 2 Title',g('p2-title'),'Surname',g('p2-surname'),'Full Names',g('p2-names'));
+    row3('ID Number',g('p2-id'),'Cell',g('p2-cell'),'Email',g('p2-email'));
+    row2('Marital Status',g('p2-marital'),'Residential Address',g('p2-addr'));
+  }
+
+  // ── PROPERTY ──
+  section('THE PROPERTY SITUATED AT');
+  const pt=document.getElementById('prop-type')?document.getElementById('prop-type').value:'full';
+  if(pt==='full'){
+    row3('Erf No',g('prop-erf'),'Portion',g('prop-portion'),'Street No',g('prop-streetno'));
+    row3('Street Name',g('prop-street'),'Suburb',g('prop-suburb'),'Postal Code',g('prop-postal'));
+    row3('Size (m²)',g('prop-size'),'Municipality',g('prop-municipality'),'','');
+  } else {
+    row3('Section No',g('prop-secno'),'Door No',g('prop-doorno'),'Complex',g('prop-complex'));
+    row3('Street Name',g('prop-sect-street'),'Suburb',g('prop-sect-suburb'),'Size (m²)',g('prop-sect-size'));
+    row3('Exclusive Use (m²)',g('prop-excl'),'Garage No',g('prop-garage'),'Parking No',g('prop-parking'));
+  }
+
+  // ── TRANSACTION ──
+  section('TRANSACTION DETAILS');
+  row2('Purchase Price',fmt(g('tx-price')),'VAT',g('tx-vat'));
+  if(g('tx-price-words')) line('Price in Words', g('tx-price-words'));
+  row2('Deposit',fmt(g('tx-deposit')),'Deposit Due (days)',g('tx-deposit-days'));
+  row2('Bond Amount',fmt(g('tx-bond')),'Cash Amount',fmt(g('tx-cash')));
+  row2('Bond Approval Date',g('tx-bond-date'),'Guarantee (days)',g('tx-guarantee-days'));
+  row2('Occupation',g('tx-occ-type')==='registration'?'Date of Registration':g('tx-occ-date'),'Occ. Rental',fmt(g('tx-occ-rental')));
+  row2('Occupation Type',document.getElementById('tx-occ-vacant')?document.getElementById('tx-occ-vacant').options[document.getElementById('tx-occ-vacant').selectedIndex].text:'','Monthly Levy',fmt(g('tx-levy')));
+  row2('Conveyancer',g('tx-conv-firm'),'Contact',g('tx-conv-name'));
+  row2('Contact Details',g('tx-conv-contact'),'Expiry Date',g('tx-expiry'));
+
+  // ── PROFESSIONAL FEE ──
+  section('ANNEXURE B — PROFESSIONAL FEE');
+  row3('Purchase Price',fmt(g('tx-price')),'Commission Rate',g('tx-comm-rate')+'%','Net Fee (excl VAT)',g('tx-comm-net'));
+  row3('VAT (15%)',g('tx-comm-vat'),'Gross Fee (incl VAT)',g('tx-comm-gross'),'Balance to Seller',g('tx-comm-balance'));
+  row2('Listing Agent',g('tx-agent-listing'),'Contract Agent',g('tx-agent-contract'));
+  if(g('tx-agent-ids')) line('Agent ID Numbers', g('tx-agent-ids'));
+
+  // ── SPECIAL CONDITIONS ──
+  if(g('tx-special')){
+    section('SPECIAL CONDITIONS');
+    const specLines = doc.splitTextToSize(g('tx-special'), cw);
+    doc.setFont('helvetica','normal'); doc.setFontSize(8); doc.setTextColor(30,30,30);
+    specLines.forEach(ln=>{ if(y>270){doc.addPage();y=14;} doc.text(ln,margin,y); y+=4.5; });
+    y+=2;
+  }
+
+  // ── FIXTURES ──
+  section('FIXTURES & FITTINGS INCLUDED');
+  const checked = FIXTURES_LIST.filter(f=>{ const el=document.getElementById('fix-'+f.replace(/[^a-z]/gi,'_')); return el&&el.checked; });
+  if(checked.length){
+    const cols=3, colW=cw/cols;
+    checked.forEach((f,i)=>{
+      const col=i%cols; const row=Math.floor(i/cols);
+      if(col===0 && i>0){ y+=5; if(y>270){doc.addPage();y=14;} }
+      doc.setFont('helvetica','normal'); doc.setFontSize(8); doc.setTextColor(30,30,30);
+      if(col===0) doc.text('☑ '+f, margin, y);
+      else if(col===1) doc.text('☑ '+f, margin+colW, y);
+      else doc.text('☑ '+f, margin+2*colW, y);
+    });
+    y+=7;
+  } else {
+    doc.setFont('helvetica','normal'); doc.setFontSize(8); doc.setTextColor(150,150,150);
+    doc.text('No fixtures ticked', margin, y); y+=6;
+  }
+  if(g('fix-additional')){ doc.setTextColor(30,30,30); line('Additional Items', g('fix-additional')); }
+  if(g('fix-excluded')){ line('Excluded Items', g('fix-excluded')); }
+
+  // ── SIGNATURES ──
+  if(y>220){doc.addPage();y=14;}
+  section('SIGNATURES');
+  row2('Signed at',g('tx-sign-city'),'Seller Date',g('tx-sign-date-s'));
+  line('Purchaser Date', g('tx-sign-date-p'));
+  addSig('sig-seller','Seller Signature');
+  addSig('sig-purchaser','Purchaser Signature');
+  addSig('sig-agent','Agent / Principal Signature');
+
+  // Witness details
+  row2('Witness 1',g('wit1-name'),'Witness 1 ID',g('wit1-id'));
+  row2('Witness 2',g('wit2-name'),'Witness 2 ID',g('wit2-id'));
+
+  // Footer on each page
+  const totalPages = doc.getNumberOfPages();
+  for(let p=1;p<=totalPages;p++){
+    doc.setPage(p);
+    doc.setFont('helvetica','normal'); doc.setFontSize(7); doc.setTextColor(150,150,150);
+    doc.text('REH Reho Properties Investments | Powered by Mandated Property Group', W/2, 292, {align:'center'});
+    doc.text('Page '+p+' of '+totalPages, W-margin, 292, {align:'right'});
+    doc.setDrawColor(232,160,32); doc.setLineWidth(0.5); doc.line(margin,289,W-margin,289);
+  }
+
+  const seller = g('s1-surname')||'OTP';
+  doc.save('OTP_'+seller+'_'+new Date().toISOString().slice(0,10)+'.pdf');
+}
 // ========== INVOICE ==========
 function showInvTab(t){
   activeInvTab=t;
